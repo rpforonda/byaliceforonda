@@ -4,7 +4,7 @@
 
   const site = {
     title: "Alice Foronda - Official Site",
-    desc: "Alice Foronda: book info, dedication, and character quiz.",
+    desc: "Alice Foronda: about me, book info, and character quiz.",
     image: "/og-cover.jpg"
   };
 
@@ -54,7 +54,7 @@
   <header class="relative z-40">
     <div class="border-b border-[#f5c3d5] bg-[#fff7fb]">
       <div class="relative mx-auto flex max-w-6xl items-center justify-between gap-3 px-6 py-5 md:block">
-        <a href="/" class="flex w-fit justify-start md:mx-auto md:justify-center">
+        <a href={resolve("/")} class="flex w-fit justify-start md:mx-auto md:justify-center">
           <img src={logoSrc} alt="Alice Foronda wordmark" class="h-12 w-auto md:h-16" />
         </a>
         <div class="flex flex-shrink-0 items-center gap-3 md:absolute md:right-6 md:top-1/2 md:-translate-y-1/2">
