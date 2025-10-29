@@ -1,4 +1,5 @@
 ﻿<script>
+  import { resolve } from '$app/paths';
   const heroImage =
     "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1400&q=80";
   const bookImage =
@@ -29,7 +30,7 @@
         />
       </div>
       <div class="relative flex flex-col justify-center">
-        <img src="/alice_logopink.jpg" alt="AJK" class="rounded-full" />
+        <img src={resolve("/alice_logopink.jpg")} alt="AJK" class="rounded-full" />
         <p class="mt-4 text-3xl font-['Great_Vibes',_cursive] text-[#d2234c]">
           Welcome
         </p>
