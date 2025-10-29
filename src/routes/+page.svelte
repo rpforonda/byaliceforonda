@@ -48,13 +48,13 @@
         <div class="mt-8 flex flex-wrap gap-4">
           <a
             class="inline-flex items-center rounded-full bg-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg transition hover:bg-[#b31d41]"
-            href="/book"
+            href={resolve("/book")}
           >
             Learn More
           </a>
           <a
             class="inline-flex items-center rounded-full border border-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#d2234c] transition hover:bg-[#ffe0ec]"
-            href="/quiz"
+            href={resolve("/quiz")}
           >
             Take the Quiz
           </a>
@@ -101,7 +101,7 @@
         </p>
         <a
           class="mt-8 inline-flex items-center rounded-full bg-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg transition hover:bg-[#b31d41]"
-          href="/book"
+          href={resolve("/book")}
         >
           Learn More
         </a>
@@ -198,7 +198,7 @@
         </p>
         <a
           class="mt-8 inline-flex items-center rounded-full bg-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg transition hover:bg-[#b31d41]"
-          href="/about"
+          href={resolve("/about")}
         >
           Learn More
         </a>
