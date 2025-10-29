@@ -1,5 +1,6 @@
 <script>
   import "../app.css";
+  import { resolve } from '$app/paths';
 
   const site = {
     title: "Alice Foronda - Official Site",
@@ -13,7 +14,7 @@
     { href: "/quiz", label: "quiz" }
   ];
 
-  const logoSrc = "/al_wordm.png";
+  const logoSrc = resolve('/al_wordm.png');
   let { children } = $props();
   let menuOpen = $state(false);
   let menuButtonRef = $state(null);
@@ -122,7 +123,7 @@
     <div class="bg-[#ffe4ed] pb-16 pt-10">
       <div class="mx-auto flex max-w-6xl justify-center">
         <div class="-mb-16 flex h-28 w-28 items-center justify-center rounded-full border-4 border-[#d2234c] bg-white shadow-lg">
-          <img src="/alice_logopink.jpg" alt="Alice Foronda emblem" class="h-20 w-20 rounded-full object-cover" />
+          <img src={resolve("/alice_logopink.jpg")} alt="Alice Foronda emblem" class="h-20 w-20 rounded-full object-cover" />
         </div>
       </div>
     </div>
