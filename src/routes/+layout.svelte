@@ -9,9 +9,9 @@
   };
 
   const navItems = [
-    { href: "/about", label: "about" },
-    { href: "/book", label: "books" },
-    { href: "/quiz", label: "quiz" }
+    { href: resolve('/about'), label: 'about' },
+    { href: resolve('/book'),  label: 'books' },
+    { href: resolve('/quiz'),  label: 'quiz' }
   ];
 
   const logoSrc = resolve('/al_wordm.png');
@@ -53,13 +53,13 @@
 <div class="min-h-screen bg-[#fff5f7] text-gray-900 flex flex-col" style="font-family: 'Nunito', sans-serif;">
   <header class="relative z-40">
     <div class="border-b border-[#f5c3d5] bg-[#fff7fb]">
-      <div class="relative mx-auto max-w-6xl px-6 py-5">
-        <a href="/" class="mx-auto flex w-fit justify-center">
+      <div class="relative mx-auto flex max-w-6xl items-center justify-between gap-3 px-6 py-5 md:block">
+        <a href="/" class="flex w-fit justify-start md:mx-auto md:justify-center">
           <img src={logoSrc} alt="Alice Foronda wordmark" class="h-12 w-auto md:h-16" />
         </a>
-        <div class="absolute right-6 top-1/2 flex -translate-y-1/2 items-center gap-3">
+        <div class="flex flex-shrink-0 items-center gap-3 md:absolute md:right-6 md:top-1/2 md:-translate-y-1/2">
           <a
-            href="/book"
+            href={resolve("/book")}
             class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#d2234c] text-[#d2234c] shadow-sm transition hover:bg-[#fff0f5] sm:h-10 sm:w-10"
             aria-label="Shop books"
           >
@@ -120,9 +120,9 @@
   </main>
 
   <footer class="relative text-center text-sm">
-    <div class="bg-[#ffe4ed] pb-16 pt-10">
+    <div class="bg-pink-200 pb-16">
       <div class="mx-auto flex max-w-6xl justify-center">
-        <div class="-mb-16 flex h-28 w-28 items-center justify-center rounded-full border-4 border-[#d2234c] bg-white shadow-lg">
+        <div class="-mb-16 flex h-28 w-28 items-center justify-center rounded-full">
           <img src={resolve("/alice_logopink.jpg")} alt="Alice Foronda emblem" class="h-20 w-20 rounded-full object-cover" />
         </div>
       </div>
