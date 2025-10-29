@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<!-- SvelteKit will inject all <svelte:head> tags from your layouts/pages here -->
+		%sveltekit.head%
+	</head>
+
+	<body
+		data-sveltekit-preload-data="hover"
+		class="bg-white text-gray-900 antialiased min-h-screen flex flex-col"
+	>
+		<!-- SvelteKit will inject the actual rendered app here -->
+		<div style="display: contents">
+			%sveltekit.body%
+		</div>
+	</body>
+</html>
