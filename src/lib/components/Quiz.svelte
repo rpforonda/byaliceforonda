@@ -328,8 +328,8 @@ Find out your Crosby's Cosmic Adventure character!`;
 <svelte:window on:keydown={handleKey} />
 
 <div
-  class="w-full max-w-5xl space-y-6 rounded-[28px] border border-[rgba(255,255,255,0.05)]
-         bg-[#051427] p-6 sm:p-8 shadow-[0_25px_60px_rgba(4,12,28,0.6)]"
+  class="w-full max-w-5xl space-y-6 rounded-[28px] border border-[rgba(255,255,255,0.08)]
+         bg-[linear-gradient(135deg,#0d2343,#10345e)] p-6 sm:p-8 shadow-[0_25px_60px_rgba(4,12,28,0.55)] text-[#e6f0ff]"
 >
   <header class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
     <div class="flex items-center gap-3">
@@ -342,16 +342,16 @@ Find out your Crosby's Cosmic Adventure character!`;
         ★
       </div>
       <div>
-        <p class="text-xs uppercase tracking-[0.24em] text-[#9fb6d6]">
+        <p class="text-xs uppercase tracking-[0.24em] text-[#d0e4ff]">
           Cosmic Crew Alignment
         </p>
         <h1
           id="quiz-title"
-          class="m-0 text-[22px] font-semibold leading-snug tracking-[0.01em]"
+          class="m-0 text-[22px] font-semibold leading-snug tracking-[0.01em] text-[#f6fbff]"
         >
           Which <em>Crosby’s Cosmic Adventure</em> Character Are You?
         </h1>
-        <p class="mt-[6px] text-sm leading-relaxed text-[#9fb6d6]">
+        <p class="mt-[6px] text-sm leading-relaxed text-[#d0e4ff]">
           Glide through questions one starry slide at a time.
         </p>
       </div>
@@ -366,11 +366,7 @@ Find out your Crosby's Cosmic Adventure character!`;
     </button>
   </header>
 
-  <div class="flex flex-col gap-3 text-sm text-[#9fb6d6] sm:flex-row sm:items-center sm:justify-between">
-    <div class="inline-flex items-center gap-2 rounded-full bg-white/5 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/80">
-      <span class="h-[10px] w-[10px] rounded-full" style={`background:${currentTheme.accent}`}></span>
-      Slide vibe: {currentTheme.name}
-    </div>
+  <div class="flex flex-col gap-3 text-sm text-[#d0e4ff] sm:flex-row sm:items-center sm:justify-between">
     <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
       <div class="text-xs uppercase tracking-[0.2em]">Answered {progressPct}%</div>
       <div class="h-2 w-full overflow-hidden rounded-full bg-white/10 sm:w-48" aria-hidden="true">
@@ -383,7 +379,7 @@ Find out your Crosby's Cosmic Adventure character!`;
   </div>
 
   <div
-    class="relative overflow-hidden rounded-[26px] border border-white/5 bg-[#0b2341] p-5 sm:p-7"
+    class="relative overflow-hidden rounded-[26px] border border-white/5 bg-[#0f2a4d] p-5 sm:p-7"
     aria-live="polite"
   >
     <div class="absolute inset-0" style={`background:${currentTheme.gradient}`}></div>
@@ -406,9 +402,6 @@ Find out your Crosby's Cosmic Adventure character!`;
           style={`border-color:${currentTheme.accent}`}
         >
           Q{activeSlide + 1}/{questions.length}
-          <span class="inline-flex items-center gap-1 text-[10px] font-normal normal-case tracking-[0.08em] text-white/70">
-            {currentTheme.name} energy
-          </span>
         </div>
         <h2 class="text-2xl font-semibold leading-snug text-white sm:text-[26px]">
           {questions[activeSlide].q}
@@ -522,18 +515,6 @@ Find out your Crosby's Cosmic Adventure character!`;
               ? results.combo.desc
               : results[finalKey].desc}
           </div>
-        </div>
-      </div>
-
-      <div class="mt-4 flex flex-wrap gap-2 text-[13px] text-[#d1e3ff]">
-        <div class="rounded-md bg-white/10 px-3 py-2">
-          Tank: {tally.tank}
-        </div>
-        <div class="rounded-md bg-white/10 px-3 py-2">
-          Carla: {tally.carla}
-        </div>
-        <div class="rounded-md bg-white/10 px-3 py-2">
-          Crosby: {tally.crosby}
         </div>
       </div>
 
