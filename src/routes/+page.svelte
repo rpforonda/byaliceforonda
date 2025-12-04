@@ -166,7 +166,7 @@
       <p class="text-2xl font-['Great_Vibes',_cursive] text-[#ffb4c6]">
         Meet the Characters
       </p>
-      <h2 class="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
+      <h2 class="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl whitespace-nowrap text-center mx-auto">
         {characters[activeCharacter].name}
       </h2>
       <p class="mt-2 text-base text-[#e6f0ff]/80">
@@ -204,22 +204,26 @@
             </div>
           {/each}
         </div>
-        <div class="flex flex-wrap items-center gap-3">
-          <button
-            class="inline-flex items-center rounded-full border border-white/60 px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-white/10"
-            type="button"
-            onclick={prevCharacter}
-          >
-            ← Meet Previous
-          </button>
-          <button
-            class="inline-flex items-center rounded-full bg-white px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#052238] shadow-lg transition hover:-translate-y-1 hover:shadow-xl"
-            type="button"
-            onclick={nextCharacter}
-          >
-            Next Up →
-          </button>
-          <div class="flex flex-wrap gap-2" aria-label="Character selector">
+        <div class="flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+          <div class="flex items-center gap-2">
+            <button
+              class="inline-flex items-center justify-center rounded-full border border-white/60 px-4 py-2 text-[13px] font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-white/10 sm:px-5 sm:py-3 sm:text-sm whitespace-nowrap"
+              type="button"
+              onclick={prevCharacter}
+              aria-label="Previous character"
+            >
+              ← <span class="hidden sm:inline ml-1">Meet Previous</span>
+            </button>
+            <button
+              class="inline-flex items-center justify-center rounded-full bg-white px-4 py-2 text-[13px] font-semibold uppercase tracking-[0.2em] text-[#052238] shadow-lg transition hover:-translate-y-1 hover:shadow-xl sm:px-5 sm:py-3 sm:text-sm whitespace-nowrap"
+              type="button"
+              onclick={nextCharacter}
+              aria-label="Next character"
+            >
+              <span class="hidden sm:inline">Next Up</span> <span class="sm:ml-1">→</span>
+            </button>
+          </div>
+          <div class="flex flex-wrap justify-center gap-2 sm:justify-start" aria-label="Character selector">
             {#each characters as character, index}
               <button
                 class={`rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition ${

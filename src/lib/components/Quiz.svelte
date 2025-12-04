@@ -199,12 +199,11 @@
     const answered = answers.filter((a) => a !== null).length;
     return Math.round((answered / questions.length) * 100);
   });
-  const slidePct = $derived(() =>
-    Math.round(((activeSlide + 1) / questions.length) * 100)
-  );
 
   function selectAnswer(qIndex, choiceIndex) {
-    answers[qIndex] = choiceIndex;
+    const next = [...answers];
+    next[qIndex] = choiceIndex;
+    answers = next;
   }
 
   function computeResult() {
@@ -331,51 +330,26 @@ Find out your Crosby's Cosmic Adventure character!`;
   class="w-full max-w-5xl space-y-6 rounded-[28px] border border-[rgba(255,255,255,0.08)]
          bg-[linear-gradient(135deg,#0d2343,#10345e)] p-6 sm:p-8 shadow-[0_25px_60px_rgba(4,12,28,0.55)] text-[#e6f0ff]"
 >
-  <header class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-    <div class="flex items-center gap-3">
-      <div
-        class="flex h-[64px] w-[64px] -rotate-6 items-center justify-center rounded-2xl
-               bg-[linear-gradient(135deg,#8fd3ff,#ffd36b)]
-               font-bold text-[#052238] shadow-[0_10px_24px_rgba(8,30,60,0.4)]"
-        aria-hidden="true"
-      >
-        ★
+  <div class="flex flex-wrap items-center justify-between gap-3 text-sm text-[#d0e4ff]">
+    <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
+      <div class="text-xs uppercase tracking-[0.2em]">
+        Answered {answers.filter((a) => a !== null).length}/{questions.length} ({progressPct}%)
       </div>
-      <div>
-        <p class="text-xs uppercase tracking-[0.24em] text-[#d0e4ff]">
-          Cosmic Crew Alignment
-        </p>
-        <h1
-          id="quiz-title"
-          class="m-0 text-[22px] font-semibold leading-snug tracking-[0.01em] text-[#f6fbff]"
-        >
-          Which <em>Crosby’s Cosmic Adventure</em> Character Are You?
-        </h1>
-        <p class="mt-[6px] text-sm leading-relaxed text-[#d0e4ff]">
-          Glide through questions one starry slide at a time.
-        </p>
+      <div class="h-2 w-full overflow-hidden rounded-full bg-white/10 sm:w-48" aria-hidden="true">
+        <div
+          class="h-full rounded-full bg-[linear-gradient(90deg,#8fd3ff,#ffd36b)] transition-all duration-300 ease-out"
+          style={`width:${progressPct}%`}
+        ></div>
       </div>
     </div>
     <button
       type="button"
       onclick={resetQuiz}
-      class="self-start rounded-full border border-white/20 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#cfe5ff]
+      class="rounded-full border border-white/20 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#cfe5ff]
              transition hover:border-white/40 hover:-translate-y-[2px] hover:shadow-[0_10px_24px_rgba(6,18,36,0.4)]"
     >
       Reset Journey
     </button>
-  </header>
-
-  <div class="flex flex-col gap-3 text-sm text-[#d0e4ff] sm:flex-row sm:items-center sm:justify-between">
-    <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
-      <div class="text-xs uppercase tracking-[0.2em]">Answered {progressPct}%</div>
-      <div class="h-2 w-full overflow-hidden rounded-full bg-white/10 sm:w-48" aria-hidden="true">
-        <div
-          class="h-full rounded-full bg-[linear-gradient(90deg,#8fd3ff,#ffd36b)] transition-all duration-300 ease-out"
-          style={`width:${Math.max(progressPct, slidePct)}%`}
-        ></div>
-      </div>
-    </div>
   </div>
 
   <div
