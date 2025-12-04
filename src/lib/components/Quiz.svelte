@@ -195,10 +195,11 @@
   const currentTheme = $derived(() => themeFor(activeSlide));
 
   // derived % progress
-  const progressPct = $derived(() => {
-    const answered = answers.filter((a) => a !== null).length;
-    return Math.round((answered / questions.length) * 100);
-  });
+  const progressPct = $derived(() =>
+    Math.round(
+      (answers.filter((a) => a !== null).length / questions.length) * 100
+    )
+  );
 
   function selectAnswer(qIndex, choiceIndex) {
     const next = [...answers];
@@ -448,8 +449,7 @@ Find out your Crosby's Cosmic Adventure character!`;
         <button
           type="button"
           onclick={nextSlide}
-          class="rounded-xl border-0 px-5 py-2 text-sm font-semibold text-[#052238] shadow-[0_14px_32px_rgba(0,0,0,0.35)] transition hover:-translate-y-[2px]"
-          style={`background:${currentTheme.accent}`}
+          class="rounded-xl border-0 bg-[linear-gradient(180deg,#8fd3ff,#4db7ff)] px-5 py-2 text-sm font-semibold text-[#052238] shadow-[0_14px_32px_rgba(0,0,0,0.35)] transition hover:-translate-y-[2px]"
         >
           {activeSlide === questions.length - 1 ? "See My Character" : "Next Question →"}
         </button>
