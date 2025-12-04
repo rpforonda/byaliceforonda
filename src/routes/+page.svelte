@@ -6,15 +6,65 @@
     "https://images.unsplash.com/photo-1529651737248-dad5e287768e?auto=format&fit=crop&w=800&q=80";
   const authorImage =
     "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80";
-  const characterImage =
-    "https://images.unsplash.com/photo-1601758003122-58cbb7070ac6?auto=format&fit=crop&w=800&q=80";
 
-  const characterTraits = [
-    { label: "Personality", value: "Kind, thoughtful, supportive" },
-    { label: "Likes", value: "Stories, cake, tight spaces" },
-    { label: "Dislikes", value: "Feeling left out, tight spaces" },
-    { label: "Strengths", value: "Perseverance" },
+  const characters = [
+    {
+      name: "Crosby the Crocodile",
+      role: "Gentle dreamer",
+      summary:
+        "Crosby is gentle, curious, and a little shy. With friends who cheer him on, he learns that the very traits he once hid make him a hero in the hearts of others. Courage, kindness, and a dash of starlight guide his adventures.",
+      traits: [
+        { label: "Personality", value: "Gentle, curious, thoughtful" },
+        { label: "Loves", value: "Moonlit swims, sketching stars" },
+        { label: "Needs", value: "Encouragement and warm hugs" },
+        { label: "Superpower", value: "Soft bravery that grows" },
+      ],
+      image:
+        "https://images.unsplash.com/photo-1504274066651-8d31a536b11a?auto=format&fit=crop&w=900&q=80",
+      accent: "#ffd28d",
+    },
+    {
+      name: "Carla the Capybara",
+      role: "Fearless navigator",
+      summary:
+        "Carla keeps the crew together with calm confidence. She loves planning adventures, lifting spirits, and reminding everyone that bravery is something we practice together.",
+      traits: [
+        { label: "Personality", value: "Steady, kind, collaborative" },
+        { label: "Loves", value: "Maps, music, and midnight snacks" },
+        { label: "Needs", value: "Quiet time to refuel her heart" },
+        { label: "Superpower", value: "Leading with empathy" },
+      ],
+      image:
+        "https://images.unsplash.com/photo-1594834749743-7f5c62d55c04?auto=format&fit=crop&w=900&q=80",
+      accent: "#ffb4c6",
+    },
+    {
+      name: "Tank the Turtle",
+      role: "Inventor and tinkerer",
+      summary:
+        "Tank is endlessly curious and always building something new. He’s the friend who experiments until the impossible suddenly works, proving that patience can be its own kind of magic.",
+      traits: [
+        { label: "Personality", value: "Inventive, patient, playful" },
+        { label: "Loves", value: "Gadgets, puzzles, cozy corners" },
+        { label: "Needs", value: "Time to think and tinker" },
+        { label: "Superpower", value: "Turning ideas into reality" },
+      ],
+      image:
+        "https://images.unsplash.com/photo-1502720705749-3c9255857623?auto=format&fit=crop&w=900&q=80",
+      accent: "#8fd3ff",
+    },
   ];
+
+  let activeCharacter = 0;
+
+  const prevCharacter = () => {
+    activeCharacter =
+      (activeCharacter - 1 + characters.length) % characters.length;
+  };
+
+  const nextCharacter = () => {
+    activeCharacter = (activeCharacter + 1) % characters.length;
+  };
 </script>
 
 <section class="relative w-full overflow-hidden bg-white">
@@ -117,31 +167,36 @@
         Meet the Characters
       </p>
       <h2 class="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-        Crosby the Crocodile
+        {characters[activeCharacter].name}
       </h2>
+      <p class="mt-2 text-base text-[#e6f0ff]/80">
+        {characters[activeCharacter].role}
+      </p>
     </div>
-    <div class="grid gap-10 lg:grid-cols-[minmax(260px,320px)_1fr] lg:gap-16">
+    <div
+      class="grid gap-10 lg:grid-cols-[minmax(260px,320px)_1fr] lg:gap-16"
+      aria-live="polite"
+    >
       <div
-        class="overflow-hidden rounded-full border-8 border-[#ffd28d] bg-white/10 p-6"
+        class="overflow-hidden rounded-full border-8 bg-white/10 p-6 shadow-[0_15px_40px_rgba(0,0,0,0.25)]"
+        style={`border-color:${characters[activeCharacter].accent}`}
       >
         <img
-          alt="Illustration of character"
-          src={characterImage}
+          alt={`Illustration of ${characters[activeCharacter].name}`}
+          src={characters[activeCharacter].image}
           class="h-full w-full rounded-full object-cover"
         />
       </div>
       <div class="space-y-6">
-        <p class="text-lg leading-relaxed text-[#ffe8f0]">
-          Crosby is gentle, curious, and a little shy. With friends who cheer
-          him on, he learns that the very traits he once hid make him a hero in
-          the hearts of others. Courage, kindness, and a dash of starlight guide
-          his adventures.
+        <p class="text-lg leading-relaxed text-[#ffe8f0] transition-all duration-300">
+          {characters[activeCharacter].summary}
         </p>
         <div class="grid gap-4 sm:grid-cols-2">
-          {#each characterTraits as trait}
-            <div class="rounded-2xl bg-white/10 p-4 text-sm">
+          {#each characters[activeCharacter].traits as trait}
+            <div class="rounded-2xl bg-white/10 p-4 text-sm backdrop-blur-sm">
               <div
-                class="font-semibold uppercase tracking-[0.2em] text-[#ffd28d]"
+                class="font-semibold uppercase tracking-[0.2em]"
+                style={`color:${characters[activeCharacter].accent}`}
               >
                 {trait.label}
               </div>
@@ -149,12 +204,37 @@
             </div>
           {/each}
         </div>
-        <button
-          class="inline-flex items-center rounded-full border border-white/60 px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-white/10"
-          type="button"
-        >
-          Explore More Friends
-        </button>
+        <div class="flex flex-wrap items-center gap-3">
+          <button
+            class="inline-flex items-center rounded-full border border-white/60 px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-white/10"
+            type="button"
+            onclick={prevCharacter}
+          >
+            ← Meet Previous
+          </button>
+          <button
+            class="inline-flex items-center rounded-full bg-white px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#052238] shadow-lg transition hover:-translate-y-1 hover:shadow-xl"
+            type="button"
+            onclick={nextCharacter}
+          >
+            Next Up →
+          </button>
+          <div class="flex flex-wrap gap-2" aria-label="Character selector">
+            {#each characters as character, index}
+              <button
+                class={`rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition ${
+                  index === activeCharacter
+                    ? "bg-white text-[#052238] shadow-lg"
+                    : "bg-white/10 text-white/90 hover:bg-white/20"
+                }`}
+                type="button"
+                onclick={() => (activeCharacter = index)}
+              >
+                {character.name.split(" ")[0]}
+              </button>
+            {/each}
+          </div>
+        </div>
       </div>
     </div>
   </div>
