@@ -55,7 +55,7 @@
     },
   ];
 
-  let activeCharacter = 0;
+  let activeCharacter = $state(0);
 
   const prevCharacter = () => {
     activeCharacter =
