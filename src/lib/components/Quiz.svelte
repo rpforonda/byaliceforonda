@@ -193,13 +193,8 @@
   let tally = $state({ tank: 0, carla: 0, crosby: 0 });
   let activeSlide = $state(0);
   const currentTheme = $derived(() => themeFor(activeSlide));
-
-  // derived % progress
-  const progressPct = $derived(() =>
-    Math.round(
-      (answers.filter((a) => a !== null).length / questions.length) * 100
-    )
-  );
+  let toast = $state(null); // { message: string, accent?: string } | null
+  let toastTimer;
 
   function selectAnswer(qIndex, choiceIndex) {
     const next = [...answers];
@@ -210,8 +205,9 @@
   function computeResult() {
     // check completeness
     if (answers.includes(null)) {
-      alert(
-        `You're almost there! Please answer all ${questions.length} questions so the stars can align ✨`
+      showToast(
+        `You're almost there! Answer all ${questions.length} to see your match.`,
+        currentTheme.accent
       );
       return;
     }
@@ -271,6 +267,7 @@ Find out your Crosby's Cosmic Adventure character!`;
     if (navigator.share) {
       try {
         await navigator.share({ text: shareText });
+        showToast('Shared your result!', accentByKey[finalKey] ?? currentTheme.accent);
         return;
       } catch {
         /* ignore if user cancels */
@@ -280,9 +277,9 @@ Find out your Crosby's Cosmic Adventure character!`;
     // fallback: copy to clipboard
     try {
       await navigator.clipboard.writeText(shareText);
-      alert('Result copied to clipboard — paste it anywhere to share!');
+      showToast('Result copied — paste it anywhere to share!', accentByKey[finalKey] ?? currentTheme.accent);
     } catch {
-      alert('Could not copy to clipboard');
+      showToast('Could not copy to clipboard', '#f87171');
     }
   }
 
@@ -312,7 +309,7 @@ Find out your Crosby's Cosmic Adventure character!`;
 
   function nextSlide() {
     if (answers[activeSlide] === null) {
-      alert("Pick an answer to keep traveling!");
+      showToast("Pick an answer to keep traveling!", currentTheme.accent);
       return;
     }
 
@@ -323,26 +320,45 @@ Find out your Crosby's Cosmic Adventure character!`;
 
     computeResult();
   }
+
+  function showToast(message, accent = currentTheme.accent) {
+    if (toastTimer) {
+      clearTimeout(toastTimer);
+    }
+    toast = { message, accent };
+    toastTimer = setTimeout(() => {
+      toast = null;
+    }, 2600);
+  }
 </script>
 
 <svelte:window on:keydown={handleKey} />
 
 <div
-  class="w-full max-w-5xl space-y-6 rounded-[28px] border border-[rgba(255,255,255,0.08)]
+  class="relative w-full max-w-5xl space-y-6 rounded-[28px] border border-[rgba(255,255,255,0.08)]
          bg-[linear-gradient(135deg,#0d2343,#10345e)] p-6 sm:p-8 shadow-[0_25px_60px_rgba(4,12,28,0.55)] text-[#e6f0ff]"
 >
-  <div class="flex flex-wrap items-center justify-between gap-3 text-sm text-[#d0e4ff]">
-    <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
-      <div class="text-xs uppercase tracking-[0.2em]">
-        Answered {answers.filter((a) => a !== null).length}/{questions.length} ({progressPct}%)
+  {#if toast}
+    <div
+      role="status"
+      class="pointer-events-none absolute right-4 top-4 z-10 max-w-[280px] rounded-2xl border border-white/20 bg-[#0b2341]/90 px-4 py-3 text-sm text-white shadow-[0_16px_36px_rgba(0,0,0,0.45)] backdrop-blur"
+      style={`box-shadow:0 16px 36px rgba(0,0,0,0.45), 0 0 0 1px ${(toast.accent ?? currentTheme.accent)}33;`}
+      aria-live="polite"
+    >
+      <div class="flex items-center gap-2">
+        <span
+          class="inline-block h-2.5 w-2.5 rounded-full"
+          style={`background:${toast.accent ?? currentTheme.accent}`}
+        ></span>
+        <span class="font-semibold">Heads up</span>
       </div>
-      <div class="h-2 w-full overflow-hidden rounded-full bg-white/10 sm:w-48" aria-hidden="true">
-        <div
-          class="h-full rounded-full bg-[linear-gradient(90deg,#8fd3ff,#ffd36b)] transition-all duration-300 ease-out"
-          style={`width:${progressPct}%`}
-        ></div>
+      <div class="mt-1 text-[13px] leading-relaxed text-[#e6f0ff]">
+        {toast.message}
       </div>
     </div>
+  {/if}
+
+  <div class="flex flex-wrap items-center justify-end gap-3 text-sm text-[#d0e4ff]">
     <button
       type="button"
       onclick={resetQuiz}
