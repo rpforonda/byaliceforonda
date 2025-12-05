@@ -163,7 +163,7 @@
 <section class="relative w-full overflow-hidden bg-blue-900 text-white">
   <div class="relative z-10 mx-auto max-w-6xl px-6 py-24">
     <div class="mb-10 text-center">
-      <p class="text-2xl font-['Great_Vibes',_cursive] text-[#ffb4c6]">
+      <p class="text-3xl font-['Great_Vibes',_cursive] text-[#ffb4c6] sm:text-4xl">
         Meet the Characters
       </p>
       <h2 class="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl whitespace-nowrap text-center mx-auto">
