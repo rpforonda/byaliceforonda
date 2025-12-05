@@ -1,7 +1,6 @@
 ﻿<script>
   import { resolve } from '$app/paths';
-  const heroImage =
-    "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1400&q=80";
+  const heroImage = resolve("/Homepage%20photo.jpeg");
   const bookImage =
     "https://images.unsplash.com/photo-1529651737248-dad5e287768e?auto=format&fit=crop&w=800&q=80";
   const authorImage =
@@ -69,45 +68,52 @@
 
 <section class="relative w-full overflow-hidden bg-white">
   <div class="relative z-10 mx-auto max-w-6xl px-6 pb-20 pt-24 sm:pb-28">
-    <div class="grid items-stretch gap-10 lg:grid-cols-2 lg:gap-12">
+    <div
+      class="relative overflow-hidden rounded-[2rem] bg-white shadow-xl sm:rounded-[2.75rem] lg:rounded-[3rem]"
+    >
+      <img
+        alt="Author with child"
+        src={heroImage}
+        class="absolute inset-0 h-full w-full object-cover"
+      />
+      <div class="absolute inset-0 bg-gradient-to-r from-white/85 via-white/70 to-white/30"></div>
       <div
-        class="relative h-80 overflow-hidden rounded-3xl sm:h-[26rem] lg:h-full lg:rounded-[3rem]"
+        class="relative grid min-h-[22rem] items-center gap-8 px-6 py-10 sm:min-h-[26rem] sm:px-10 sm:py-14 lg:min-h-[30rem] lg:grid-cols-2 lg:gap-12 lg:px-14 lg:py-16"
       >
-        <img
-          alt="Author with child"
-          src={heroImage}
-          class="h-full w-full object-cover"
-        />
-      </div>
-      <div class="relative flex flex-col justify-center">
-        <img src={resolve("/alice_logopink.jpg")} alt="AJK" class="rounded-full" />
-        <p class="mt-4 text-3xl font-['Great_Vibes',_cursive] text-[#d2234c]">
-          Welcome
-        </p>
-        <h1
-          class="mt-2 text-4xl font-semibold tracking-tight text-[#1b1b1d] sm:text-5xl"
-        >
-          Stories that sparkle with courage and heart.
-        </h1>
-        <p class="mt-6 max-w-xl text-lg leading-relaxed text-gray-700">
-          Step into a world of imagination where every page whispers
-          encouragement and every character finds their voice. Alice Foronda
-          crafts magical adventures that help young readers feel seen, brave,
-          and brilliantly themselves.
-        </p>
-        <div class="mt-8 flex flex-wrap gap-4">
-          <a
-            class="inline-flex items-center rounded-full bg-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg transition hover:bg-[#b31d41]"
-            href={resolve("/book")}
+        <div class="max-w-2xl">
+          <img
+            src={resolve("/alice_logopink.jpg")}
+            alt="AJK"
+            class="rounded-full shadow-lg"
+          />
+          <p class="mt-4 text-[500%] font-['Great_Vibes',_cursive] text-[#d2234c]">
+            Welcome
+          </p>
+          <h1
+            class="mt-2 text-4xl font-semibold tracking-tight text-[#1b1b1d] sm:text-5xl"
           >
-            Learn More
-          </a>
-          <a
-            class="inline-flex items-center rounded-full border border-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#d2234c] transition hover:bg-[#ffe0ec]"
-            href={resolve("/quiz")}
-          >
-            Take the Quiz
-          </a>
+            Stories that sparkle with courage and heart.
+          </h1>
+          <p class="mt-6 max-w-xl text-lg leading-relaxed text-gray-700">
+            Step into a world of imagination where every page whispers
+            encouragement and every character finds their voice. Alice Foronda
+            crafts magical adventures that help young readers feel seen, brave,
+            and brilliantly themselves.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-4">
+            <a
+              class="inline-flex items-center rounded-full bg-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg transition hover:bg-[#b31d41]"
+              href={resolve("/book")}
+            >
+              Learn More
+            </a>
+            <a
+              class="inline-flex items-center rounded-full border border-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#d2234c] transition hover:bg-[#ffe0ec]"
+              href={resolve("/quiz")}
+            >
+              Take the Quiz
+            </a>
+          </div>
         </div>
       </div>
     </div>
