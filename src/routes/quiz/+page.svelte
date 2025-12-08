@@ -2,37 +2,129 @@
   import Quiz from '$lib/components/Quiz.svelte';
 
   let showIntro = $state(true);
+  let showSplash = $state(false);
+  let splashTimer;
 
   function startQuiz() {
     console.log('Take the Quiz clicked');
+    if (splashTimer) clearTimeout(splashTimer);
+
     showIntro = false;
-    console.log('showIntro now', showIntro);
+    showSplash = true;
+    console.log('showIntro now', showIntro, 'showSplash now', showSplash);
+
+    splashTimer = setTimeout(() => {
+      showSplash = false;
+      console.log('Splash done, showing quiz');
+    }, 10000);
   }
 
   const stars = [
-    { left: '8%', size: '40px', duration: '9s', delay: '0s', rotate: '-10deg' },
-    { left: '18%', size: '32px', duration: '7s', delay: '2s', rotate: '12deg' },
-    { left: '28%', size: '48px', duration: '8.5s', delay: '1s', rotate: '-6deg' },
-    { left: '38%', size: '38px', duration: '7.5s', delay: '3s', rotate: '9deg' },
-    { left: '48%', size: '52px', duration: '9.5s', delay: '0.5s', rotate: '-14deg' },
-    { left: '58%', size: '32px', duration: '6.8s', delay: '2.5s', rotate: '16deg' },
-    { left: '68%', size: '42px', duration: '8.2s', delay: '1.2s', rotate: '-4deg' },
-    { left: '78%', size: '36px', duration: '7.3s', delay: '2.8s', rotate: '7deg' },
-    { left: '88%', size: '46px', duration: '9.2s', delay: '1.7s', rotate: '-12deg' },
-    { left: '96%', size: '32px', duration: '6.6s', delay: '0.8s', rotate: '5deg' }
+    { left: '8%', size: '40px', duration: '6s', delay: '0s', rotate: '-10deg' },
+    { left: '18%', size: '32px', duration: '5s', delay: '1s', rotate: '12deg' },
+    { left: '28%', size: '48px', duration: '5.8s', delay: '0.6s', rotate: '-6deg' },
+    { left: '38%', size: '38px', duration: '5.5s', delay: '1.6s', rotate: '9deg' },
+    { left: '48%', size: '52px', duration: '6.2s', delay: '0.4s', rotate: '-14deg' },
+    { left: '58%', size: '32px', duration: '4.8s', delay: '1.8s', rotate: '16deg' },
+    { left: '68%', size: '42px', duration: '5.6s', delay: '0.9s', rotate: '-4deg' },
+    { left: '78%', size: '36px', duration: '5s', delay: '2.2s', rotate: '7deg' },
+    { left: '88%', size: '46px', duration: '6s', delay: '1.4s', rotate: '-12deg' },
+    { left: '96%', size: '32px', duration: '4.6s', delay: '0.6s', rotate: '5deg' }
   ];
 </script>
 
 <section class="max-w-5xl px-6 py-16 text-center">
-  <h1 class="text-4xl font-semibold tracking-tight text-[#1b1b1d]">Which character are you?</h1>
+  <h1 class="text-4xl font-semibold tracking-tight text-[#afab23]">Which character are you?</h1>
   <p class="mt-4 text-lg leading-relaxed text-gray-700">
     Answer a few questions to reveal your character match, then share your result
   </p>
 
-  <div class="mt-10 flex w-full justify-center">
-    {#if showIntro}
+  <div class="quiz-chewy mt-10 flex w-full justify-center">
+    {#if showSplash}
       <div
-        class="relative isolate w-full max-w-5xl overflow-hidden rounded-[34px] bg-[#0c3c2f] p-8 shadow-[0_18px_48px_rgba(0,0,0,0.26)] sm:p-12"
+        class="relative isolate w-full max-w-5xl overflow-hidden rounded-[34px] bg-[#25533F] shadow-[0_18px_48px_rgba(0,0,0,0.26)]"
+        role="presentation"
+        aria-hidden="true"
+      >
+        <div class="flex h-full min-h-[340px] sm:min-h-[400px] overflow-hidden">
+          <div class="splash-col bg-[#6b8a32]">
+            <div class="splash-blob text-splash-green">
+              TANK
+            </div>
+            <div class="splash-figure">
+              <svg viewBox="0 0 140 180" aria-hidden="true" focusable="false">
+                <defs>
+                  <linearGradient id="tankShell" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#2f4f16" />
+                    <stop offset="100%" stop-color="#3b6a24" />
+                  </linearGradient>
+                </defs>
+                <circle cx="70" cy="46" r="28" fill="#70c36b" />
+                <ellipse cx="70" cy="110" rx="42" ry="52" fill="url(#tankShell)" />
+                <ellipse cx="70" cy="114" rx="26" ry="32" fill="#79d37a" opacity="0.9" />
+                <rect x="44" y="78" width="12" height="56" rx="6" fill="#70c36b" />
+                <rect x="84" y="78" width="12" height="56" rx="6" fill="#70c36b" />
+                <rect x="56" y="148" width="12" height="20" rx="6" fill="#4c8f32" />
+                <rect x="72" y="148" width="12" height="20" rx="6" fill="#4c8f32" />
+                <path d="M52 44 Q70 24 88 44" stroke="#4c8f32" stroke-width="6" fill="none" stroke-linecap="round" />
+                <circle cx="58" cy="44" r="4" fill="#0c0c0c" />
+                <circle cx="82" cy="44" r="4" fill="#0c0c0c" />
+              </svg>
+            </div>
+          </div>
+          <div class="splash-col bg-[#c7e9ff]">
+            <div class="splash-blob text-splash-blue">
+              CROSBY
+            </div>
+            <div class="splash-figure">
+              <svg viewBox="0 0 140 180" aria-hidden="true" focusable="false">
+                <defs>
+                  <linearGradient id="crocBody" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#66c4b8" />
+                    <stop offset="100%" stop-color="#4aa5a0" />
+                  </linearGradient>
+                </defs>
+                <path d="M46 52 Q70 18 96 46 L92 72 Q88 84 70 86 Q52 84 48 72 Z" fill="url(#crocBody)" />
+                <circle cx="64" cy="50" r="5" fill="#0c0c0c" />
+                <circle cx="84" cy="50" r="5" fill="#0c0c0c" />
+                <path d="M60 62 Q70 68 80 62" stroke="#0c0c0c" stroke-width="4" fill="none" stroke-linecap="round" />
+                <rect x="52" y="78" width="12" height="58" rx="6" fill="url(#crocBody)" />
+                <rect x="76" y="78" width="12" height="58" rx="6" fill="url(#crocBody)" />
+                <ellipse cx="70" cy="122" rx="36" ry="46" fill="#6ed1c7" />
+                <rect x="60" y="148" width="12" height="22" rx="6" fill="#3c8d84" />
+                <rect x="78" y="148" width="12" height="22" rx="6" fill="#3c8d84" />
+              </svg>
+            </div>
+          </div>
+          <div class="splash-col bg-[#f09a58]">
+            <div class="splash-blob text-splash-orange">
+              CARLA
+            </div>
+            <div class="splash-figure">
+              <svg viewBox="0 0 140 180" aria-hidden="true" focusable="false">
+                <defs>
+                  <linearGradient id="capyBody" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#c47a3b" />
+                    <stop offset="100%" stop-color="#a55a26" />
+                  </linearGradient>
+                </defs>
+                <ellipse cx="70" cy="50" rx="30" ry="26" fill="url(#capyBody)" />
+                <circle cx="60" cy="48" r="5" fill="#0c0c0c" />
+                <circle cx="82" cy="48" r="5" fill="#0c0c0c" />
+                <path d="M58 60 Q70 68 82 60" stroke="#0c0c0c" stroke-width="4" fill="none" stroke-linecap="round" />
+                <ellipse cx="70" cy="116" rx="40" ry="50" fill="#d48b52" />
+                <rect x="50" y="82" width="12" height="60" rx="6" fill="url(#capyBody)" />
+                <rect x="78" y="82" width="12" height="60" rx="6" fill="url(#capyBody)" />
+                <rect x="58" y="150" width="12" height="22" rx="6" fill="#7c3f1d" />
+                <rect x="76" y="150" width="12" height="22" rx="6" fill="#7c3f1d" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    {:else if showIntro}
+      <div
+        class="relative isolate w-full max-w-5xl overflow-hidden rounded-[34px] bg-[#25533F] p-8 shadow-[0_18px_48px_rgba(0,0,0,0.26)] sm:p-12"
         role="dialog"
         aria-modal="true"
         aria-label="Start the cosmic character quiz"
@@ -80,7 +172,7 @@
 </section>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Schoolbell&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Chewy&display=swap');
 
   .falling-star {
     position: absolute;
@@ -96,7 +188,12 @@
     width: 100%;
     height: 100%;
     display: block;
-    filter: drop-shadow(0 6px 14px rgba(255, 164, 196, 0.5));
+    filter: drop-shadow(0 6px 14px rgba(211, 182, 211, 0.5));
+  }
+
+  .falling-star polygon {
+    fill: #d3b6d3;
+    stroke: #d3b6d3;
   }
 
   @keyframes fall {
@@ -126,14 +223,13 @@
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
     box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18), 0 0 0 6px rgba(12, 63, 48, 0.45);
-    font-family: 'Schoolbell', 'Fredoka', system-ui, sans-serif;
-    transform: rotate(-3deg);
+    font-family: 'Chewy', 'Fredoka', system-ui, sans-serif;
     transform-origin: center;
   }
 
   .blob-heading {
     margin: 0;
-    font-size: clamp(38px, 10vw, 58px);
+    font-size: clamp(48px, 10vw, 64px);
     line-height: 1.05;
     font-weight: 600;
     letter-spacing: 0.025em;
@@ -149,7 +245,7 @@
     position: relative;
     border: none;
     background: #f5d255;
-    color: #6b8a32;
+    color: #25533F;
     --pill-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40' preserveAspectRatio='none'%3E%3Cpath fill='white' d='M20 2 C34 -2 62 0 78 4 C92 6 100 14 98 24 C96 34 86 40 74 38 C60 44 40 42 28 38 C16 40 6 34 4 24 C2 12 8 4 20 2 Z'/%3E%3C/svg%3E");
     -webkit-mask-image: var(--pill-mask);
     mask-image: var(--pill-mask);
@@ -158,8 +254,8 @@
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
     padding: 16px 34px;
-    font-family: 'Schoolbell', 'Fredoka', system-ui, sans-serif;
-    font-size: 18px;
+    font-family: 'Chewy', 'Fredoka', system-ui, sans-serif;
+    font-size: 24px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -181,5 +277,74 @@
     box-shadow:
       0 12px 26px rgba(0, 0, 0, 0.2),
       0 0 0 4px rgba(12, 63, 48, 0.35);
+  }
+
+  :global(.quiz-chewy),
+  :global(.quiz-chewy *) {
+    font-family: 'Chewy', 'Fredoka', system-ui, sans-serif;
+  }
+
+  .splash-blob {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: clamp(22px, 5vw, 32px) clamp(34px, 9vw, 56px);
+    height: clamp(32%, 16vw, 46%);
+    min-height: 150px;
+    min-width: 220px;
+    display: grid;
+    place-items: center;
+    border: 3px solid rgba(140, 110, 20, 0.85);
+    background: #f5d255;
+    --splash-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 120' preserveAspectRatio='none'%3E%3Cpath fill='white' d='M20 60 L36 16 L64 48 L84 10 L104 48 L132 16 L140 60 L132 94 L104 78 L80 110 L60 78 L32 96 Z'/%3E%3C/svg%3E");
+    -webkit-mask-image: var(--splash-mask);
+    mask-image: var(--splash-mask);
+    -webkit-mask-size: cover;
+    mask-size: cover;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    font-family: 'Chewy', 'Fredoka', system-ui, sans-serif;
+    font-size: clamp(28px, 7vw, 52px);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    box-shadow:
+      0 14px 28px rgba(0, 0, 0, 0.28),
+      0 0 0 4px rgba(140, 110, 20, 0.4);
+    text-align: center;
+  }
+
+  .splash-col {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 200px;
+    gap: 20px;
+  }
+
+  .splash-figure {
+    max-width: 180px;
+    width: 72%;
+  }
+
+  .splash-figure svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .text-splash-green {
+    color: #2f4f16;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.28);
+  }
+  .text-splash-blue {
+    color: #2f7fd9;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
+  }
+  .text-splash-orange {
+    color: #a0400c;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
 </style>
