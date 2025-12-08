@@ -116,7 +116,7 @@
         <img
           src={resolve("/alice_logopink.jpg")}
           alt="AJK"
-          class="h-[140px] w-[140px] rounded-full shadow-lg sm:h-[168px] sm:w-[168px] lg:h-[196px] lg:w-[196px]"
+          class="h-20 w-20 rounded-full shadow-lg sm:h-24 sm:w-24 lg:h-28 lg:w-28"
         />
       </div>
     </div>
