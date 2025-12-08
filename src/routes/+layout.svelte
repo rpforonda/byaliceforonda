@@ -149,7 +149,7 @@
     </div>
   </header>
 
-  <main class="flex flex-1 flex-col gap-0 overflow-x-hidden">
+  <main class="flex flex-1 items-center justify-center flex-col gap-0 overflow-x-hidden">
     {@render children?.()}
   </main>
 
