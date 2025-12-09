@@ -193,6 +193,18 @@
   let tally = $state({ tank: 0, carla: 0, crosby: 0 });
   let activeSlide = $state(0);
   const currentTheme = $derived(() => themeFor(activeSlide));
+  const isFirstSlide = $derived(() => activeSlide === 0);
+  const questionColors = [
+    '#ff7bac', // slide 1
+    '#b8cee8', // slide 2
+    '#d3b6d3', // slide 3
+    '#52afce', // slide 4
+    '#712c48', // slide 5
+    '#ef6f3c', // slide 6
+    '#96701e', // slide 7
+    '#aacc96'  // slide 8
+  ];
+  const questionBg = $derived(() => questionColors[activeSlide] ?? questionColors[0]);
   let toast = $state(null); // { message: string, accent?: string } | null
   let toastTimer;
 
@@ -334,10 +346,7 @@ Find out your Crosby's Cosmic Adventure character!`;
 
 <svelte:window on:keydown={handleKey} />
 
-<div
-  class="relative w-full max-w-5xl space-y-6 rounded-[28px] border border-[rgba(255,255,255,0.08)]
-         bg-[linear-gradient(135deg,#0d2343,#10345e)] p-6 sm:p-8 shadow-[0_25px_60px_rgba(4,12,28,0.55)] text-[#e6f0ff]"
->
+<div class="relative w-full quiz-frame space-y-6 text-[#ffffff]">
   {#if toast}
     <div
       role="status"
@@ -346,10 +355,7 @@ Find out your Crosby's Cosmic Adventure character!`;
       aria-live="polite"
     >
       <div class="flex items-center gap-2">
-        <span
-          class="inline-block h-2.5 w-2.5 rounded-full"
-          style={`background:${toast.accent ?? currentTheme.accent}`}
-        ></span>
+        <span class="inline-block h-2.5 w-2.5 rounded-full" style={`background:${toast.accent ?? currentTheme.accent}`}></span>
         <span class="font-semibold">Heads up</span>
       </div>
       <div class="mt-1 text-[13px] leading-relaxed text-[#e6f0ff]">
@@ -358,114 +364,59 @@ Find out your Crosby's Cosmic Adventure character!`;
     </div>
   {/if}
 
-  <div class="flex flex-wrap items-center justify-end gap-3 text-sm text-[#d0e4ff]">
+  <div class="flex flex-wrap items-center justify-end gap-3 text-sm text-[#ffffff]">
     <button
       type="button"
       onclick={resetQuiz}
-      class="rounded-full border border-white/20 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#cfe5ff]
-             transition hover:border-white/40 hover:-translate-y-[2px] hover:shadow-[0_10px_24px_rgba(6,18,36,0.4)]"
+      class="rounded-full border border-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#ff7bac]
+             transition hover:border-white hover:-translate-y-[2px] hover:shadow-[0_10px_24px_rgba(6,18,36,0.25)]"
     >
       Reset Journey
     </button>
   </div>
 
-  <div
-    class="relative overflow-hidden rounded-[26px] border border-white/5 bg-[#0f2a4d] p-5 sm:p-7"
-    aria-live="polite"
-  >
-    <div class="absolute inset-0" style={`background:${currentTheme.gradient}`}></div>
-    <div class="absolute inset-0 opacity-80" style={`background-image:${currentTheme.pattern}`}></div>
-    <div
-      class="absolute -left-24 top-8 h-40 w-40 rounded-full blur-3xl"
-      style={`background: ${currentTheme.accent}33`}
-      aria-hidden="true"
-    ></div>
-    <div
-      class="absolute bottom-[-80px] right-[-60px] h-48 w-48 rounded-full blur-3xl"
-      style="background: rgba(255,255,255,0.08)"
-      aria-hidden="true"
-    ></div>
-
-    <div class="relative grid items-start gap-6 lg:grid-cols-[1fr_320px]">
-      <div class="space-y-3">
-        <div
-          class="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/90 shadow-[0_8px_22px_rgba(0,0,0,0.25)]"
-          style={`border-color:${currentTheme.accent}`}
-        >
-          Q{activeSlide + 1}/{questions.length}
-        </div>
-        <h2 class="text-2xl font-semibold leading-snug text-white sm:text-[26px]">
-          {questions[activeSlide].q}
-        </h2>
-        <p class="text-sm leading-relaxed text-white/80">
-          Pick the reply that feels like you, then glide to the next question.
-        </p>
-      </div>
-
-      <div class="grid gap-3">
-        {#each questions[activeSlide].choices as choiceText, ci}
-          {#if answers[activeSlide] === ci}
-            <button
-              type="button"
-              class="flex w-full items-start gap-3 rounded-2xl border-2 px-4 py-3 text-left text-[14px] font-semibold text-white shadow-[0_12px_32px_rgba(0,0,0,0.35)]
-                     transition duration-200"
-              style={`border-color:${currentTheme.accent}; background:rgba(255,255,255,0.08); box-shadow:0 12px 32px rgba(0,0,0,0.35), 0 0 0 6px ${currentTheme.accent}22;`}
-              aria-pressed="true"
-              onclick={() => selectAnswer(activeSlide, ci)}
-            >
-              <span
-                class="mt-[2px] flex h-5 w-5 items-center justify-center rounded-full border-2"
-                style={`border-color:${currentTheme.accent}; background:${currentTheme.accent}`}
-                aria-hidden="true"
-              >
-                ✓
-              </span>
-              <span class="leading-snug">{choiceText}</span>
-            </button>
-          {:else}
-            <button
-              type="button"
-              class="flex w-full items-start gap-3 rounded-2xl border border-white/20 bg-white/5 px-4 py-3 text-left text-[14px] text-white/90
-                     transition duration-150 hover:-translate-y-[2px] hover:border-white/40 hover:bg-white/10"
-              aria-pressed="false"
-              onclick={() => selectAnswer(activeSlide, ci)}
-            >
-              <span
-                class="mt-[2px] h-5 w-5 rounded-full border-2 border-white/30"
-                aria-hidden="true"
-              ></span>
-              <span class="leading-snug">{choiceText}</span>
-            </button>
-          {/if}
-        {/each}
-      </div>
+  <div class="slide-two-col" aria-live="polite">
+    <div class={`question-panel ${isFirstSlide ? 'first-slide-card' : ''}`} style={`background:${questionBg}`}>
+      <h2 class={`question-text text-2xl font-semibold leading-snug ${isFirstSlide ? 'first-slide-text first-slide-question' : ''}`}>
+        {questions[activeSlide].q}
+      </h2>
     </div>
 
-    <div class="relative mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div class="flex flex-wrap items-center gap-2" aria-label="Question selector dots">
-        {#each questions as _, idx}
+    <div class="answer-panel">
+      <div class="grid gap-3">
+        {#each questions[activeSlide].choices as choiceText, ci}
           <button
             type="button"
-            class={`h-3.5 rounded-full transition ${idx === activeSlide ? 'w-12 bg-white shadow-lg' : 'w-3 bg-white/40 hover:bg-white/70'}`}
-            onclick={() => goToSlide(idx)}
-            aria-label={`Go to question ${idx + 1}`}
-            aria-current={idx === activeSlide}
-          ></button>
+            class={`flex w-full items-start gap-3 rounded-2xl border-2 px-4 py-3 text-left text-[14px] font-semibold shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition duration-200 answer-card answer-border ${answers[activeSlide] === ci ? 'selected' : ''}`}
+            aria-pressed={answers[activeSlide] === ci}
+            onclick={() => selectAnswer(activeSlide, ci)}
+            style={`border-color:${currentTheme.accent};`}
+          >
+            <span
+              class="mt-[2px] flex h-5 w-5 items-center justify-center rounded-full border-2"
+              style={`border-color:${currentTheme.accent}; background:${answers[activeSlide] === ci ? currentTheme.accent : 'transparent'}`}
+              aria-hidden="true"
+            >
+              {answers[activeSlide] === ci ? '✓' : ''}
+            </span>
+            <span class="leading-snug answer-text">{choiceText}</span>
+          </button>
         {/each}
       </div>
-      <div class="flex flex-wrap gap-2">
+
+      <div class="nav-actions">
         <button
           type="button"
+          class="nav-cloud"
           onclick={prevSlide}
-          class="rounded-xl border border-white/25 px-4 py-2 text-sm font-semibold text-white/80 transition hover:border-white/50 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
           disabled={activeSlide === 0}
         >
           ← Back
         </button>
         <button
           type="button"
+          class="nav-cloud"
           onclick={nextSlide}
-          class="rounded-xl border-0 bg-[linear-gradient(180deg,#8fd3ff,#4db7ff)] px-5 py-2 text-sm font-semibold text-[#052238] shadow-[0_14px_32px_rgba(0,0,0,0.35)] transition hover:-translate-y-[2px]"
         >
           {activeSlide === questions.length - 1 ? "See My Character" : "Next Question →"}
         </button>
@@ -483,7 +434,7 @@ Find out your Crosby's Cosmic Adventure character!`;
     >
       <div class="flex flex-col items-start gap-4 sm:flex-row sm:items-start">
         <div
-          class="flex h-[90px] w-[90px] items-center justify-center rounded-2xl border-2 text-[24px] font-extrabold text-[#052238]"
+          class="flex h-[90px] w-[90px] items-center justify-center rounded-2xl border-2 text-[24px] font-extrabold text-[#ffffff]"
           style={`border-color:${accentByKey[finalKey] ?? '#c5e8ff'}; background:${(accentByKey[finalKey] ?? '#c5e8ff')}cc`}
           aria-hidden="true"
         >
@@ -513,7 +464,7 @@ Find out your Crosby's Cosmic Adventure character!`;
           type="button"
           onclick={resetQuiz}
           class="rounded-xl border-0 bg-[linear-gradient(180deg,#8fd3ff,#4db7ff)] px-4 py-2 text-[14px] font-bold
-                 text-[#052238] shadow-[0_10px_22px_rgba(77,183,255,0.18)]"
+                 text-[#ffffff] shadow-[0_10px_22px_rgba(77,183,255,0.18)]"
         >
           Take Again
         </button>
@@ -529,14 +480,140 @@ Find out your Crosby's Cosmic Adventure character!`;
     </div>
   {/if}
 
-  <footer
-    class="flex flex-col items-start justify-between gap-3 text-[13px] text-[#9fb6d6] sm:flex-row sm:items-center"
-  >
-    <div class="opacity-90">
-      Made with stardust • Crosby’s Cosmic Adventure
-    </div>
-    <div class="text-[13px] leading-snug text-[#9fb6d6]">
-      Interactive quiz • no tracking
-    </div>
-  </footer>
+<footer
+  class="flex flex-col items-start justify-between gap-3 text-[13px] text-[#9fb6d6] sm:flex-row sm:items-center"
+>
+  <div class="opacity-90">
+    Made with stardust • Crosby’s Cosmic Adventure
+  </div>
+  <div class="text-[13px] leading-snug text-[#9fb6d6]">
+    Interactive quiz • no tracking
+  </div>
+</footer>
 </div>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=More+Sugar&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=DynaPuff:wght@500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Macabro+Danger&family=Oswald:wght@500;600&display=swap');
+
+  .first-slide-card {
+    background: transparent;
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+  }
+
+  .first-slide-text {
+    font-family: 'DynaPuff', 'More Sugar', 'Chewy', system-ui, sans-serif;
+  }
+
+  .first-slide-question {
+    text-transform: uppercase;
+    font-size: clamp(32px, 6vw, 52px);
+    line-height: 1.1;
+  }
+
+  .quiz-frame {
+    width: clamp(320px, 70vw, 1200px);
+    margin: 0 auto;
+  }
+
+  .slide-two-col {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 0;
+    border-radius: 0;
+    overflow: hidden;
+    min-height: 400px;
+  }
+
+  .question-panel {
+    background: var(--question-bg, #ff7bac);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    color: #ffffff;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    text-transform: uppercase;
+    font-family: 'DynaPuff', 'More Sugar', 'Chewy', system-ui, sans-serif;
+    height: 100%;
+  }
+
+  .question-text {
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  .answer-panel {
+    background: #edc257;
+    padding: 20px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    position: relative;
+  }
+
+  
+  .answer-card {
+    background: #edc257 !important;
+  }
+
+  .answer-text {
+    font-family: 'Oswald', 'Chewy', system-ui, sans-serif;
+    text-transform: uppercase;
+    color: #ffffff;
+    font-size: 20px;
+    line-height: 1.35;
+  }
+
+  .answer-border {
+    border: 3px solid #ffffff;
+  }
+
+  .selected.answer-border {
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), 0 0 0 6px rgba(5, 34, 56, 0.2);
+  }
+
+  .nav-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 18px;
+  }
+
+  .nav-cloud {
+    position: relative;
+    padding: 16px 26px;
+    background: #fff;
+    color: #ff7bac;
+    border: 3px solid #ffffff;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 999px;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+    -webkit-mask-image: var(--cloud-mask);
+    mask-image: var(--cloud-mask);
+    -webkit-mask-size: cover;
+    mask-size: cover;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+    transition: transform 120ms ease, box-shadow 140ms ease;
+  }
+
+  .nav-cloud:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 26px rgba(0, 0, 0, 0.2);
+  }
+
+  .nav-cloud:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+</style>
