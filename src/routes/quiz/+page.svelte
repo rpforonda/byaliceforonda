@@ -3,20 +3,18 @@
 
   let showIntro = $state(true);
   let showSplash = $state(false);
-  let splashTimer;
 
   function startQuiz() {
     console.log('Take the Quiz clicked');
-    if (splashTimer) clearTimeout(splashTimer);
 
     showIntro = false;
     showSplash = true;
     console.log('showIntro now', showIntro, 'showSplash now', showSplash);
+  }
 
-    splashTimer = setTimeout(() => {
-      showSplash = false;
-      console.log('Splash done, showing quiz');
-    }, 10000);
+  function goToQuiz() {
+    showSplash = false;
+    console.log('Splash done, showing quiz');
   }
 
   const stars = [
@@ -50,7 +48,7 @@
           role="presentation"
           aria-hidden="true"
         >
-          <div class="flex h-full flex-col overflow-hidden sm:flex-row">
+          <div class="splash-row flex h-full flex-col overflow-hidden sm:flex-row">
             <div class="splash-col bg-[#6b8a32]">
               <div class="splash-blob text-splash-green">
                 TANK
@@ -124,6 +122,11 @@
                 </svg>
               </div>
             </div>
+          </div>
+          <div class="quiz-splash-actions">
+            <button class="quiz-pill" type="button" onclick={goToQuiz}>
+              NEXT
+            </button>
           </div>
         </div>
       {:else if showIntro}
@@ -206,6 +209,7 @@
 
   .quiz-stage {
     min-height: clamp(520px, 80vh, 760px);
+    height: clamp(520px, 80vh, 760px);
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -215,6 +219,20 @@
   .quiz-stage--quiz {
     align-items: stretch;
     justify-content: flex-start;
+  }
+
+  .quiz-splash-actions {
+    position: absolute;
+    bottom: clamp(16px, 4vw, 28px);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+  }
+
+  .splash-row {
+    flex: 1;
+    min-height: 100%;
   }
 
   .falling-star {
@@ -438,13 +456,16 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 200px;
-    gap: 20px;
+    justify-content: space-between;
+    padding: clamp(48px, 6vw, 84px) clamp(18px, 4vw, 24px);
+    gap: clamp(18px, 4vw, 26px);
   }
 
   .splash-figure {
     max-width: 180px;
     width: 72%;
+    margin-top: auto;
+    padding-bottom: clamp(18px, 3vw, 32px);
   }
 
   .splash-figure svg {
