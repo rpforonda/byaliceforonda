@@ -113,11 +113,42 @@
         </div>
       </div>
       <div class="flex items-center justify-end">
-        <img
-          src={resolve("/alice_logopink.jpg")}
-          alt="AJK"
-          class="h-40 w-40 rounded-full shadow-lg sm:h-48 sm:w-48 lg:h-56 lg:w-56"
-        />
+        <div class="relative inline-flex items-center justify-center">
+          <img
+            src={resolve("/alice_logopink.jpg")}
+            alt="AJK"
+            class="h-40 w-40 rounded-full shadow-lg sm:h-48 sm:w-48 lg:h-56 lg:w-56"
+          />
+          <svg
+            class="pointer-events-none absolute inset-[-15%] h-[130%] w-[130%] text-[#d2234c]"
+            viewBox="0 0 200 200"
+            aria-hidden="true"
+          >
+            <defs>
+              <path
+                id="logoCirclePath"
+                d="M100,100 m -86,0 a 86,86 0 1,1 172,0 a 86,86 0 1,1 -172,0"
+              />
+            </defs>
+            <text
+              fill="currentColor"
+              font-size="clamp(10px, 2.2vw, 14px)"
+              font-weight="700"
+              letter-spacing="clamp(1.5px, 0.6vw, 3.5px)"
+              font-family="Poppins, 'Helvetica Neue', Arial, sans-serif"
+            >
+              <textPath
+                href="#logoCirclePath"
+                startOffset="50%"
+                text-anchor="middle"
+                textLength="540"
+                lengthAdjust="spacingAndGlyphs"
+              >
+                 • SNACK GIVER • CHILDREN'S BOOK AUTHOR • LOVER • MOM • KIMCHI STEALER
+              </textPath>
+            </text>
+          </svg>
+        </div>
       </div>
     </div>
   </div>

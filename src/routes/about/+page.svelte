@@ -22,7 +22,7 @@
     </div>
     <div class="flex justify-end">
       <img
-        src="/about%20the%20author%20photo"
+        src="/alice%20about.jpeg"
         alt="Alice Foronda"
         class="max-w-xs rounded-2xl shadow-lg"
       />

@@ -184,6 +184,8 @@
     combo: "#c5e8ff"
   };
 
+  const accentForResult = (key) => accentByKey[key] ?? '#c5e8ff';
+
   const themeFor = (index) => slideThemes[index % slideThemes.length];
 
   // STATE
@@ -204,9 +206,17 @@
     '#96701e', // slide 7
     '#aacc96'  // slide 8
   ];
-  const questionBg = $derived(() => questionColors[activeSlide] ?? questionColors[0]);
+  let questionBg = questionColors[0] ?? '#ff7bac';
   let toast = $state(null); // { message: string, accent?: string } | null
   let toastTimer;
+
+  $effect(() => {
+    questionBg = questionColors[activeSlide] ?? questionColors[0] ?? '#ff7bac';
+  });
+
+  $effect(() => {
+    console.log('[Quiz debug] activeSlide:', activeSlide, 'questionBg:', questionBg, 'questionColors:', questionColors);
+  });
 
   function selectAnswer(qIndex, choiceIndex) {
     const next = [...answers];
@@ -346,38 +356,46 @@ Find out your Crosby's Cosmic Adventure character!`;
 
 <svelte:window on:keydown={handleKey} />
 
-<div class="relative w-full quiz-frame space-y-6 text-[#ffffff]">
+<div class="relative w-full quiz-frame text-[#ffffff]">
   {#if toast}
     <div
       role="status"
-      class="pointer-events-none absolute right-4 top-4 z-10 max-w-[280px] rounded-2xl border border-white/20 bg-[#0b2341]/90 px-4 py-3 text-sm text-white shadow-[0_16px_36px_rgba(0,0,0,0.45)] backdrop-blur"
-      style={`box-shadow:0 16px 36px rgba(0,0,0,0.45), 0 0 0 1px ${(toast.accent ?? currentTheme.accent)}33;`}
+      class="pointer-events-none fixed left-1/2 top-1/2 z-20 flex w-full max-w-full justify-center px-4 -translate-x-1/2 -translate-y-1/2"
+      style={`color:${toast.accent ?? currentTheme.accent}`}
       aria-live="polite"
     >
-      <div class="flex items-center gap-2">
-        <span class="inline-block h-2.5 w-2.5 rounded-full" style={`background:${toast.accent ?? currentTheme.accent}`}></span>
-        <span class="font-semibold">Heads up</span>
-      </div>
-      <div class="mt-1 text-[13px] leading-relaxed text-[#e6f0ff]">
-        {toast.message}
+      <div
+        class="flex max-w-[360px] flex-1 items-center justify-center gap-0 rounded-2xl border px-4 py-3 text-sm shadow-[0_12px_28px_rgba(0,0,0,0.25)] backdrop-blur text-center"
+        style={`background:linear-gradient(135deg, ${(toast.accent ?? currentTheme.accent)}22, #fffffff0); border-color:${(toast.accent ?? currentTheme.accent)}66; box-shadow:0 12px 28px rgba(0,0,0,0.25), 0 0 0 1px ${(toast.accent ?? currentTheme.accent)}33; color:#0b1a2d;`}
+      >
+        <div class="w-full">
+          <div class="font-semibold text-[16px] text-[#0b1a2d]">Heads up</div>
+          <div class="mt-1 text-[13px] leading-relaxed text-[#0f2237]">
+            {toast.message}
+          </div>
+        </div>
       </div>
     </div>
   {/if}
 
-  <div class="flex flex-wrap items-center justify-end gap-3 text-sm text-[#ffffff]">
-    <button
-      type="button"
-      onclick={resetQuiz}
-      class="rounded-full border border-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#ff7bac]
-             transition hover:border-white hover:-translate-y-[2px] hover:shadow-[0_10px_24px_rgba(6,18,36,0.25)]"
-    >
-      Reset Journey
-    </button>
-  </div>
+  <div class="space-y-6">
+    <div class="flex flex-wrap items-center justify-end gap-3 text-sm text-[#ffffff]">
+      <button
+        type="button"
+        onclick={resetQuiz}
+        class="rounded-full border border-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#ff7bac]
+               transition hover:border-white hover:-translate-y-[2px] hover:shadow-[0_10px_24px_rgba(6,18,36,0.25)]"
+      >
+        Reset Journey
+      </button>
+    </div>
 
-  <div class="slide-two-col" aria-live="polite">
-    <div class={`question-panel ${isFirstSlide ? 'first-slide-card' : ''}`} style={`background:${questionBg}`}>
-      <h2 class={`question-text text-2xl font-semibold leading-snug ${isFirstSlide ? 'first-slide-text first-slide-question' : ''}`}>
+    <div class="slide-two-col" aria-live="polite">
+      <div
+        class={`question-panel ${isFirstSlide ? 'first-slide-card' : ''}`}
+        style={`--question-bg:${questionBg}; background:${questionBg}; background-color:${questionBg};`}
+      >
+        <h2 class={`question-text text-2xl font-semibold leading-snug ${isFirstSlide ? 'first-slide-text first-slide-question' : ''}`}>
         {questions[activeSlide].q}
       </h2>
     </div>
@@ -424,72 +442,74 @@ Find out your Crosby's Cosmic Adventure character!`;
     </div>
   </div>
 
-  {#if showCard && finalKey}
-    <div
-      id="resultCard"
-      role="region"
-      aria-live="polite"
-      class="rounded-[24px] border border-white/5 bg-[linear-gradient(135deg,rgba(255,255,255,0.06),rgba(6,20,40,0.92))] p-6 text-[#e6f0ff] shadow-[0_20px_40px_rgba(0,0,0,0.4)]"
-      style={`box-shadow:0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px ${accentByKey[finalKey] ?? '#c5e8ff'}33;`}
-    >
-      <div class="flex flex-col items-start gap-4 sm:flex-row sm:items-start">
-        <div
-          class="flex h-[90px] w-[90px] items-center justify-center rounded-2xl border-2 text-[24px] font-extrabold text-[#ffffff]"
-          style={`border-color:${accentByKey[finalKey] ?? '#c5e8ff'}; background:${(accentByKey[finalKey] ?? '#c5e8ff')}cc`}
-          aria-hidden="true"
-        >
-          {finalKey === 'combo' ? results.combo.avatar : results[finalKey].avatar}
-        </div>
+    {#if showCard && finalKey}
+      <div
+        id="resultCard"
+        role="region"
+        aria-live="polite"
+        class="rounded-[24px] border border-white/5 p-6 text-[#0b1a2d] shadow-[0_20px_40px_rgba(0,0,0,0.4)]"
+        style={`background:${accentForResult(finalKey)}; box-shadow:0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px ${(accentForResult(finalKey))}55; border-color:${(accentForResult(finalKey))}55;`}
+      >
+        <div class="flex flex-col items-start gap-4 sm:flex-row sm:items-start">
+          <div
+            class="flex h-[90px] w-[90px] items-center justify-center rounded-2xl border-2 text-[24px] font-extrabold text-[#ffffff]"
+            style={`border-color:${accentForResult(finalKey)}; background:${accentForResult(finalKey)}cc`}
+            aria-hidden="true"
+          >
+            {finalKey === 'combo' ? results.combo.avatar : results[finalKey].avatar}
+          </div>
 
-        <div class="text-left">
-          <p class="text-xs uppercase tracking-[0.24em] text-white/70">
-            Cosmic Crew Match
-          </p>
-          <h2 class="m-0 text-[22px] font-semibold leading-snug text-white">
-            {finalKey === 'combo'
-              ? "You're a Cosmic Combo!"
-              : `You're ${results[finalKey].title}!`}
-          </h2>
+          <div class="text-left">
+            <p class="text-xs uppercase tracking-[0.24em] text-white/70">
+              Cosmic Crew Match
+            </p>
+            <h2 class="m-0 text-[22px] font-semibold leading-snug text-white">
+              {finalKey === 'combo'
+                ? "You're a Cosmic Combo!"
+                : `You're ${results[finalKey].title}!`}
+            </h2>
 
-          <div class="mt-2 text-[14px] leading-relaxed text-[#d1e3ff]">
-            {finalKey === 'combo'
-              ? results.combo.desc
-              : results[finalKey].desc}
+            <div class="mt-2 text-[14px] leading-relaxed text-[#d1e3ff]">
+              {finalKey === 'combo'
+                ? results.combo.desc
+                : results[finalKey].desc}
+            </div>
           </div>
         </div>
+
+        <div class="mt-4 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onclick={resetQuiz}
+            class="rounded-xl border px-4 py-2 text-[14px] font-bold shadow-[0_10px_22px_rgba(0,0,0,0.2)] transition"
+            style={`background:${accentForResult(finalKey)}dd; color:#0b1a2d; border-color:${accentForResult(finalKey)};`}
+          >
+            Take Again
+          </button>
+
+          <button
+            type="button"
+            onclick={shareResult}
+            class="rounded-xl border px-3 py-2 text-[14px] font-semibold transition"
+            style={`border-color:${accentForResult(finalKey)}; color:#0b1a2d; background:${accentForResult(finalKey)}2b;`}
+          >
+            Share
+          </button>
+        </div>
       </div>
+    {/if}
 
-      <div class="mt-4 flex flex-wrap gap-2">
-        <button
-          type="button"
-          onclick={resetQuiz}
-          class="rounded-xl border-0 bg-[linear-gradient(180deg,#8fd3ff,#4db7ff)] px-4 py-2 text-[14px] font-bold
-                 text-[#ffffff] shadow-[0_10px_22px_rgba(77,183,255,0.18)]"
-        >
-          Take Again
-        </button>
-
-        <button
-          type="button"
-          onclick={shareResult}
-          class="rounded-xl border border-[rgba(255,255,255,0.15)] bg-transparent px-3 py-2 text-[14px] font-semibold text-[#d1e3ff] transition hover:border-white/40"
-        >
-          Share
-        </button>
+    <footer
+      class="flex flex-col items-start justify-between gap-3 text-[13px] text-[#9fb6d6] sm:flex-row sm:items-center"
+    >
+      <div class="opacity-90">
+        Made with stardust • Crosby’s Cosmic Adventure
       </div>
-    </div>
-  {/if}
-
-<footer
-  class="flex flex-col items-start justify-between gap-3 text-[13px] text-[#9fb6d6] sm:flex-row sm:items-center"
->
-  <div class="opacity-90">
-    Made with stardust • Crosby’s Cosmic Adventure
+      <div class="text-[13px] leading-snug text-[#9fb6d6]">
+        Interactive quiz • no tracking
+      </div>
+    </footer>
   </div>
-  <div class="text-[13px] leading-snug text-[#9fb6d6]">
-    Interactive quiz • no tracking
-  </div>
-</footer>
 </div>
 
 <style>
@@ -498,7 +518,7 @@ Find out your Crosby's Cosmic Adventure character!`;
   @import url('https://fonts.googleapis.com/css2?family=Macabro+Danger&family=Oswald:wght@500;600&display=swap');
 
   .first-slide-card {
-    background: transparent;
+    background: var(--question-bg, #ff7bac);
     border-radius: 18px;
     padding: 16px;
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
@@ -523,20 +543,19 @@ Find out your Crosby's Cosmic Adventure character!`;
     display: grid;
     grid-template-columns: 1.2fr 0.8fr;
     gap: 0;
-    border-radius: 0;
+    border-radius: 18px;
     overflow: hidden;
     min-height: 400px;
   }
 
   .question-panel {
-    background: var(--question-bg, #ff7bac);
+    background: var(--question-bg, #ff7bac) !important;
     padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 14px;
     color: #ffffff;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+    border-radius: 18px 0 0 18px;
     text-transform: uppercase;
     font-family: 'DynaPuff', 'More Sugar', 'Chewy', system-ui, sans-serif;
     height: 100%;
@@ -550,9 +569,23 @@ Find out your Crosby's Cosmic Adventure character!`;
   .answer-panel {
     background: #edc257;
     padding: 20px;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    border-radius: 0 18px 18px 0;
     position: relative;
+  }
+
+  @media (max-width: 768px) {
+    .slide-two-col {
+      grid-template-columns: 1fr;
+      min-height: unset;
+    }
+
+    .question-panel {
+      border-radius: 18px 18px 0 0;
+    }
+
+    .answer-panel {
+      border-radius: 0 0 18px 18px;
+    }
   }
 
   

@@ -46,11 +46,11 @@
     <div class="quiz-shell w-full">
       {#if showSplash}
         <div
-          class="relative isolate w-full overflow-hidden rounded-[34px] bg-[#25533F] shadow-[0_18px_48px_rgba(0,0,0,0.26)]"
+          class="quiz-stage quiz-stage--splash relative isolate overflow-hidden rounded-[34px] bg-[#25533F] shadow-[0_18px_48px_rgba(0,0,0,0.26)]"
           role="presentation"
           aria-hidden="true"
         >
-          <div class="flex h-full min-h-[340px] sm:min-h-[400px] overflow-hidden">
+          <div class="flex h-full flex-col overflow-hidden sm:flex-row">
             <div class="splash-col bg-[#6b8a32]">
               <div class="splash-blob text-splash-green">
                 TANK
@@ -128,7 +128,7 @@
         </div>
       {:else if showIntro}
         <div
-          class="relative isolate w-full overflow-hidden rounded-[34px] bg-[#25533F] p-8 shadow-[0_18px_48px_rgba(0,0,0,0.26)] sm:p-12"
+          class="quiz-stage quiz-stage--intro relative isolate overflow-hidden rounded-[34px] bg-[#25533F] p-8 shadow-[0_18px_48px_rgba(0,0,0,0.26)] sm:p-12"
           role="dialog"
           aria-modal="true"
           aria-label="Start the cosmic character quiz"
@@ -178,13 +178,13 @@
               </p>
             </div>
 
-            <button class="quiz-pill" type="button" on:click={startQuiz}>
+            <button class="quiz-pill" type="button" onclick={startQuiz}>
               TAKE THE QUIZ
             </button>
           </div>
         </div>
       {:else}
-        <div class="inline-block w-full text-left">
+        <div class="quiz-stage quiz-stage--quiz">
           <Quiz />
         </div>
       {/if}
@@ -193,6 +193,8 @@
 </section>
 
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Chewy&display=swap');
+
   .quiz-shell {
     width: clamp(320px, 70vw, 1200px);
     margin: 0 auto;
@@ -202,7 +204,18 @@
     width: 100%;
   }
 
-  @import url('https://fonts.googleapis.com/css2?family=Chewy&display=swap');
+  .quiz-stage {
+    min-height: clamp(520px, 80vh, 760px);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .quiz-stage--quiz {
+    align-items: stretch;
+    justify-content: flex-start;
+  }
 
   .falling-star {
     position: absolute;
@@ -255,14 +268,16 @@
     box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18), 0 0 0 6px rgba(12, 63, 48, 0.45);
     font-family: 'Chewy', 'Fredoka', system-ui, sans-serif;
     transform-origin: center;
+    padding: clamp(18px, 4vw, 42px) clamp(20px, 6vw, 54px);
+    min-height: clamp(360px, 74vw, 580px);
   }
 
   .blob-heading {
     margin: 0;
-    font-size: clamp(48px, 12vw, 80px);
+    font-size: clamp(30px, 8vw, 62px);
     line-height: 1.05;
     font-weight: 600;
-    letter-spacing: 0.025em;
+    letter-spacing: clamp(0.015em, 0.6vw, 0.03em);
     color: #6b8a32;
     max-width: 92%;
     margin-left: auto;
@@ -276,7 +291,7 @@
   .cosmic-row {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: clamp(4px, 1.8vw, 12px);
     vertical-align: middle;
   }
 
@@ -285,8 +300,8 @@
     display: inline-flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
-    margin: 0 24px;
+    gap: clamp(6px, 1.6vw, 12px);
+    margin: 0 clamp(8px, 3vw, 22px);
     vertical-align: middle;
     pointer-events: none;
     z-index: 2;
@@ -295,20 +310,54 @@
 
   .whisker span {
     display: block;
-    width: 60px;
-    height: 9px;
+    width: clamp(28px, 16vw, 52px);
+    height: clamp(6px, 2.2vw, 10px);
     background: #ef6f3c;
     border-radius: 999px;
     transform-origin: center;
+    transform: rotate(var(--base-rot, 0deg));
+    animation: whisker-wave 2.6s ease-in-out infinite;
   }
 
-  .whisker-left span:nth-child(1) { transform: rotate(18deg); }
-  .whisker-left span:nth-child(2) { transform: rotate(6deg); }
-  .whisker-left span:nth-child(3) { transform: rotate(-10deg); }
+  .whisker-left span:nth-child(1) { --base-rot: 18deg; animation-delay: 0s; }
+  .whisker-left span:nth-child(2) { --base-rot: 6deg; animation-delay: 0.12s; }
+  .whisker-left span:nth-child(3) { --base-rot: -10deg; animation-delay: 0.22s; }
 
-  .whisker-right span:nth-child(1) { transform: rotate(-18deg); }
-  .whisker-right span:nth-child(2) { transform: rotate(-6deg); }
-  .whisker-right span:nth-child(3) { transform: rotate(10deg); }
+  .whisker-right span:nth-child(1) { --base-rot: -18deg; animation-delay: 0.05s; }
+  .whisker-right span:nth-child(2) { --base-rot: -6deg; animation-delay: 0.16s; }
+  .whisker-right span:nth-child(3) { --base-rot: 10deg; animation-delay: 0.26s; }
+
+  @keyframes whisker-wave {
+    0% { transform: rotate(calc(var(--base-rot, 0deg) - 4deg)); }
+    50% { transform: rotate(calc(var(--base-rot, 0deg) + 4deg)) translateY(-2px); }
+    100% { transform: rotate(calc(var(--base-rot, 0deg) - 4deg)); }
+  }
+
+  @media (max-width: 480px) {
+    .blob-card {
+      min-height: 320px;
+      padding: 16px 18px;
+    }
+
+    .blob-heading {
+      font-size: clamp(26px, 9vw, 46px);
+      letter-spacing: 0.01em;
+    }
+
+    .cosmic-row {
+      gap: 4px;
+    }
+
+    .whisker {
+      gap: 4px;
+      margin: 0 10px;
+    }
+
+    .whisker span {
+      width: clamp(16px, 14vw, 32px);
+      height: clamp(4px, 2vw, 6px);
+    }
+  }
 
   .quiz-pill {
     position: relative;
