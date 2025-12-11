@@ -292,10 +292,10 @@
 
   .blob-heading {
     margin: 0;
-    font-size: clamp(30px, 8vw, 62px);
+    font-size: clamp(36px, 10.5vw, 80px);
     line-height: 1.05;
     font-weight: 600;
-    letter-spacing: clamp(0.015em, 0.6vw, 0.03em);
+    letter-spacing: clamp(0.018em, 0.85vw, 0.032em);
     color: #6b8a32;
     max-width: 92%;
     margin-left: auto;

@@ -1,10 +1,96 @@
 ﻿<script>
-  import { resolve } from '$app/paths';
+  import { resolve } from "$app/paths";
   const heroImage = resolve("/Homepage%20photo.jpeg");
   const bookImage =
     "https://images.unsplash.com/photo-1529651737248-dad5e287768e?auto=format&fit=crop&w=800&q=80";
   const authorImage =
     "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80";
+  const characterStars = [
+    {
+      left: "6%",
+      size: "26px",
+      duration: "4s",
+      delay: "0.3s",
+      rotate: "-8deg",
+    },
+    {
+      left: "14%",
+      size: "34px",
+      duration: "4.5s",
+      delay: "0.6s",
+      rotate: "12deg",
+    },
+    {
+      left: "22%",
+      size: "28px",
+      duration: "3.8s",
+      delay: "0.1s",
+      rotate: "-6deg",
+    },
+    {
+      left: "30%",
+      size: "42px",
+      duration: "4.8s",
+      delay: "0.9s",
+      rotate: "10deg",
+    },
+    {
+      left: "38%",
+      size: "30px",
+      duration: "3.6s",
+      delay: "0.4s",
+      rotate: "-12deg",
+    },
+    {
+      left: "46%",
+      size: "50px",
+      duration: "5s",
+      delay: "0.2s",
+      rotate: "8deg",
+    },
+    {
+      left: "54%",
+      size: "32px",
+      duration: "3.9s",
+      delay: "1s",
+      rotate: "-10deg",
+    },
+    {
+      left: "62%",
+      size: "36px",
+      duration: "4.2s",
+      delay: "0.5s",
+      rotate: "6deg",
+    },
+    {
+      left: "70%",
+      size: "44px",
+      duration: "4.6s",
+      delay: "0.7s",
+      rotate: "-9deg",
+    },
+    {
+      left: "78%",
+      size: "28px",
+      duration: "3.5s",
+      delay: "1.2s",
+      rotate: "11deg",
+    },
+    {
+      left: "86%",
+      size: "38px",
+      duration: "4.3s",
+      delay: "0.8s",
+      rotate: "-7deg",
+    },
+    {
+      left: "94%",
+      size: "30px",
+      duration: "3.7s",
+      delay: "1.4s",
+      rotate: "5deg",
+    },
+  ];
 
   const characters = [
     {
@@ -67,21 +153,14 @@
 </script>
 
 <section
-  class="relative w-full overflow-hidden bg-white"
-  style="min-height: clamp(26rem, 50vw, 38rem)"
+  class="relative w-full overflow-hidden"
+  style={`min-height: clamp(26rem, 50vw, 38rem); background-image: url(${heroImage}); background-size: cover; background-position: center; background-repeat: no-repeat;`}
 >
-  <img
-    alt="Author with child"
-    src={heroImage}
-    class="absolute inset-0 h-full w-full object-cover"
-  />
   <div
     class="absolute inset-0 bg-gradient-to-r from-white/85 via-white/70 to-white/20"
   ></div>
   <div class="relative z-10 mx-auto max-w-6xl px-6 pb-20 pt-24 sm:pb-28">
-    <div
-      class="grid items-center gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:gap-12"
-    >
+    <div class="grid items-center gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:gap-12">
       <div class="max-w-2xl">
         <p class="text-[500%] font-['Great_Vibes',_cursive] text-[#d2234c]">
           Welcome
@@ -144,7 +223,8 @@
                 textLength="540"
                 lengthAdjust="spacingAndGlyphs"
               >
-                 • SNACK GIVER • CHILDREN'S BOOK AUTHOR • LOVER • MOM • KIMCHI STEALER
+                • SNACK GIVER • CHILDREN'S BOOK AUTHOR • LOVER • MOM • KIMCHI
+                STEALER
               </textPath>
             </text>
           </svg>
@@ -152,21 +232,23 @@
       </div>
     </div>
   </div>
-  <div class="w-full h-32 bg-pink-100">
-    <svg
-      viewBox="0 0 1000 200"
-      class="h-32 w-full text-white"
-      preserveAspectRatio="none"
-    >
-      <path
-        d="M0 0v4c154 96 190 17.9 300 17.9 92 0 92 78.1 200 78.1s108-78.2 200-78.2c110 0 146 78.2 300-17.8V0H0Z"
-        class="fill-current"
-      />
-    </svg>
-  </div>
 </section>
 
 <section class="relative w-full overflow-hidden bg-pink-100">
+  <div class="relative w-full h-32">
+    <div class="absolute inset-0 bg-gradient-to-b from-white/60 via-white/40 to-[#fce7f3]/50"></div>
+    <svg viewBox="0 0 1000 200" class="h-32 w-full" preserveAspectRatio="none">
+      <defs>
+        <pattern id="debutWavePattern" patternUnits="userSpaceOnUse" width="1000" height="200">
+          <image href={heroImage} x="0" y="-936" width="1000" />
+        </pattern>
+      </defs>
+      <path
+        d="M0 0v4c154 96 190 17.9 300 17.9 92 0 92 78.1 200 78.1s108-78.2 200-78.2c110 0 146 78.2 300-17.8V0H0Z"
+        fill="url(#debutWavePattern)"
+      />
+    </svg>
+  </div>
   <div class="relative z-10 mx-auto max-w-6xl px-6 py-20 sm:py-24">
     <div class="grid items-center gap-10 lg:grid-cols-[320px_1fr] lg:gap-16">
       <div class="relative mx-auto max-w-sm rounded-3xl bg-white p-4 shadow-xl">
@@ -180,7 +262,9 @@
         <p class="text-2xl font-['Great_Vibes',_cursive] text-[#d2234c]">
           Debut Book!
         </p>
-        <h2 class="mt-2 text-3xl font-semibold tracking-tight text-[#1b1b1d] sm:text-4xl">
+        <h2
+          class="mt-2 text-3xl font-semibold tracking-tight text-[#1b1b1d] sm:text-4xl"
+        >
           Crosby's Cosmic Adventure
         </h2>
         <p class="mt-5 text-base leading-relaxed text-gray-700">
@@ -200,13 +284,40 @@
   </div>
 </section>
 
-<section class="relative w-full overflow-hidden bg-blue-900 text-white">
-  <div class="relative z-10 mx-auto max-w-6xl px-6 py-24">
+<section
+  class="characters-section relative w-full overflow-hidden bg-blue-900 text-white"
+  style="min-height: clamp(540px, 85vh, 820px)"
+>
+  <div class="pointer-events-none absolute inset-0 opacity-80">
+    {#each characterStars as star}
+      <span
+        class="home-falling-star"
+        style={`left:${star.left}; --size:${star.size}; animation-duration:${star.duration}; animation-delay:${star.delay}; --rotate:${star.rotate};`}
+        aria-hidden="true"
+      >
+        <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+          <polygon
+            points="50,6 62,38 95,38 68,57 78,91 50,72 22,91 32,57 5,38 38,38"
+            fill="white"
+            stroke="white"
+            stroke-width="6"
+            stroke-linejoin="round"
+            stroke-linecap="round"
+          />
+        </svg>
+      </span>
+    {/each}
+  </div>
+  <div class="relative z-10 mx-auto flex h-full max-w-6xl flex-col px-6 py-24">
     <div class="mb-10 text-center">
-      <p class="text-3xl font-['Great_Vibes',_cursive] text-[#ffb4c6] sm:text-4xl">
+      <p
+        class="text-3xl font-['Great_Vibes',_cursive] text-[#ffb4c6] sm:text-4xl"
+      >
         Meet the Characters
       </p>
-      <h2 class="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl whitespace-nowrap text-center mx-auto">
+      <h2
+        class="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl whitespace-nowrap text-center mx-auto"
+      >
         {characters[activeCharacter].name}
       </h2>
       <p class="mt-2 text-base text-[#e6f0ff]/80">
@@ -214,7 +325,7 @@
       </p>
     </div>
     <div
-      class="grid gap-10 lg:grid-cols-[minmax(260px,320px)_1fr] lg:gap-16"
+      class="grid gap-10 lg:grid-cols-[minmax(260px,320px)_1fr] lg:gap-16 flex-1"
       aria-live="polite"
     >
       <div
@@ -228,7 +339,9 @@
         />
       </div>
       <div class="space-y-6">
-        <p class="text-lg leading-relaxed text-[#ffe8f0] transition-all duration-300">
+        <p
+          class="text-lg leading-relaxed text-[#ffe8f0] transition-all duration-300"
+        >
           {characters[activeCharacter].summary}
         </p>
         <div class="grid gap-4 sm:grid-cols-2">
@@ -244,7 +357,9 @@
             </div>
           {/each}
         </div>
-        <div class="flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+        <div
+          class="flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:items-center"
+        >
           <div class="flex items-center gap-2">
             <button
               class="inline-flex items-center justify-center rounded-full border border-white/60 px-4 py-2 text-[13px] font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-white/10 sm:px-5 sm:py-3 sm:text-sm whitespace-nowrap"
@@ -260,10 +375,14 @@
               onclick={nextCharacter}
               aria-label="Next character"
             >
-              <span class="hidden sm:inline">Next Up</span> <span class="sm:ml-1">→</span>
+              <span class="hidden sm:inline">Next Up</span>
+              <span class="sm:ml-1">→</span>
             </button>
           </div>
-          <div class="flex flex-wrap justify-center gap-2 sm:justify-start" aria-label="Character selector">
+          <div
+            class="flex flex-wrap justify-center gap-2 sm:justify-start"
+            aria-label="Character selector"
+          >
             {#each characters as character, index}
               <button
                 class={`rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition ${
@@ -305,7 +424,9 @@
         <p class="text-2xl font-['Great_Vibes',_cursive] text-[#d2234c]">
           About the Author
         </p>
-        <h2 class="mt-2 text-3xl font-semibold tracking-tight text-[#1b1b1d] sm:text-4xl">
+        <h2
+          class="mt-2 text-3xl font-semibold tracking-tight text-[#1b1b1d] sm:text-4xl"
+        >
           Alice Foronda
         </h2>
         <p class="mt-5 text-base leading-relaxed text-gray-700">
@@ -341,3 +462,37 @@
     </div>
   </div>
 </section>
+
+<style>
+  .home-falling-star {
+    position: absolute;
+    top: -20%;
+    font-size: var(--size, 20px);
+    animation: home-fall linear infinite;
+    opacity: 0.7;
+    width: var(--size, 20px);
+    height: var(--size, 20px);
+  }
+
+  .home-falling-star svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  @keyframes home-fall {
+    0% {
+      top: -20%;
+      transform: rotate(var(--rotate, 0deg));
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    100% {
+      top: 105%;
+      transform: rotate(calc(var(--rotate, 0deg) + 60deg));
+      opacity: 0;
+    }
+  }
+</style>
