@@ -157,9 +157,9 @@
   <picture style="display: none;">
     <source srcset={resolve("/alHeader.webp")} type="image/webp" />
   </picture>
-  <div class="relative z-10 mx-auto max-w-6xl px-6 pb-20 pt-24 sm:pb-28" style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(2px);">
+  <div class="relative z-10 mx-auto max-w-6xl px-6 pb-20 pt-24 sm:pb-28">
     <div class="grid items-center gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:gap-12">
-      <div class="max-w-2xl">
+      <div class="max-w-2xl rounded-3xl p-6 sm:p-8" style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(2px);">
         <p class="text-[500%] font-['Great_Vibes',_cursive] text-[#d2234c]">
           Welcome
         </p>
@@ -242,9 +242,9 @@
     >
       <defs>
         <linearGradient id="waveGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" style="stop-color:rgba(255,255,255,0.3);stop-opacity:1" />
+          <stop offset="0%" style="stop-color:#fce7f3;stop-opacity:1" />
           <stop offset="50%" style="stop-color:rgba(252,231,243,0.7);stop-opacity:1" />
-          <stop offset="100%" style="stop-color:#fce7f3;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:rgba(255,255,255,0.3);stop-opacity:1" />
         </linearGradient>
       </defs>
       <path
