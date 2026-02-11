@@ -1,10 +1,8 @@
 ﻿<script>
   import { resolve } from "$app/paths";
-  const heroImage = resolve("/Homepage%20photo.jpeg");
   const bookImage =
     "https://images.unsplash.com/photo-1529651737248-dad5e287768e?auto=format&fit=crop&w=800&q=80";
-  const authorImage =
-    "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80";
+  const authorImage = resolve("/alice_logopink.jpg");
   const characterStars = [
     {
       left: "6%",
@@ -104,8 +102,8 @@
         { label: "Needs", value: "Encouragement and warm hugs" },
         { label: "Superpower", value: "Soft bravery that grows" },
       ],
-      image:
-        "https://images.unsplash.com/photo-1504274066651-8d31a536b11a?auto=format&fit=crop&w=900&q=80",
+      image: resolve("/Crosby.png"),
+      imageWebp: resolve("/Crosby.webp"),
       accent: "#ffd28d",
     },
     {
@@ -119,23 +117,23 @@
         { label: "Needs", value: "Quiet time to refuel her heart" },
         { label: "Superpower", value: "Leading with empathy" },
       ],
-      image:
-        "https://images.unsplash.com/photo-1594834749743-7f5c62d55c04?auto=format&fit=crop&w=900&q=80",
+      image: resolve("/Carla.png"),
+      imageWebp: resolve("/Carla.webp"),
       accent: "#ffb4c6",
     },
     {
       name: "Tank the Turtle",
       role: "Inventor and tinkerer",
       summary:
-        "Tank is endlessly curious and always building something new. He’s the friend who experiments until the impossible suddenly works, proving that patience can be its own kind of magic.",
+        "Tank is endlessly curious and always building something new. He's the friend who experiments until the impossible suddenly works, proving that patience can be its own kind of magic.",
       traits: [
         { label: "Personality", value: "Inventive, patient, playful" },
         { label: "Loves", value: "Gadgets, puzzles, cozy corners" },
         { label: "Needs", value: "Time to think and tinker" },
         { label: "Superpower", value: "Turning ideas into reality" },
       ],
-      image:
-        "https://images.unsplash.com/photo-1502720705749-3c9255857623?auto=format&fit=crop&w=900&q=80",
+      image: resolve("/Tank.png"),
+      imageWebp: resolve("/Tank.webp"),
       accent: "#8fd3ff",
     },
   ];
@@ -154,12 +152,12 @@
 
 <section
   class="relative w-full overflow-hidden"
-  style={`min-height: clamp(26rem, 50vw, 38rem); background-image: url(${heroImage}); background-size: cover; background-position: center; background-repeat: no-repeat;`}
+  style="min-height: clamp(26rem, 50vw, 38rem); background-image: url('/alHeader_opt.jpg'); background-size: cover; background-position: center;"
 >
-  <div
-    class="absolute inset-0 bg-gradient-to-r from-white/85 via-white/70 to-white/20"
-  ></div>
-  <div class="relative z-10 mx-auto max-w-6xl px-6 pb-20 pt-24 sm:pb-28">
+  <picture style="display: none;">
+    <source srcset={resolve("/alHeader.webp")} type="image/webp" />
+  </picture>
+  <div class="relative z-10 mx-auto max-w-6xl px-6 pb-20 pt-24 sm:pb-28" style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(2px);">
     <div class="grid items-center gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:gap-12">
       <div class="max-w-2xl">
         <p class="text-[500%] font-['Great_Vibes',_cursive] text-[#d2234c]">
@@ -167,7 +165,7 @@
         </p>
         <h1
           class="mt-2 text-4xl font-semibold tracking-tight text-[#1b1b1d] sm:text-5xl"
-        >
+        >  
           Stories that sparkle with courage and heart.
         </h1>
         <p class="mt-6 max-w-xl text-lg leading-relaxed text-gray-700">
@@ -178,7 +176,7 @@
         </p>
         <div class="mt-8 flex flex-wrap gap-4">
           <a
-            class="inline-flex items-center rounded-full bg-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg transition hover:bg-[#b31d41]"
+            class="inline-flex items-center rounded-full bg-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg transition hover:bg-[#d2234c]-dark"
             href={resolve("/book")}
           >
             Learn More
@@ -193,11 +191,15 @@
       </div>
       <div class="flex items-center justify-end">
         <div class="relative inline-flex items-center justify-center">
-          <img
-            src={resolve("/alice_logopink.jpg")}
-            alt="AJK"
-            class="h-40 w-40 rounded-full shadow-lg sm:h-48 sm:w-48 lg:h-56 lg:w-56"
-          />
+          <picture>
+            <source srcset={resolve("/alice_logopink.webp")} type="image/webp" />
+            <img
+              src={resolve("/alice_logopink.jpg")}
+              alt="Alice Foronda, children's book author"
+              class="h-40 w-40 rounded-full shadow-lg sm:h-48 sm:w-48 lg:h-56 lg:w-56"
+              loading="lazy"
+            />
+          </picture>
           <svg
             class="pointer-events-none absolute inset-[-15%] h-[130%] w-[130%] text-[#d2234c]"
             viewBox="0 0 200 200"
@@ -232,23 +234,28 @@
       </div>
     </div>
   </div>
-</section>
-
-<section class="relative w-full overflow-hidden bg-pink-100">
-  <div class="relative w-full h-32">
-    <div class="absolute inset-0 bg-gradient-to-b from-white/60 via-white/40 to-[#fce7f3]/50"></div>
-    <svg viewBox="0 0 1000 200" class="h-32 w-full" preserveAspectRatio="none">
+  <div class="w-full h-32 relative">
+    <svg
+      viewBox="0 0 1000 200"
+      class="h-32 w-full transform -scale-y-100 absolute bottom-0"
+      preserveAspectRatio="none"
+    >
       <defs>
-        <pattern id="debutWavePattern" patternUnits="userSpaceOnUse" width="1000" height="200">
-          <image href={heroImage} x="0" y="-936" width="1000" />
-        </pattern>
+        <linearGradient id="waveGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:rgba(255,255,255,0.3);stop-opacity:1" />
+          <stop offset="50%" style="stop-color:rgba(252,231,243,0.7);stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#fce7f3;stop-opacity:1" />
+        </linearGradient>
       </defs>
       <path
         d="M0 0v4c154 96 190 17.9 300 17.9 92 0 92 78.1 200 78.1s108-78.2 200-78.2c110 0 146 78.2 300-17.8V0H0Z"
-        fill="url(#debutWavePattern)"
+        fill="url(#waveGradient)"
       />
     </svg>
   </div>
+</section>
+
+<section class="relative w-full overflow-hidden bg-pink-100">
   <div class="relative z-10 mx-auto max-w-6xl px-6 py-20 sm:py-24">
     <div class="grid items-center gap-10 lg:grid-cols-[320px_1fr] lg:gap-16">
       <div class="relative mx-auto max-w-sm rounded-3xl bg-white p-4 shadow-xl">
@@ -274,7 +281,7 @@
           story reminds young dreamers that every wobble can become a wonder.
         </p>
         <a
-          class="mt-8 inline-flex items-center rounded-full bg-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg transition hover:bg-[#b31d41]"
+          class="mt-8 inline-flex items-center rounded-full bg-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg transition hover:bg-[#d2234c]-dark"
           href={resolve("/book")}
         >
           Learn More
@@ -325,18 +332,22 @@
       </p>
     </div>
     <div
-      class="grid gap-10 lg:grid-cols-[minmax(260px,320px)_1fr] lg:gap-16 flex-1"
+      class="grid gap-10 lg:grid-cols-[minmax(320px,420px)_1fr] lg:gap-16 flex-1"
       aria-live="polite"
     >
       <div
-        class="overflow-hidden rounded-full border-8 bg-white/10 p-6 shadow-[0_15px_40px_rgba(0,0,0,0.25)]"
+        class="overflow-hidden rounded-full border-8 bg-white/10 p-2 shadow-[0_15px_40px_rgba(0,0,0,0.25)] w-fit mx-auto"
         style={`border-color:${characters[activeCharacter].accent}`}
       >
-        <img
-          alt={`Illustration of ${characters[activeCharacter].name}`}
-          src={characters[activeCharacter].image}
-          class="h-full w-full rounded-full object-cover"
-        />
+        <picture>
+          <source srcset={characters[activeCharacter].imageWebp} type="image/webp" />
+          <img
+            alt={`Illustration of ${characters[activeCharacter].name}`}
+            src={characters[activeCharacter].image}
+            class="rounded-full object-contain w-72 h-72 sm:w-80 sm:h-80 lg:w-96 lg:h-96"
+            loading="lazy"
+          />
+        </picture>
       </div>
       <div class="space-y-6">
         <p
@@ -415,6 +426,7 @@
   </div>
 </section>
 
+<!-- About the Author section - commented out
 <section class="relative w-full overflow-hidden bg-pink-100">
   <div class="relative z-10 mx-auto max-w-6xl px-6 py-20 sm:py-24">
     <div
@@ -442,7 +454,7 @@
           that storytelling is a bridge between hearts.
         </p>
         <a
-          class="mt-8 inline-flex items-center rounded-full bg-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg transition hover:bg-[#b31d41]"
+          class="mt-8 inline-flex items-center rounded-full bg-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg transition hover:bg-[#d2234c]-dark"
           href={resolve("/about")}
         >
           Learn More
@@ -462,6 +474,7 @@
     </div>
   </div>
 </section>
+-->
 
 <style>
   .home-falling-star {

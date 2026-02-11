@@ -21,16 +21,17 @@
       </p>
     </div>
     <div class="flex justify-end">
-      <img
-        src="/alice%20about.jpeg"
-        alt="Alice Foronda"
-        class="max-w-xs rounded-2xl shadow-lg"
-      />
+      <picture>
+        <source srcset="/aboutMe.webp" type="image/webp" />
+        <img
+          src="/aboutMe_opt.jpg"
+          alt="Alice Foronda"
+          class="max-w-xs rounded-2xl shadow-lg"
+        />
+      </picture>
     </div>
   </div>
 </section>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Borel&display=swap');
-  @import url('https://fonts.googleapis.com/css2?family=Corinthia:wght@400;700&display=swap');
 </style>

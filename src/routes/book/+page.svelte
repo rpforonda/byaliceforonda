@@ -1,6 +1,5 @@
 <script>
   import BuyButtons from '$lib/components/BuyButtons.svelte';
-  import Quiz from '$lib/components/Quiz.svelte';
 </script>
 
 <section class="max-w-3xl px-6 py-16 text-center">

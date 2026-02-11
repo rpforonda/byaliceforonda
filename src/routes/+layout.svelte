@@ -16,7 +16,9 @@
   ];
 
   const logoSrc = resolve("/al_wordm.png");
+  const logoWebpSrc = resolve("/al_wordm.webp");
   const logoWhiteSrc = resolve("/al_wordm_white.png");
+  const logoWhiteWebpSrc = resolve("/al_wordm_white.webp");
   let { children } = $props();
   let menuOpen = $state(false);
   let menuButtonRef = $state(null);
@@ -46,10 +48,6 @@
   <meta property="og:type" content="website" />
   <meta property="og:image" content={site.image} />
   <meta name="twitter:card" content="summary_large_image" />
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Nunito:wght@400;600;700&display=swap"
-  />
 </svelte:head>
 
 <div
@@ -65,11 +63,14 @@
           href={resolve("/")}
           class="flex w-fit justify-start md:mx-auto md:justify-center"
         >
-          <img
-            src={logoSrc}
-            alt="Alice Foronda wordmark"
-            class="h-12 w-auto md:h-16"
-          />
+          <picture>
+            <source srcset={logoWebpSrc} type="image/webp" />
+            <img
+              src={logoSrc}
+              alt="Alice Foronda wordmark"
+              class="h-12 w-auto md:h-16"
+            />
+          </picture>
         </a>
         <div
           class="flex flex-shrink-0 items-center gap-3 md:absolute md:right-6 md:top-1/2 md:-translate-y-1/2"
@@ -154,17 +155,20 @@
   </main>
 
   <footer class="relative overflow-hidden text-center text-sm">
-    <div class="relative h-[12rem] bg-pink-100">
+    <div class="relative h-28 bg-pink-100">
       <div class="absolute inset-x-0 bottom-0 h-10 bg-rose-200"></div>
       <div class="absolute left-1/2 bottom-[.1rem] z-20 -translate-x-1/2">
         <span
           class="inline-flex items-center justify-center rounded-full bg-rose-200 p-2"
         >
-          <img
-            src={resolve("/alice_logopink.jpg")}
-            alt="Alice Foronda emblem"
-            class="h-20 w-20 rounded-full object-cover"
-          />
+          <picture>
+            <source srcset={resolve("/alice_logopink.webp")} type="image/webp" />
+            <img
+              src={resolve("/alice_logopink.jpg")}
+              alt="Alice Foronda emblem"
+              class="h-20 w-20 rounded-full object-cover"
+            />
+          </picture>
         </span>
       </div>
     </div>
@@ -172,11 +176,14 @@
       class="relative border-t border-pink-200 bg-stone-800 pb-10 pt-12 text-white"
     >
       <div class="mb-6 flex justify-center">
-        <img
-          src={logoWhiteSrc}
-          alt="Alice Foronda wordmark"
-          class="h-12 w-auto md:h-16"
-        />
+        <picture>
+          <source srcset={logoWhiteWebpSrc} type="image/webp" />
+          <img
+            src={logoWhiteSrc}
+            alt="Alice Foronda wordmark"
+            class="h-12 w-auto md:h-16"
+          />
+        </picture>
       </div>
       <div
         class="mx-auto flex max-w-6xl flex-col items-center gap-3 px-6 text-pink-200"

@@ -17,25 +17,53 @@
     console.log('Splash done, showing quiz');
   }
 
-  const stars = [
-    { left: '4%', size: '40px', duration: '4.2s', delay: '0s', rotate: '-8deg' },
-    { left: '10%', size: '34px', duration: '3.8s', delay: '0.4s', rotate: '6deg' },
-    { left: '16%', size: '48px', duration: '4.6s', delay: '0.2s', rotate: '-10deg' },
-    { left: '22%', size: '30px', duration: '3.5s', delay: '0.8s', rotate: '14deg' },
-    { left: '28%', size: '44px', duration: '4.1s', delay: '0.1s', rotate: '-4deg' },
-    { left: '34%', size: '36px', duration: '3.6s', delay: '1s', rotate: '9deg' },
-    { left: '40%', size: '52px', duration: '4.8s', delay: '0.3s', rotate: '-12deg' },
-    { left: '48%', size: '32px', duration: '3.4s', delay: '1.2s', rotate: '11deg' },
-    { left: '56%', size: '46px', duration: '4.4s', delay: '0.5s', rotate: '-6deg' },
-    { left: '62%', size: '38px', duration: '3.7s', delay: '1.4s', rotate: '7deg' },
-    { left: '68%', size: '42px', duration: '4s', delay: '0.7s', rotate: '-9deg' },
-    { left: '74%', size: '34px', duration: '3.3s', delay: '1.1s', rotate: '5deg' },
-    { left: '80%', size: '50px', duration: '4.5s', delay: '0.6s', rotate: '-11deg' },
-    { left: '86%', size: '36px', duration: '3.6s', delay: '1.5s', rotate: '8deg' },
-    { left: '92%', size: '44px', duration: '4.2s', delay: '0.9s', rotate: '-7deg' },
-    { left: '96%', size: '30px', duration: '3.2s', delay: '1.8s', rotate: '6deg' },
-    { left: '12%', size: '26px', duration: '3s', delay: '1.6s', rotate: '-5deg' },
-    { left: '52%', size: '28px', duration: '3.1s', delay: '1.9s', rotate: '4deg' }
+  const starfield = [
+    { left: '6%', top: '12%', size: '68px', rotate: '-6deg', opacity: 0.9 },
+    { left: '14%', top: '32%', size: '44px', rotate: '8deg', opacity: 0.8 },
+    { left: '9%', top: '68%', size: '56px', rotate: '-12deg', opacity: 0.92 },
+    { left: '18%', top: '82%', size: '84px', rotate: '4deg', opacity: 0.86 },
+    { left: '26%', top: '18%', size: '60px', rotate: '-9deg', opacity: 0.88 },
+    { left: '28%', top: '54%', size: '104px', rotate: '12deg', opacity: 0.94 },
+    { left: '34%', top: '8%', size: '52px', rotate: '-4deg', opacity: 0.83 },
+    { left: '40%', top: '36%', size: '92px', rotate: '10deg', opacity: 0.9 },
+    { left: '48%', top: '68%', size: '64px', rotate: '-11deg', opacity: 0.82 },
+    { left: '56%', top: '22%', size: '76px', rotate: '6deg', opacity: 0.88 },
+    { left: '62%', top: '6%', size: '88px', rotate: '-7deg', opacity: 0.93 },
+    { left: '68%', top: '46%', size: '48px', rotate: '9deg', opacity: 0.8 },
+    { left: '74%', top: '74%', size: '72px', rotate: '-5deg', opacity: 0.9 },
+    { left: '82%', top: '18%', size: '96px', rotate: '7deg', opacity: 0.87 },
+    { left: '86%', top: '58%', size: '56px', rotate: '-8deg', opacity: 0.84 },
+    { left: '92%', top: '10%', size: '80px', rotate: '11deg', opacity: 0.9 },
+    { left: '88%', top: '86%', size: '60px', rotate: '-6deg', opacity: 0.82 },
+    { left: '52%', top: '88%', size: '52px', rotate: '5deg', opacity: 0.78 },
+    { left: '4%', top: '44%', size: '40px', rotate: '6deg', opacity: 0.76 },
+    { left: '20%', top: '6%', size: '48px', rotate: '-10deg', opacity: 0.8 },
+    { left: '32%', top: '72%', size: '44px', rotate: '12deg', opacity: 0.78 },
+    { left: '46%', top: '8%', size: '60px', rotate: '-7deg', opacity: 0.85 },
+    { left: '58%', top: '54%', size: '68px', rotate: '9deg', opacity: 0.88 },
+    { left: '64%', top: '78%', size: '52px', rotate: '-9deg', opacity: 0.8 },
+    { left: '70%', top: '30%', size: '80px', rotate: '5deg', opacity: 0.9 },
+    { left: '78%', top: '50%', size: '44px', rotate: '-11deg', opacity: 0.76 },
+    { left: '84%', top: '92%', size: '64px', rotate: '8deg', opacity: 0.86 },
+    { left: '94%', top: '40%', size: '48px', rotate: '-5deg', opacity: 0.8 },
+    { left: '60%', top: '94%', size: '56px', rotate: '7deg', opacity: 0.82 },
+    { left: '10%', top: '92%', size: '48px', rotate: '-7deg', opacity: 0.8 },
+    { left: '36%', top: '92%', size: '60px', rotate: '11deg', opacity: 0.84 },
+    { left: '12%', top: '46%', size: '36px', rotate: '-4deg', opacity: 0.75 },
+    { left: '2%', top: '26%', size: '40px', rotate: '10deg', opacity: 0.78 },
+    { left: '8%', top: '8%', size: '36px', rotate: '-8deg', opacity: 0.74 },
+    { left: '18%', top: '60%', size: '52px', rotate: '6deg', opacity: 0.82 },
+    { left: '24%', top: '40%', size: '44px', rotate: '-10deg', opacity: 0.77 },
+    { left: '30%', top: '30%', size: '56px', rotate: '12deg', opacity: 0.86 },
+    { left: '44%', top: '46%', size: '48px', rotate: '-6deg', opacity: 0.8 },
+    { left: '50%', top: '14%', size: '36px', rotate: '8deg', opacity: 0.74 },
+    { left: '58%', top: '10%', size: '44px', rotate: '-12deg', opacity: 0.79 },
+    { left: '66%', top: '64%', size: '60px', rotate: '4deg', opacity: 0.85 },
+    { left: '72%', top: '12%', size: '52px', rotate: '-9deg', opacity: 0.82 },
+    { left: '76%', top: '88%', size: '40px', rotate: '7deg', opacity: 0.78 },
+    { left: '88%', top: '34%', size: '36px', rotate: '-7deg', opacity: 0.73 },
+    { left: '96%', top: '72%', size: '48px', rotate: '5deg', opacity: 0.8 },
+    { left: '42%', top: '78%', size: '44px', rotate: '-11deg', opacity: 0.79 }
   ];
 </script>
 
@@ -49,77 +77,37 @@
           aria-hidden="true"
         >
           <div class="splash-row flex h-full flex-col overflow-hidden sm:flex-row">
-            <div class="splash-col bg-[#6b8a32]">
+            <div class="splash-col bg-[#afab23]">
               <div class="splash-blob text-splash-green">
                 TANK
               </div>
               <div class="splash-figure">
-                <svg viewBox="0 0 140 180" aria-hidden="true" focusable="false">
-                  <defs>
-                    <linearGradient id="tankShell" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stop-color="#2f4f16" />
-                      <stop offset="100%" stop-color="#3b6a24" />
-                    </linearGradient>
-                  </defs>
-                  <circle cx="70" cy="46" r="28" fill="#70c36b" />
-                  <ellipse cx="70" cy="110" rx="42" ry="52" fill="url(#tankShell)" />
-                  <ellipse cx="70" cy="114" rx="26" ry="32" fill="#79d37a" opacity="0.9" />
-                  <rect x="44" y="78" width="12" height="56" rx="6" fill="#70c36b" />
-                  <rect x="84" y="78" width="12" height="56" rx="6" fill="#70c36b" />
-                  <rect x="56" y="148" width="12" height="20" rx="6" fill="#4c8f32" />
-                  <rect x="72" y="148" width="12" height="20" rx="6" fill="#4c8f32" />
-                  <path d="M52 44 Q70 24 88 44" stroke="#4c8f32" stroke-width="6" fill="none" stroke-linecap="round" />
-                  <circle cx="58" cy="44" r="4" fill="#0c0c0c" />
-                  <circle cx="82" cy="44" r="4" fill="#0c0c0c" />
-                </svg>
+                <picture>
+                  <source srcset="/Tank.webp" type="image/webp" />
+                  <img src="/Tank.png" alt="Tank" class="splash-img" />
+                </picture>
               </div>
             </div>
-            <div class="splash-col bg-[#c7e9ff]">
+            <div class="splash-col bg-[#b8cee8]">
               <div class="splash-blob text-splash-blue">
                 CROSBY
               </div>
               <div class="splash-figure">
-                <svg viewBox="0 0 140 180" aria-hidden="true" focusable="false">
-                  <defs>
-                    <linearGradient id="crocBody" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stop-color="#66c4b8" />
-                      <stop offset="100%" stop-color="#4aa5a0" />
-                    </linearGradient>
-                  </defs>
-                  <path d="M46 52 Q70 18 96 46 L92 72 Q88 84 70 86 Q52 84 48 72 Z" fill="url(#crocBody)" />
-                  <circle cx="64" cy="50" r="5" fill="#0c0c0c" />
-                  <circle cx="84" cy="50" r="5" fill="#0c0c0c" />
-                  <path d="M60 62 Q70 68 80 62" stroke="#0c0c0c" stroke-width="4" fill="none" stroke-linecap="round" />
-                  <rect x="52" y="78" width="12" height="58" rx="6" fill="url(#crocBody)" />
-                  <rect x="76" y="78" width="12" height="58" rx="6" fill="url(#crocBody)" />
-                  <ellipse cx="70" cy="122" rx="36" ry="46" fill="#6ed1c7" />
-                  <rect x="60" y="148" width="12" height="22" rx="6" fill="#3c8d84" />
-                  <rect x="78" y="148" width="12" height="22" rx="6" fill="#3c8d84" />
-                </svg>
+                <picture>
+                  <source srcset="/Crosby.webp" type="image/webp" />
+                  <img src="/Crosby.png" alt="Crosby" class="splash-img" />
+                </picture>
               </div>
             </div>
-            <div class="splash-col bg-[#f09a58]">
+            <div class="splash-col bg-[#ef6f3c]">
               <div class="splash-blob text-splash-orange">
                 CARLA
               </div>
               <div class="splash-figure">
-                <svg viewBox="0 0 140 180" aria-hidden="true" focusable="false">
-                  <defs>
-                    <linearGradient id="capyBody" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stop-color="#c47a3b" />
-                      <stop offset="100%" stop-color="#a55a26" />
-                    </linearGradient>
-                  </defs>
-                  <ellipse cx="70" cy="50" rx="30" ry="26" fill="url(#capyBody)" />
-                  <circle cx="60" cy="48" r="5" fill="#0c0c0c" />
-                  <circle cx="82" cy="48" r="5" fill="#0c0c0c" />
-                  <path d="M58 60 Q70 68 82 60" stroke="#0c0c0c" stroke-width="4" fill="none" stroke-linecap="round" />
-                  <ellipse cx="70" cy="116" rx="40" ry="50" fill="#d48b52" />
-                  <rect x="50" y="82" width="12" height="60" rx="6" fill="url(#capyBody)" />
-                  <rect x="78" y="82" width="12" height="60" rx="6" fill="url(#capyBody)" />
-                  <rect x="58" y="150" width="12" height="22" rx="6" fill="#7c3f1d" />
-                  <rect x="76" y="150" width="12" height="22" rx="6" fill="#7c3f1d" />
-                </svg>
+                <picture>
+                  <source srcset="/Carla.webp" type="image/webp" />
+                  <img src="/Carla.png" alt="Carla" class="splash-img" />
+                </picture>
               </div>
             </div>
           </div>
@@ -137,29 +125,33 @@
           aria-label="Start the cosmic character quiz"
         >
           <div class="pointer-events-none absolute inset-0 opacity-90">
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,#104836_0%,transparent_34%),radial-gradient(circle_at_84%_12%,#0f4e3a_0%,transparent_36%)]"></div>
-            {#each stars as star}
-              <span
-                class="falling-star"
-                style={`left:${star.left}; --size:${star.size}; animation-duration:${star.duration}; animation-delay:${star.delay}; --rotate:${star.rotate};`}
-                aria-hidden="true"
-              >
-                <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
-                  <polygon
-                    points="50,6 62,38 95,38 68,57 78,91 50,72 22,91 32,57 5,38 38,38"
-                    fill="#ffc5d9"
-                    stroke="#ffc5d9"
-                    stroke-width="6"
-                    stroke-linejoin="round"
-                    stroke-linecap="round"
-                  />
-                </svg>
-              </span>
-            {/each}
+            <div
+              class="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,#104836_0%,transparent_34%),radial-gradient(circle_at_84%_12%,#0f4e3a_0%,transparent_36%)]"
+              aria-hidden="true"
+            ></div>
+            <div class="starfield" aria-hidden="true">
+              {#each starfield as star}
+                <span
+                  class="starfield-star"
+                  style={`left:${star.left}; top:${star.top}; width:calc(${star.size} * 0.9); height:calc(${star.size} * 0.9); transform: rotate(${star.rotate}); opacity:${star.opacity ?? 0.88};`}
+                >
+                  <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+                    <polygon
+                      points="50,6 62,38 95,38 68,57 78,91 50,72 22,91 32,57 5,38 38,38"
+                      fill="#ffc5d9"
+                      stroke="#ffc5d9"
+                      stroke-width="6"
+                      stroke-linejoin="round"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                </span>
+              {/each}
+            </div>
           </div>
 
-          <div class="relative z-10 flex flex-col items-center gap-8 text-center">
-            <div class="blob-card w-full max-w-5xl px-16 py-18 text-[#7fa66d] sm:px-20 sm:py-22 min-h-[560px] sm:min-h-[660px] flex items-center justify-center">
+          <div class="relative z-10 flex flex-col items-center text-center">
+            <div class="blob-card w-full max-w-3xl px-8 py-18 text-[#7fa66d] sm:px-12 sm:py-22 min-h-[560px] sm:min-h-[660px] flex items-center justify-center">
               <p class="blob-heading">
                 WHICH<br />
                 <span class="cosmic-row">
@@ -181,7 +173,7 @@
               </p>
             </div>
 
-            <button class="quiz-pill" type="button" onclick={startQuiz}>
+            <button class="quiz-pill intro-pill" type="button" onclick={startQuiz}>
               TAKE THE QUIZ
             </button>
           </div>
@@ -196,8 +188,6 @@
 </section>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Chewy&display=swap');
-
   .quiz-shell {
     width: clamp(320px, 70vw, 1200px);
     margin: 0 auto;
@@ -235,42 +225,21 @@
     min-height: 100%;
   }
 
-  .falling-star {
+  .starfield {
     position: absolute;
-    top: -20%;
-    font-size: var(--size, 20px);
-    animation: fall linear infinite;
-    opacity: 0.88;
-    width: var(--size, 20px);
-    height: var(--size, 20px);
+    inset: 0;
+    pointer-events: none;
   }
 
-  .falling-star svg {
+  .starfield-star {
+    position: absolute;
+    display: block;
+  }
+
+  .starfield-star svg {
     width: 100%;
     height: 100%;
     display: block;
-    filter: none;
-  }
-
-  .falling-star polygon {
-    fill: #d3b6d3;
-    stroke: #d3b6d3;
-  }
-
-  @keyframes fall {
-    0% {
-      top: -20%;
-      transform: rotate(var(--rotate, 0deg));
-      opacity: 0;
-    }
-    10% {
-      opacity: 1;
-    }
-    100% {
-      top: 105%;
-      transform: rotate(calc(var(--rotate, 0deg) + 60deg));
-      opacity: 0;
-    }
   }
 
   .blob-card {
@@ -284,9 +253,9 @@
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
     box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18), 0 0 0 6px rgba(12, 63, 48, 0.45);
-    font-family: 'Chewy', 'Fredoka', system-ui, sans-serif;
+    font-family: 'More Sugar', 'DynaPuff', 'Chewy', system-ui, sans-serif;
     transform-origin: center;
-    padding: clamp(18px, 4vw, 42px) clamp(20px, 6vw, 54px);
+    padding: clamp(18px, 4vw, 42px) clamp(24px, 6vw, 48px);
     min-height: clamp(360px, 74vw, 580px);
   }
 
@@ -304,12 +273,13 @@
     text-wrap: balance;
     position: relative;
     z-index: 1;
+    font-family: 'More Sugar', 'DynaPuff', 'Chewy', system-ui, sans-serif;
   }
 
   .cosmic-row {
     display: inline-flex;
     align-items: center;
-    gap: clamp(4px, 1.8vw, 12px);
+    gap: clamp(2px, 1vw, 8px);
     vertical-align: middle;
   }
 
@@ -318,8 +288,8 @@
     display: inline-flex;
     flex-direction: column;
     align-items: center;
-    gap: clamp(6px, 1.6vw, 12px);
-    margin: 0 clamp(8px, 3vw, 22px);
+    gap: clamp(8px, 1.8vw, 14px);
+    margin: 0 clamp(3px, 1.2vw, 8px);
     vertical-align: middle;
     pointer-events: none;
     z-index: 2;
@@ -328,8 +298,8 @@
 
   .whisker span {
     display: block;
-    width: clamp(28px, 16vw, 52px);
-    height: clamp(6px, 2.2vw, 10px);
+    width: clamp(36px, 18vw, 64px);
+    height: clamp(4px, 1.5vw, 6px);
     background: #ef6f3c;
     border-radius: 999px;
     transform-origin: center;
@@ -363,17 +333,17 @@
     }
 
     .cosmic-row {
-      gap: 4px;
+      gap: 2px;
     }
 
     .whisker {
-      gap: 4px;
-      margin: 0 10px;
+      gap: 8px;
+      margin: 0 4px;
     }
 
     .whisker span {
-      width: clamp(16px, 14vw, 32px);
-      height: clamp(4px, 2vw, 6px);
+      width: clamp(24px, 16vw, 40px);
+      height: clamp(3px, 1.5vw, 5px);
     }
   }
 
@@ -382,11 +352,11 @@
     border: none;
     background: #f5d255;
     color: #25533F;
-    --pill-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40' preserveAspectRatio='none'%3E%3Cpath fill='white' d='M20 2 C34 -2 62 0 78 4 C92 6 100 14 98 24 C96 34 86 40 74 38 C60 44 40 42 28 38 C16 40 6 34 4 24 C2 12 8 4 20 2 Z'/%3E%3C/svg%3E");
+    --pill-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 44' preserveAspectRatio='none'%3E%3Cpath fill='white' d='M8 7 C12 3 22 2 34 4 C48 1 72 1 86 4 C98 2 108 3 112 8 C117 12 118 19 116 24 C116 31 113 36 107 39 C101 42 92 42 84 40 C68 43 52 43 36 40 C27 43 18 42 12 38 C6 35 4 29 5 23 C3 18 4 12 8 7 Z'/%3E%3C/svg%3E");
     -webkit-mask-image: var(--pill-mask);
     mask-image: var(--pill-mask);
-    -webkit-mask-size: cover;
-    mask-size: cover;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
     padding: 16px 34px;
@@ -399,6 +369,10 @@
       0 16px 36px rgba(0, 0, 0, 0.22),
       0 0 0 4px rgba(12, 63, 48, 0.35);
     transition: transform 120ms ease, box-shadow 140ms ease;
+  }
+
+  .intro-pill {
+    margin-top: -20px;
   }
 
   .quiz-pill:hover {
@@ -415,40 +389,79 @@
       0 0 0 4px rgba(12, 63, 48, 0.35);
   }
 
+  @media (max-width: 480px) {
+    .intro-pill {
+      margin-top: -12px;
+    }
+  }
+
   :global(.quiz-chewy),
   :global(.quiz-chewy *) {
     font-family: 'Chewy', 'Fredoka', system-ui, sans-serif;
   }
 
-  .splash-blob {
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: clamp(22px, 5vw, 32px) clamp(34px, 9vw, 56px);
-    height: clamp(32%, 16vw, 46%);
-    min-height: 150px;
-    min-width: 220px;
+.splash-blob {
+  position: absolute;
+  top: -4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: clamp(48px, 12vw, 80px) clamp(72px, 16vw, 120px);
+  height: clamp(55%, 30vw, 75%);
+  min-height: 325px;
+    min-width: 575px;
     display: grid;
     place-items: center;
-    border: 3px solid rgba(140, 110, 20, 0.85);
     background: #f5d255;
-    --splash-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 120' preserveAspectRatio='none'%3E%3Cpath fill='white' d='M20 60 L36 16 L64 48 L84 10 L104 48 L132 16 L140 60 L132 94 L104 78 L80 110 L60 78 L32 96 Z'/%3E%3C/svg%3E");
+    --splash-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 180'%3E%3Cpath fill='white' d='M100 56 L107.8 70.7 L125 60.6 L121.2 75.9 L143.3 73 L129 84.8 L150 90 L129 95.2 L143.3 107 L121.2 104.1 L125 119.4 L107.8 109.3 L100 124 L92.2 109.3 L75 119.4 L78.8 104.1 L56.7 107 L71 95.2 L50 90 L71 84.8 L56.7 73 L78.8 75.9 L75 60.6 L92.2 70.7 Z'/%3E%3C/svg%3E");
     -webkit-mask-image: var(--splash-mask);
     mask-image: var(--splash-mask);
-    -webkit-mask-size: cover;
-    mask-size: cover;
+    -webkit-mask-size: contain;
+    mask-size: contain;
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
     font-family: 'Chewy', 'Fredoka', system-ui, sans-serif;
-    font-size: clamp(28px, 7vw, 52px);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    box-shadow:
-      0 14px 28px rgba(0, 0, 0, 0.28),
-      0 0 0 4px rgba(140, 110, 20, 0.4);
-    text-align: center;
+    font-size: clamp(26px, 6.5vw, 50px);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  line-height: 1.1;
+}
+
+@media (max-width: 640px) {
+  .quiz-stage--splash {
+    overflow: visible;
+    height: auto;
+    min-height: unset;
   }
+
+  .splash-row {
+    gap: 28px;
+  }
+
+  .splash-col {
+    padding-top: 80px;
+  }
+
+  .splash-blob {
+    top: -2rem;
+    transform: translateX(-50%) scale(1.0);
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    min-width: 0;
+    min-height: 280px;
+    padding: 36px 54px;
+    font-size: clamp(22px, 5.5vw, 32px);
+    height: auto;
+  }
+
+  .splash-figure {
+    margin-top: 10px;
+    max-width: 160px;
+  }
+}
 
   .splash-col {
     position: relative;
@@ -457,33 +470,34 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    padding: clamp(48px, 6vw, 84px) clamp(18px, 4vw, 24px);
-    gap: clamp(18px, 4vw, 26px);
+    padding: clamp(20px, 3vw, 36px) clamp(8px, 2vw, 12px);
+    gap: clamp(12px, 2vw, 18px);
   }
 
   .splash-figure {
-    max-width: 180px;
-    width: 72%;
+    max-width: 320px;
+    width: 95%;
     margin-top: auto;
-    padding-bottom: clamp(18px, 3vw, 32px);
+    padding-bottom: clamp(90px, 10vw, 104px);
   }
 
-  .splash-figure svg {
+  .splash-img {
     width: 100%;
-    height: auto;
+    height: clamp(240px, 32vw, 320px);
     display: block;
+    object-fit: contain;
   }
 
   .text-splash-green {
-    color: #2f4f16;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.28);
+    color: #afab23;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.24);
   }
   .text-splash-blue {
-    color: #2f7fd9;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
+    color: #b8cee8;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.28);
   }
   .text-splash-orange {
-    color: #a0400c;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    color: #ef6f3c;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.32);
   }
 </style>
