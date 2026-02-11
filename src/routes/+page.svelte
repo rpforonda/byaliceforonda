@@ -105,7 +105,7 @@
       ],
       image: resolve("/Crosby.png"),
       imageWebp: resolve("/Crosby.webp"),
-      accent: "#ffd28d",
+      accent: "#b8cee8",
     },
     {
       name: "Carla the Capybara",
@@ -120,7 +120,7 @@
       ],
       image: resolve("/Carla.png"),
       imageWebp: resolve("/Carla.webp"),
-      accent: "#ffb4c6",
+      accent: "#ef6f3c",
     },
     {
       name: "Tank the Turtle",
@@ -135,11 +135,18 @@
       ],
       image: resolve("/Tank.png"),
       imageWebp: resolve("/Tank.webp"),
-      accent: "#8fd3ff",
+      accent: "#afab23",
     },
   ];
 
   let activeCharacter = $state(0);
+
+  // Check if modal has been shown in this session
+  const hasSeenWelcome = typeof window !== 'undefined'
+    ? sessionStorage.getItem('welcomeModalShown') === 'true'
+    : false;
+
+  let showWelcomeModal = $state(!hasSeenWelcome);
 
   const prevCharacter = () => {
     activeCharacter =
@@ -149,90 +156,131 @@
   const nextCharacter = () => {
     activeCharacter = (activeCharacter + 1) % characters.length;
   };
+
+  const closeWelcomeModal = () => {
+    showWelcomeModal = false;
+    // Mark as shown in this session
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('welcomeModalShown', 'true');
+    }
+  };
 </script>
+
+<!-- Welcome Modal -->
+{#if showWelcomeModal}
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md px-4"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="welcome-title"
+  >
+    <div
+      class="relative max-w-2xl w-full rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/20"
+      style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);"
+    >
+      <button
+        type="button"
+        onclick={closeWelcomeModal}
+        class="absolute top-4 right-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/60 text-gray-700 shadow-lg transition hover:bg-white/80 hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-600 focus-visible:ring-offset-2"
+        aria-label="Close welcome message"
+        style="backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="h-5 w-5"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <p class="text-[500%] font-['Great_Vibes',_cursive] text-[#d2234c]" id="welcome-title">
+        Welcome
+      </p>
+      <h1
+        class="mt-2 text-4xl font-semibold tracking-tight text-[#1b1b1d] sm:text-5xl"
+      >
+        Stories that sparkle with courage and heart.
+      </h1>
+      <p class="mt-6 max-w-xl text-lg leading-relaxed text-gray-700">
+        Step into a world of imagination where every page whispers
+        encouragement and every character finds their voice. Alice Foronda
+        crafts magical adventures that help young readers feel seen, brave,
+        and brilliantly themselves.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-4">
+        <a
+          class="inline-flex items-center rounded-full bg-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg transition hover:bg-[#b01d3c]"
+          href={resolve("/book")}
+          onclick={closeWelcomeModal}
+        >
+          Learn More
+        </a>
+        <a
+          class="inline-flex items-center rounded-full border border-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#d2234c] transition hover:bg-[#ffe0ec]"
+          href={resolve("/quiz")}
+          onclick={closeWelcomeModal}
+        >
+          Take the Quiz
+        </a>
+      </div>
+    </div>
+  </div>
+{/if}
 
 <section
   class="relative w-full overflow-hidden"
-  style={`min-height: clamp(26rem, 50vw, 38rem); background-image: url('${headerImage}'); background-size: cover; background-position: center;`}
+  style={`min-height: clamp(20rem, 40vw, 30rem); background-image: url('${headerImage}'); background-size: 100% auto; background-position: center;`}
 >
   <picture style="display: none;">
     <source srcset={resolve("/alHeader.webp")} type="image/webp" />
   </picture>
-  <div class="relative z-10 mx-auto max-w-6xl px-6 pb-20 pt-24 sm:pb-28">
-    <div class="grid items-center gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:gap-12">
-      <div class="max-w-2xl rounded-3xl p-6 sm:p-8" style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(2px);">
-        <p class="text-[500%] font-['Great_Vibes',_cursive] text-[#d2234c]">
-          Welcome
-        </p>
-        <h1
-          class="mt-2 text-4xl font-semibold tracking-tight text-[#1b1b1d] sm:text-5xl"
-        >  
-          Stories that sparkle with courage and heart.
-        </h1>
-        <p class="mt-6 max-w-xl text-lg leading-relaxed text-gray-700">
-          Step into a world of imagination where every page whispers
-          encouragement and every character finds their voice. Alice Foronda
-          crafts magical adventures that help young readers feel seen, brave,
-          and brilliantly themselves.
-        </p>
-        <div class="mt-8 flex flex-wrap gap-4">
-          <a
-            class="inline-flex items-center rounded-full bg-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg transition hover:bg-[#d2234c]-dark"
-            href={resolve("/book")}
+  <div class="relative z-10 mx-auto max-w-6xl px-6 py-20 flex items-center justify-center">
+    <div class="relative inline-flex items-center justify-center">
+      <picture>
+        <source srcset={resolve("/alice_logopink.webp")} type="image/webp" />
+        <img
+          src={resolve("/alice_logopink.jpg")}
+          alt="Alice Foronda smiling, author of Crosby's Cosmic Adventure"
+          class="h-40 w-40 rounded-full shadow-lg sm:h-48 sm:w-48 lg:h-56 lg:w-56"
+          loading="lazy"
+        />
+      </picture>
+      <svg
+        class="pointer-events-none absolute inset-[-15%] h-[130%] w-[130%] text-[#d2234c]"
+        viewBox="0 0 200 200"
+        aria-hidden="true"
+      >
+        <defs>
+          <path
+            id="logoCirclePath"
+            d="M100,100 m -86,0 a 86,86 0 1,1 172,0 a 86,86 0 1,1 -172,0"
+          />
+        </defs>
+        <text
+          fill="currentColor"
+          font-size="clamp(10px, 2.2vw, 14px)"
+          font-weight="700"
+          letter-spacing="clamp(1.5px, 0.6vw, 3.5px)"
+          font-family="Poppins, 'Helvetica Neue', Arial, sans-serif"
+        >
+          <textPath
+            href="#logoCirclePath"
+            startOffset="50%"
+            text-anchor="middle"
+            textLength="540"
+            lengthAdjust="spacingAndGlyphs"
           >
-            Learn More
-          </a>
-          <a
-            class="inline-flex items-center rounded-full border border-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#d2234c] transition hover:bg-[#ffe0ec]"
-            href={resolve("/quiz")}
-          >
-            Take the Quiz
-          </a>
-        </div>
-      </div>
-      <div class="flex items-center justify-end">
-        <div class="relative inline-flex items-center justify-center">
-          <picture>
-            <source srcset={resolve("/alice_logopink.webp")} type="image/webp" />
-            <img
-              src={resolve("/alice_logopink.jpg")}
-              alt="Alice Foronda smiling, author of Crosby's Cosmic Adventure"
-              class="h-40 w-40 rounded-full shadow-lg sm:h-48 sm:w-48 lg:h-56 lg:w-56"
-              loading="lazy"
-            />
-          </picture>
-          <svg
-            class="pointer-events-none absolute inset-[-15%] h-[130%] w-[130%] text-[#d2234c]"
-            viewBox="0 0 200 200"
-            aria-hidden="true"
-          >
-            <defs>
-              <path
-                id="logoCirclePath"
-                d="M100,100 m -86,0 a 86,86 0 1,1 172,0 a 86,86 0 1,1 -172,0"
-              />
-            </defs>
-            <text
-              fill="currentColor"
-              font-size="clamp(10px, 2.2vw, 14px)"
-              font-weight="700"
-              letter-spacing="clamp(1.5px, 0.6vw, 3.5px)"
-              font-family="Poppins, 'Helvetica Neue', Arial, sans-serif"
-            >
-              <textPath
-                href="#logoCirclePath"
-                startOffset="50%"
-                text-anchor="middle"
-                textLength="540"
-                lengthAdjust="spacingAndGlyphs"
-              >
-                • SNACK GIVER • CHILDREN'S BOOK AUTHOR • LOVER • MOM • KIMCHI
-                STEALER
-              </textPath>
-            </text>
-          </svg>
-        </div>
-      </div>
+            • SNACK GIVER • CHILDREN'S BOOK AUTHOR • LOVER • MOM • KIMCHI
+            STEALER
+          </textPath>
+        </text>
+      </svg>
     </div>
   </div>
   <div class="w-full h-32 relative">
@@ -337,7 +385,7 @@
       aria-live="polite"
     >
       <div
-        class="overflow-hidden rounded-full border-8 bg-white/10 p-2 shadow-[0_15px_40px_rgba(0,0,0,0.25)] w-fit mx-auto"
+        class="character-frame overflow-hidden rounded-full border-8 bg-white/10 p-2 shadow-[0_15px_40px_rgba(0,0,0,0.25)] mx-auto flex items-center justify-center"
         style={`border-color:${characters[activeCharacter].accent}`}
       >
         <picture>
@@ -345,11 +393,77 @@
           <img
             alt={`Illustration of ${characters[activeCharacter].name}`}
             src={characters[activeCharacter].image}
-            class="rounded-full object-contain w-72 h-72 sm:w-80 sm:h-80 lg:w-96 lg:h-96"
+            class={`rounded-full object-contain character-img ${activeCharacter === 0 ? 'character-img-crosby' : ''} ${activeCharacter === 2 ? 'character-img-tank' : ''}`}
             loading="lazy"
           />
         </picture>
       </div>
+
+      <style>
+        .character-frame {
+          width: 345px;
+          height: 345px;
+        }
+
+        .character-img {
+          width: 345px;
+          height: 345px;
+        }
+
+        .character-img-crosby {
+          width: 320px;
+          height: 320px;
+        }
+
+        .character-img-tank {
+          width: 310px;
+          height: 310px;
+        }
+
+        @media (min-width: 640px) {
+          .character-frame {
+            width: 385px;
+            height: 385px;
+          }
+
+          .character-img {
+            width: 385px;
+            height: 385px;
+          }
+
+          .character-img-crosby {
+            width: 360px;
+            height: 360px;
+          }
+
+          .character-img-tank {
+            width: 345px;
+            height: 345px;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .character-frame {
+            width: 460px;
+            height: 460px;
+          }
+
+          .character-img {
+            width: 460px;
+            height: 460px;
+          }
+
+          .character-img-crosby {
+            width: 430px;
+            height: 430px;
+          }
+
+          .character-img-tank {
+            width: 410px;
+            height: 410px;
+          }
+        }
+      </style>
       <div class="space-y-6">
         <p
           class="text-lg leading-relaxed text-[#ffe8f0] transition-all duration-300"
