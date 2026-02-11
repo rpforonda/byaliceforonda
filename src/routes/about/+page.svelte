@@ -1,3 +1,7 @@
+<script>
+  import { resolve } from '$app/paths';
+</script>
+
 <section class="mx-auto max-w-5xl px-6 py-16">
   <div class="grid gap-10 items-start lg:grid-cols-[1.2fr_0.8fr]">
     <div>
@@ -22,9 +26,9 @@
     </div>
     <div class="flex justify-end">
       <picture>
-        <source srcset="/aboutMe.webp" type="image/webp" />
+        <source srcset={resolve("/aboutMe.webp")} type="image/webp" />
         <img
-          src="/aboutMe_opt.jpg"
+          src={resolve("/aboutMe_opt.jpg")}
           alt="Alice Foronda"
           class="max-w-xs rounded-2xl shadow-lg"
         />

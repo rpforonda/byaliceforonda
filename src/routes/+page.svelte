@@ -3,6 +3,7 @@
   const bookImage =
     "https://images.unsplash.com/photo-1529651737248-dad5e287768e?auto=format&fit=crop&w=800&q=80";
   const authorImage = resolve("/alice_logopink.jpg");
+  const headerImage = resolve("/alHeader_opt.jpg");
   const characterStars = [
     {
       left: "6%",
@@ -152,7 +153,7 @@
 
 <section
   class="relative w-full overflow-hidden"
-  style="min-height: clamp(26rem, 50vw, 38rem); background-image: url('/alHeader_opt.jpg'); background-size: cover; background-position: center;"
+  style={`min-height: clamp(26rem, 50vw, 38rem); background-image: url('${headerImage}'); background-size: cover; background-position: center;`}
 >
   <picture style="display: none;">
     <source srcset={resolve("/alHeader.webp")} type="image/webp" />

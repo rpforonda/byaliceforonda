@@ -109,14 +109,14 @@
     '#aacc96'  // slide 8
   ];
   const questionImages = [
-    "/marshmellowPlanet.png", // marshmallow planet
-    "/apples.png", // apples
-    "/meteor.png", // meteor
-    "/stars.png", // stars
-    "/spacecat.png", // spacecat
-    "/cloud.png", // cloud
-    "/ufo.png", // ufo
-    "/rocket.png" // rocket
+    resolve("/marshmellowPlanet.png"), // marshmallow planet
+    resolve("/apples.png"), // apples
+    resolve("/meteor.png"), // meteor
+    resolve("/stars.png"), // stars
+    resolve("/spacecat.png"), // spacecat
+    resolve("/cloud.png"), // cloud
+    resolve("/ufo.png"), // ufo
+    resolve("/rocket.png") // rocket
   ];
   let questionBg = $state(questionColors[0] ?? '#ff7bac');
   let toast = $state(null); // { message: string, accent?: string } | null

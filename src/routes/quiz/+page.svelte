@@ -1,4 +1,5 @@
 <script>
+  import { resolve } from '$app/paths';
   import Quiz from '$lib/components/Quiz.svelte';
 
   let showIntro = $state(true);
@@ -83,8 +84,8 @@
               </div>
               <div class="splash-figure">
                 <picture>
-                  <source srcset="/Tank.webp" type="image/webp" />
-                  <img src="/Tank.png" alt="Tank" class="splash-img" />
+                  <source srcset={resolve("/Tank.webp")} type="image/webp" />
+                  <img src={resolve("/Tank.png")} alt="Tank" class="splash-img" />
                 </picture>
               </div>
             </div>
@@ -94,8 +95,8 @@
               </div>
               <div class="splash-figure">
                 <picture>
-                  <source srcset="/Crosby.webp" type="image/webp" />
-                  <img src="/Crosby.png" alt="Crosby" class="splash-img" />
+                  <source srcset={resolve("/Crosby.webp")} type="image/webp" />
+                  <img src={resolve("/Crosby.png")} alt="Crosby" class="splash-img" />
                 </picture>
               </div>
             </div>
@@ -105,8 +106,8 @@
               </div>
               <div class="splash-figure">
                 <picture>
-                  <source srcset="/Carla.webp" type="image/webp" />
-                  <img src="/Carla.png" alt="Carla" class="splash-img" />
+                  <source srcset={resolve("/Carla.webp")} type="image/webp" />
+                  <img src={resolve("/Carla.png")} alt="Carla" class="splash-img" />
                 </picture>
               </div>
             </div>
