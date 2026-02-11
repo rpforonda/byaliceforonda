@@ -196,7 +196,7 @@
             <source srcset={resolve("/alice_logopink.webp")} type="image/webp" />
             <img
               src={resolve("/alice_logopink.jpg")}
-              alt="Alice Foronda, children's book author"
+              alt="Alice Foronda smiling, author of Crosby's Cosmic Adventure"
               class="h-40 w-40 rounded-full shadow-lg sm:h-48 sm:w-48 lg:h-56 lg:w-56"
               loading="lazy"
             />
@@ -261,7 +261,7 @@
     <div class="grid items-center gap-10 lg:grid-cols-[320px_1fr] lg:gap-16">
       <div class="relative mx-auto max-w-sm rounded-3xl bg-white p-4 shadow-xl">
         <img
-          alt="Book cover"
+          alt="Crosby's Cosmic Adventure book cover featuring a crocodile in space"
           src={bookImage}
           class="h-full w-full rounded-2xl object-cover"
         />
@@ -328,7 +328,7 @@
       >
         {characters[activeCharacter].name}
       </h2>
-      <p class="mt-2 text-base text-[#e6f0ff]/80">
+      <p class="mt-2 text-base text-[#b8d4ff]">
         {characters[activeCharacter].role}
       </p>
     </div>
@@ -393,7 +393,8 @@
           </div>
           <div
             class="flex flex-wrap justify-center gap-2 sm:justify-start"
-            aria-label="Character selector"
+            role="group"
+            aria-label="Choose a character to view"
           >
             {#each characters as character, index}
               <button
@@ -404,6 +405,8 @@
                 }`}
                 type="button"
                 onclick={() => (activeCharacter = index)}
+                aria-pressed={index === activeCharacter}
+                aria-label={`View ${character.name}`}
               >
                 {character.name.split(" ")[0]}
               </button>

@@ -187,10 +187,14 @@
     showCard = true;
     activeSlide = questions.length - 1;
 
-    // smooth scroll to result
+    // smooth scroll to result and focus on it
     queueMicrotask(() => {
       const el = document.getElementById('resultCard');
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Focus on the result card for screen readers
+        el.focus();
+      }
     });
   }
 
@@ -234,6 +238,12 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
   }
 
   function handleKey(e) {
+    // Handle ESC key to close result card
+    if (e.key === 'Escape' && showCard) {
+      closeResult();
+      return;
+    }
+
     if (e.key !== 'Enter') return;
 
     e.preventDefault();
@@ -298,12 +308,12 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
       aria-live="polite"
     >
       <div
-        class="flex max-w-[360px] flex-1 items-center justify-center gap-0 rounded-2xl border px-4 py-3 text-sm shadow-[0_12px_28px_rgba(0,0,0,0.25)] backdrop-blur text-center"
-        style={`background:linear-gradient(135deg, ${(toast.accent ?? currentTheme.accent)}22, #fffffff0); border-color:${(toast.accent ?? currentTheme.accent)}66; box-shadow:0 12px 28px rgba(0,0,0,0.25), 0 0 0 1px ${(toast.accent ?? currentTheme.accent)}33; color:#0b1a2d;`}
+        class="flex max-w-90 flex-1 items-center justify-center gap-0 rounded-2xl border px-4 py-3 text-sm shadow-[0_12px_28px_rgba(0,0,0,0.25)] backdrop-blur text-center"
+        style={`background:linear-gradient(135deg, ${(toast.accent ?? currentTheme.accent)}22, #fffffff5); border-color:${(toast.accent ?? currentTheme.accent)}88; box-shadow:0 12px 28px rgba(0,0,0,0.25), 0 0 0 1px ${(toast.accent ?? currentTheme.accent)}44; color:#0b1a2d;`}
       >
         <div class="w-full">
-          <div class="font-semibold text-[16px] text-[#0b1a2d]">Heads up</div>
-          <div class="mt-1 text-[13px] leading-relaxed text-[#0f2237]">
+          <div class="font-bold text-[16px] text-[#0b1a2d]">Heads up</div>
+          <div class="mt-1 text-[14px] leading-relaxed text-[#1b1b1d] font-semibold">
             {toast.message}
           </div>
         </div>
@@ -316,9 +326,11 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
       <div class="result-overlay" onclick={closeResult}>
         <div
           id="resultCard"
-          role="region"
-          aria-live="polite"
-          class="result-card rounded-[24px] border border-white/5 p-6 text-[#0b1a2d] shadow-[0_20px_40px_rgba(0,0,0,0.4)]"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="result-title"
+          tabindex="-1"
+          class="result-card rounded-3xl border border-white/5 p-6 text-[#0b1a2d] shadow-[0_20px_40px_rgba(0,0,0,0.4)]"
           style={`--result-base:${solidBackgroundForResult(finalKey)}; --result-oval:#faed68; background:${backgroundForResult(finalKey)}; background-color:${solidBackgroundForResult(finalKey)}; opacity:1; backdrop-filter:none; -webkit-backdrop-filter:none; box-shadow:0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px ${(accentForResult(finalKey))}55; border-color:${(accentForResult(finalKey))}55;`}
           onclick={(event) => event.stopPropagation()}
         >
@@ -337,7 +349,7 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
                 <img class="result-img combo-img" src={characterImages.carla} alt={results.carla.title} />
               </picture>
               <div class="combo-center-oval">
-                <h2 class="result-title result-title--combo" aria-label="You are all 3">
+                <h2 id="result-title" class="result-title result-title--combo" aria-label="You are all 3">
                   <span class="result-title-youare" style="font-family:'Times New Roman', Times, serif;">
                     <span style="font-family:'Times New Roman', Times, serif;">YOU</span>
                     <span style="font-family:'Times New Roman', Times, serif;">ARE</span>
@@ -361,7 +373,7 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
               </div>
 
               <div class="result-text">
-                <h2 class="result-title" aria-label={`You are ${results[finalKey].title}`}>
+                <h2 id="result-title" class="result-title" aria-label={`You are ${results[finalKey].title}`}>
                   <span class="result-title-youare" style="font-family:'Times New Roman', Times, serif;">
                     <span style="font-family:'Times New Roman', Times, serif;">YOU</span>
                     <span style="font-family:'Times New Roman', Times, serif;">ARE</span>
@@ -384,17 +396,19 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
             <button
               type="button"
               onclick={resetQuiz}
-              class="result-btn result-btn--again rounded-xl border px-4 py-2 text-[14px] font-bold"
+              class="result-btn result-btn--again rounded-xl px-4 py-2 text-[14px] font-bold"
+              aria-label="Retake the character quiz"
             >
-              Take Again
+              Retake Quiz
             </button>
 
             <button
               type="button"
               onclick={shareResult}
-              class="result-btn result-btn--share rounded-xl border px-3 py-2 text-[14px] font-semibold"
+              class="result-btn result-btn--share rounded-xl px-3 py-2 text-[14px] font-semibold"
+              aria-label="Share your quiz result"
             >
-              Share
+              Share Result
             </button>
           </div>
         </div>
@@ -407,13 +421,21 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
           style={`--question-bg:${questionBg}; background:${questionBg}; background-color:${questionBg};`}
         >
           <div class="question-content">
+            <!-- Progress indicator -->
+            <div class="question-progress" aria-label={`Question ${activeSlide + 1} of ${questions.length}`}>
+              <span class="sr-only">Question {activeSlide + 1} of {questions.length}</span>
+              <span aria-hidden="true" class="progress-text">
+                {activeSlide + 1} / {questions.length}
+              </span>
+            </div>
+
             <h2 class={`question-text text-2xl font-semibold leading-snug ${isFirstSlide ? 'first-slide-text first-slide-question' : ''}`}>
               {questions[activeSlide].q}
             </h2>
             <img
               class="question-illustration"
               src={questionImages[activeSlide]}
-              alt="Illustration for this question"
+              alt="Decorative illustration for question {activeSlide + 1}"
               loading="lazy"
             />
           </div>
@@ -496,8 +518,14 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
 
   .first-slide-question {
     text-transform: uppercase;
-    font-size: clamp(32px, 6vw, 52px);
+    font-size: clamp(24px, 6vw, 52px);
     line-height: 1.1;
+  }
+
+  @media (max-width: 640px) {
+    .first-slide-question {
+      font-size: clamp(20px, 5.5vw, 32px);
+    }
   }
 
   .quiz-frame {
@@ -514,7 +542,13 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
     flex-direction: column;
     gap: 24px;
     min-height: clamp(520px, 80vh, 760px);
-    height: clamp(520px, 80vh, 760px);
+    height: auto;
+  }
+
+  @media (min-width: 641px) {
+    .quiz-body {
+      height: clamp(520px, 80vh, 760px);
+    }
   }
 
   .slide-two-col {
@@ -529,6 +563,7 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
   }
 
   .question-panel {
+    position: relative;
     background: var(--question-bg, #ff7bac) !important;
     padding: clamp(16px, 3vw, 26px);
     display: flex;
@@ -546,12 +581,33 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
     margin: 0 auto;
   }
 
+  .question-progress {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(255, 255, 255, 0.95);
+    color: #1b1b1d;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+  }
+
+  .progress-text {
+    font-family: 'Nunito', sans-serif;
+    letter-spacing: 0.02em;
+  }
+
   .question-content {
     display: grid;
     gap: clamp(12px, 2vw, 16px);
     justify-items: center;
     align-items: center;
     text-align: center;
+    width: 100%;
+    max-width: 100%;
   }
 
   .question-illustration {
@@ -576,12 +632,19 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
     .slide-two-col {
       grid-template-columns: 1fr;
       min-height: unset;
-      gap: 12px;
+      height: auto;
+      gap: 0;
     }
 
     .question-panel {
       border-radius: 18px 18px 0 0;
       padding: 18px 16px;
+      min-height: 240px;
+    }
+
+    .question-progress {
+      top: 10px;
+      left: 10px;
     }
 
     .answer-panel {
@@ -757,7 +820,7 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
   }
 
   .result-desc-shell {
-    margin-top: 16px;
+    margin-top: 4px;
     width: 100%;
     max-width: 100%;
     align-self: stretch;
@@ -802,9 +865,11 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
   }
 
   .result-btn {
-    border-width: 2px;
+    border: none;
     box-shadow: 0 10px 22px rgba(0, 0, 0, 0.2);
     transition: transform 140ms ease, box-shadow 160ms ease, filter 140ms ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
 
   .result-btn:hover {
@@ -824,15 +889,13 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
   }
 
   .result-btn--again {
-    background: #faed68;
+    background: rgba(250, 237, 104, 0.85);
     color: #0b1a2d;
-    border-color: #c9b94f;
   }
 
   .result-btn--share {
-    background: #25533f;
+    background: rgba(255, 111, 145, 0.9);
     color: #ffffff;
-    border-color: #17372a;
   }
 
   .combo-stage {
@@ -1025,20 +1088,62 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
   @media (max-width: 640px) {
     .quiz-body {
       min-height: auto;
+      height: auto;
+      gap: 16px;
+    }
+
+    .question-panel {
+      min-height: 280px;
+      padding: 16px 12px;
+    }
+
+    .question-progress {
+      top: 8px;
+      left: 8px;
+      padding: 4px 10px;
+      font-size: 11px;
     }
 
     .question-text {
-      font-size: clamp(18px, 4vw, 24px);
+      font-size: clamp(16px, 4.5vw, 22px);
+      line-height: 1.2;
+    }
+
+    .question-illustration {
+      width: clamp(120px, 40vw, 180px);
+      height: clamp(90px, 30vw, 140px);
+    }
+
+    .answer-panel {
+      padding: 14px 12px 16px;
+      gap: 10px;
+    }
+
+    .answer-card {
+      padding: 12px 16px !important;
+    }
+
+    .answer-text {
+      font-size: clamp(15px, 4vw, 20px);
     }
 
     .nav-actions {
       flex-direction: column;
       align-items: stretch;
+      gap: 8px;
+      margin-top: 8px;
     }
 
     .nav-cloud {
       width: 100%;
       text-align: center;
+      padding: 12px 18px;
+      font-size: 14px;
+    }
+
+    .slide-footer {
+      padding: 12px 4px 4px;
+      font-size: 11px;
     }
   }
 

@@ -1,6 +1,7 @@
 <script>
   import "../app.css";
   import { resolve } from "$app/paths";
+  import { page } from "$app/stores";
 
   const site = {
     title: "Alice Foronda - Official Site",
@@ -24,6 +25,15 @@
   let menuButtonRef = $state(null);
   let menuPanelRef = $state(null);
 
+  // Generate page title based on route
+  const pageTitle = $derived(() => {
+    const path = $page.url.pathname;
+    if (path === resolve("/about")) return "About - Alice Foronda";
+    if (path === resolve("/book")) return "Books - Alice Foronda";
+    if (path === resolve("/quiz")) return "Character Quiz - Alice Foronda";
+    return "Alice Foronda - Children's Book Author";
+  });
+
   function toggleMenu() {
     menuOpen = !menuOpen;
   }
@@ -36,14 +46,21 @@
     }
     menuOpen = false;
   }
+
+  function handleKeyDown(event) {
+    if (event.key === "Escape" && menuOpen) {
+      menuOpen = false;
+      menuButtonRef?.focus();
+    }
+  }
 </script>
 
-<svelte:window onclick={handleWindowClick} />
+<svelte:window onclick={handleWindowClick} onkeydown={handleKeyDown} />
 
 <svelte:head>
-  <title>{site.title}</title>
+  <title>{pageTitle()}</title>
   <meta name="description" content={site.desc} />
-  <meta property="og:title" content={site.title} />
+  <meta property="og:title" content={pageTitle()} />
   <meta property="og:description" content={site.desc} />
   <meta property="og:type" content="website" />
   <meta property="og:image" content={site.image} />
@@ -54,6 +71,14 @@
   class="min-h-screen bg-pink-50 text-gray-900 flex flex-col"
   style="font-family: 'Nunito', sans-serif;"
 >
+  <!-- Skip to main content link for keyboard users -->
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:left-4 focus:top-4 focus:rounded-md focus:bg-rose-600 focus:px-4 focus:py-2 focus:text-white focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-rose-600 focus:ring-offset-2"
+  >
+    Skip to main content
+  </a>
+
   <header class="relative z-40">
     <div class="bg-white">
       <div
@@ -106,14 +131,17 @@
               type="button"
               onclick={toggleMenu}
               aria-expanded={menuOpen ? "true" : "false"}
-              aria-label="Toggle navigation"
+              aria-controls="mobile-menu"
+              aria-label="Toggle navigation menu"
               bind:this={menuButtonRef}
             >
               Menu
             </button>
             {#if menuOpen}
               <div
+                id="mobile-menu"
                 class="absolute right-0 mt-2 w-44 rounded-md border border-pink-200 bg-white py-2 text-gray-800 shadow-xl z-50"
+                role="menu"
                 bind:this={menuPanelRef}
               >
                 {#each navItems as item}
@@ -150,7 +178,7 @@
     </div>
   </header>
 
-  <main class="flex flex-1 items-center justify-center flex-col gap-0 overflow-x-hidden">
+  <main id="main-content" class="flex flex-1 items-center justify-center flex-col gap-0 overflow-x-hidden">
     {@render children?.()}
   </main>
 
@@ -165,7 +193,7 @@
             <source srcset={resolve("/alice_logopink.webp")} type="image/webp" />
             <img
               src={resolve("/alice_logopink.jpg")}
-              alt="Alice Foronda emblem"
+              alt="Alice Foronda logo featuring the author"
               class="h-20 w-20 rounded-full object-cover"
             />
           </picture>

@@ -68,7 +68,7 @@
   ];
 </script>
 
-<section class="px-6 py-16 text-center">
+<section class="px-4 py-12 text-center sm:px-6 sm:py-16">
   <div class="quiz-chewy mt-10 flex w-full justify-center">
     <div class="quiz-shell w-full">
       {#if showSplash}
@@ -194,17 +194,37 @@
     margin: 0 auto;
   }
 
+  @media (max-width: 640px) {
+    .quiz-shell {
+      width: 100%;
+      max-width: 100%;
+    }
+  }
+
   .quiz-shell > * {
     width: 100%;
   }
 
   .quiz-stage {
     min-height: clamp(520px, 80vh, 760px);
-    height: clamp(520px, 80vh, 760px);
+    height: auto;
     width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
+  }
+
+  @media (min-width: 641px) {
+    .quiz-stage {
+      height: clamp(520px, 80vh, 760px);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .quiz-stage {
+      min-height: auto;
+      padding: 16px 0;
+    }
   }
 
   .quiz-stage--quiz {
