@@ -429,21 +429,21 @@
   padding: clamp(48px, 12vw, 80px) clamp(72px, 16vw, 120px);
   height: clamp(55%, 30vw, 75%);
   min-height: 325px;
-    min-width: 575px;
-    display: grid;
-    place-items: center;
-    background: #f5d255;
-    --splash-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 180'%3E%3Cpath fill='white' d='M100 56 L107.8 70.7 L125 60.6 L121.2 75.9 L143.3 73 L129 84.8 L150 90 L129 95.2 L143.3 107 L121.2 104.1 L125 119.4 L107.8 109.3 L100 124 L92.2 109.3 L75 119.4 L78.8 104.1 L56.7 107 L71 95.2 L50 90 L71 84.8 L56.7 73 L78.8 75.9 L75 60.6 L92.2 70.7 Z'/%3E%3C/svg%3E");
-    -webkit-mask-image: var(--splash-mask);
-    mask-image: var(--splash-mask);
-    -webkit-mask-size: contain;
-    mask-size: contain;
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    -webkit-mask-position: center;
-    mask-position: center;
-    font-family: 'Chewy', 'Fredoka', system-ui, sans-serif;
-    font-size: clamp(26px, 6.5vw, 50px);
+  min-width: 575px;
+  display: grid;
+  place-items: center;
+  background: #f5d255;
+  --splash-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 180'%3E%3Cpath fill='white' d='M100 56 L107.8 70.7 L125 60.6 L121.2 75.9 L143.3 73 L129 84.8 L150 90 L129 95.2 L143.3 107 L121.2 104.1 L125 119.4 L107.8 109.3 L100 124 L92.2 109.3 L75 119.4 L78.8 104.1 L56.7 107 L71 95.2 L50 90 L71 84.8 L56.7 73 L78.8 75.9 L75 60.6 L92.2 70.7 Z'/%3E%3C/svg%3E");
+  -webkit-mask-image: var(--splash-mask);
+  mask-image: var(--splash-mask);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  font-family: 'Chewy', 'Fredoka', system-ui, sans-serif;
+  font-size: clamp(26px, 6.5vw, 50px);
   letter-spacing: 0.04em;
   text-transform: uppercase;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
@@ -455,32 +455,48 @@
   .quiz-stage--splash {
     overflow: visible;
     height: auto;
-    min-height: unset;
+    min-height: 440px;
+    border-radius: 24px;
   }
 
   .splash-row {
-    gap: 28px;
+    gap: 16px;
+    padding: 12px 0;
   }
 
   .splash-col {
-    padding-top: 80px;
+    padding: 12px 12px 24px;
+    gap: 8px;
   }
 
   .splash-blob {
-    top: -2rem;
-    transform: translateX(-50%) scale(1.0);
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: scale(0.85);
     -webkit-mask-size: contain;
     mask-size: contain;
     min-width: 0;
-    min-height: 280px;
-    padding: 36px 54px;
-    font-size: clamp(22px, 5.5vw, 32px);
+    min-height: 240px;
+    width: 240px;
+    padding: 32px 48px;
+    font-size: clamp(20px, 5vw, 28px);
     height: auto;
+    margin-bottom: 8px;
   }
 
   .splash-figure {
-    margin-top: 10px;
-    max-width: 160px;
+    margin-top: 8px;
+    max-width: 140px;
+  }
+
+  .splash-img {
+    width: 100%;
+    height: auto;
+  }
+
+  .quiz-splash-actions {
+    bottom: 20px;
   }
 }
 
@@ -520,5 +536,48 @@
   .text-splash-orange {
     color: #ef6f3c;
     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.32);
+  }
+
+  @media (max-width: 480px) {
+    .quiz-stage--splash {
+      min-height: 400px;
+      border-radius: 20px;
+    }
+
+    .splash-row {
+      gap: 12px;
+      padding: 8px 0;
+    }
+
+    .splash-col {
+      padding: 8px 8px 20px;
+      gap: 6px;
+    }
+
+    .splash-blob {
+      position: relative;
+      top: auto;
+      left: auto;
+      transform: scale(0.75);
+      min-height: 210px;
+      width: 210px;
+      padding: 28px 40px;
+      font-size: clamp(18px, 5.2vw, 26px);
+      margin-bottom: 6px;
+    }
+
+    .splash-figure {
+      margin-top: 6px;
+      max-width: 120px;
+    }
+
+    .quiz-splash-actions {
+      bottom: 16px;
+    }
+
+    .quiz-pill {
+      padding: 14px 28px;
+      font-size: 20px;
+    }
   }
 </style>

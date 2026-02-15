@@ -2,6 +2,7 @@
   import "../app.css";
   import { resolve } from "$app/paths";
   import { page } from "$app/stores";
+  import { onNavigate } from "$app/navigation";
 
   const site = {
     title: "Alice Foronda - Official Site",
@@ -53,6 +54,18 @@
       menuButtonRef?.focus();
     }
   }
+
+  // View Transitions API for page navigation
+  onNavigate((navigation) => {
+    if (!document.startViewTransition) return;
+
+    return new Promise((resolve) => {
+      document.startViewTransition(async () => {
+        resolve();
+        await navigation.complete;
+      });
+    });
+  });
 </script>
 
 <svelte:window onclick={handleWindowClick} onkeydown={handleKeyDown} />
@@ -79,24 +92,50 @@
     Skip to main content
   </a>
 
-  <header class="relative z-40">
+  <header class="fixed top-0 left-0 right-0 z-50">
     <div class="bg-white">
       <div
         class="relative mx-auto flex max-w-6xl items-center justify-between gap-3 px-6 py-5 md:block"
       >
-        <a
-          href={resolve("/")}
-          class="flex w-fit justify-start md:mx-auto md:justify-center"
-        >
-          <picture>
-            <source srcset={logoWebpSrc} type="image/webp" />
-            <img
-              src={logoSrc}
-              alt="Alice Foronda wordmark"
-              class="h-12 w-auto md:h-16"
-            />
-          </picture>
-        </a>
+        <div class="flex items-center justify-start md:justify-center gap-3">
+          <a
+            href={resolve("/")}
+            class="flex w-fit"
+          >
+            <picture>
+              <source srcset={logoWebpSrc} type="image/webp" />
+              <img
+                src={logoSrc}
+                alt="Alice Foronda wordmark"
+                class="h-12 w-auto md:h-16"
+              />
+            </picture>
+          </a>
+          <a
+            class="inline-flex items-center text-sm transition hover:opacity-80"
+            href="https://www.instagram.com/byaliceforonda"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Follow me @byaliceforonda"
+          >
+            <span
+              class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-rose-600"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                class="h-4 w-4 text-rose-600"
+              >
+                <rect width="14" height="14" x="5" y="5" rx="4" ry="4"></rect>
+                <circle cx="12" cy="12" r="3.5"></circle>
+                <circle cx="16.5" cy="7.5" r=".8" fill="currentColor"></circle>
+              </svg>
+            </span>
+          </a>
+        </div>
         <div
           class="flex flex-shrink-0 items-center gap-3 md:absolute md:right-6 md:top-1/2 md:-translate-y-1/2"
         >
@@ -178,11 +217,11 @@
     </div>
   </header>
 
-  <main id="main-content" class="flex flex-1 items-center justify-center flex-col gap-0 overflow-x-hidden">
+  <main id="main-content" class="flex-1 overflow-x-hidden overflow-y-auto" style="padding-top: 120px; padding-bottom: 280px; min-height: 100vh;">
     {@render children?.()}
   </main>
 
-  <footer class="relative overflow-hidden text-center text-sm">
+  <footer class="fixed bottom-0 left-0 right-0 z-50 overflow-hidden text-center text-sm">
     <div class="relative h-28 bg-pink-100">
       <div class="absolute inset-x-0 bottom-0 h-10 bg-rose-200"></div>
       <div class="absolute left-1/2 bottom-[.1rem] z-20 -translate-x-1/2">
@@ -201,45 +240,21 @@
       </div>
     </div>
     <div
-      class="relative border-t border-pink-200 bg-stone-800 pb-10 pt-12 text-white"
+      class="relative border-t border-pink-200 bg-stone-800 text-white"
     >
-      <div class="mb-6 flex justify-center">
+      <div class="flex justify-center p-6">
         <picture>
           <source srcset={logoWhiteWebpSrc} type="image/webp" />
           <img
             src={logoWhiteSrc}
             alt="Alice Foronda wordmark"
-            class="h-12 w-auto md:h-16"
+            class="h-6 w-auto md:h-8"
           />
         </picture>
       </div>
       <div
-        class="mx-auto flex max-w-6xl flex-col items-center gap-3 px-6 text-pink-200"
+        class="mx-auto flex max-w-6xl flex-col items-center gap-3 px-6 pb-6 text-pink-200"
       >
-        <a
-          class="inline-flex items-center text-sm transition hover:text-white"
-          href="https://www.instagram.com/byaliceforonda"
-          target="_blank"
-          rel="noreferrer"
-          aria-label="Follow me @byaliceforonda"
-        >
-          <span
-            class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-pink-200"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              class="h-4 w-4"
-            >
-              <rect width="14" height="14" x="5" y="5" rx="4" ry="4"></rect>
-              <circle cx="12" cy="12" r="3.5"></circle>
-              <circle cx="16.5" cy="7.5" r=".8" fill="currentColor"></circle>
-            </svg>
-          </span>
-        </a>
         <span
           >&copy; {new Date().getFullYear()} Alice Foronda. All rights reserved.
           No personal data collected. Purchases happen on retailer sites.</span

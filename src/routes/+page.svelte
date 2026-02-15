@@ -1,7 +1,8 @@
 ﻿<script>
   import { resolve } from "$app/paths";
-  const bookImage =
-    "https://images.unsplash.com/photo-1529651737248-dad5e287768e?auto=format&fit=crop&w=800&q=80";
+  import { onMount } from "svelte";
+
+  const bookImage = resolve("/CrosbyCover.PNG");
   const authorImage = resolve("/alice_logopink.jpg");
   const headerImage = resolve("/alHeader_opt.jpg");
   const characterStars = [
@@ -141,12 +142,8 @@
 
   let activeCharacter = $state(0);
 
-  // Check if modal has been shown in this session
-  const hasSeenWelcome = typeof window !== 'undefined'
-    ? sessionStorage.getItem('welcomeModalShown') === 'true'
-    : false;
-
-  let showWelcomeModal = $state(!hasSeenWelcome);
+  // Track scroll state for welcome and logo visibility
+  let showWelcome = $state(true);
 
   const prevCharacter = () => {
     activeCharacter =
@@ -157,161 +154,163 @@
     activeCharacter = (activeCharacter + 1) % characters.length;
   };
 
-  const closeWelcomeModal = () => {
-    showWelcomeModal = false;
-    // Mark as shown in this session
-    if (typeof window !== 'undefined') {
-      sessionStorage.setItem('welcomeModalShown', 'true');
-    }
-  };
-</script>
+  // Handle scroll to hide welcome and logo
+  $effect(() => {
+    if (typeof window === 'undefined') return;
 
-<!-- Welcome Modal -->
-{#if showWelcomeModal}
-  <div
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md px-4"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="welcome-title"
-  >
-    <div
-      class="relative max-w-2xl w-full rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/20"
-      style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);"
-    >
-      <button
-        type="button"
-        onclick={closeWelcomeModal}
-        class="absolute top-4 right-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/60 text-gray-700 shadow-lg transition hover:bg-white/80 hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-600 focus-visible:ring-offset-2"
-        aria-label="Close welcome message"
-        style="backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="h-5 w-5"
-        >
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
-      <p class="text-[500%] font-['Great_Vibes',_cursive] text-[#d2234c]" id="welcome-title">
-        Welcome
-      </p>
-      <h1
-        class="mt-2 text-4xl font-semibold tracking-tight text-[#1b1b1d] sm:text-5xl"
-      >
-        Stories that sparkle with courage and heart.
-      </h1>
-      <p class="mt-6 max-w-xl text-lg leading-relaxed text-gray-700">
-        Step into a world of imagination where every page whispers
-        encouragement and every character finds their voice. Alice Foronda
-        crafts magical adventures that help young readers feel seen, brave,
-        and brilliantly themselves.
-      </p>
-      <div class="mt-8 flex flex-wrap gap-4">
-        <a
-          class="inline-flex items-center rounded-full bg-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg transition hover:bg-[#b01d3c]"
-          href={resolve("/book")}
-          onclick={closeWelcomeModal}
-        >
-          Learn More
-        </a>
-        <a
-          class="inline-flex items-center rounded-full border border-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#d2234c] transition hover:bg-[#ffe0ec]"
-          href={resolve("/quiz")}
-          onclick={closeWelcomeModal}
-        >
-          Take the Quiz
-        </a>
-      </div>
-    </div>
-  </div>
-{/if}
+    const handleScroll = () => {
+      showWelcome = window.scrollY <= 50;
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  });
+
+  // Scroll-triggered animations - repeatable on every scroll
+  onMount(() => {
+    // Small delay to ensure layout is complete
+    setTimeout(() => {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('animate-in');
+            } else {
+              entry.target.classList.remove('animate-in');
+            }
+          });
+        },
+        {
+          threshold: 0.05,
+          rootMargin: '0px 0px -100px 0px',
+        }
+      );
+
+      const elements = document.querySelectorAll('.scroll-reveal');
+      elements.forEach((el) => {
+        observer.observe(el);
+      });
+    }, 150);
+  });
+
+</script>
 
 <section
   class="relative w-full overflow-hidden"
-  style={`min-height: clamp(20rem, 40vw, 30rem); background-image: url('${headerImage}'); background-size: 100% auto; background-position: center;`}
+  style={`background-image: url('${headerImage}'); background-size: cover; background-position: center; background-repeat: no-repeat; min-height: 100vh;`}
 >
   <picture style="display: none;">
     <source srcset={resolve("/alHeader.webp")} type="image/webp" />
   </picture>
-  <div class="relative z-10 mx-auto max-w-6xl px-6 py-20 flex items-center justify-center">
-    <div class="relative inline-flex items-center justify-center">
-      <picture>
-        <source srcset={resolve("/alice_logopink.webp")} type="image/webp" />
-        <img
-          src={resolve("/alice_logopink.jpg")}
-          alt="Alice Foronda smiling, author of Crosby's Cosmic Adventure"
-          class="h-40 w-40 rounded-full shadow-lg sm:h-48 sm:w-48 lg:h-56 lg:w-56"
-          loading="lazy"
-        />
-      </picture>
-      <svg
-        class="pointer-events-none absolute inset-[-15%] h-[130%] w-[130%] text-[#d2234c]"
-        viewBox="0 0 200 200"
-        aria-hidden="true"
-      >
-        <defs>
-          <path
-            id="logoCirclePath"
-            d="M100,100 m -86,0 a 86,86 0 1,1 172,0 a 86,86 0 1,1 -172,0"
+
+  <div class="relative z-10 mx-auto max-w-6xl px-6 transition-all duration-700 ease-out" style={showWelcome ? 'padding-top: 5rem; padding-bottom: 8rem;' : 'padding-top: 2rem; padding-bottom: 3rem;'}>
+    <div class="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12 transition-all duration-700 ease-out">
+      <!-- Logo -->
+      <div class={`logo-container relative inline-flex items-center justify-center shrink-0 transition-all duration-700 ease-out ${showWelcome ? '' : 'logo-shrunk'}`}>
+        <picture>
+          <source srcset={resolve("/alice_logopink.webp")} type="image/webp" />
+          <img
+            src={resolve("/alice_logopink.jpg")}
+            alt="Alice Foronda smiling, author of Crosby's Cosmic Adventure"
+            class="h-40 w-40 rounded-full shadow-lg sm:h-48 sm:w-48 lg:h-56 lg:w-56 transition-shadow duration-700 ease-out"
+            loading="lazy"
+            style={showWelcome ? 'box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);' : 'box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);'}
           />
-        </defs>
-        <text
-          fill="currentColor"
-          font-size="clamp(10px, 2.2vw, 14px)"
-          font-weight="700"
-          letter-spacing="clamp(1.5px, 0.6vw, 3.5px)"
-          font-family="Poppins, 'Helvetica Neue', Arial, sans-serif"
+        </picture>
+        <svg
+          class="pointer-events-none absolute inset-[-15%] h-[130%] w-[130%] text-[#d2234c] transition-opacity duration-700 ease-out"
+          viewBox="0 0 200 200"
+          aria-hidden="true"
+          style={showWelcome ? 'opacity: 1;' : 'opacity: 0.6;'}
         >
-          <textPath
-            href="#logoCirclePath"
-            startOffset="50%"
-            text-anchor="middle"
-            textLength="540"
-            lengthAdjust="spacingAndGlyphs"
+          <defs>
+            <path
+              id="logoCirclePath"
+              d="M100,100 m -86,0 a 86,86 0 1,1 172,0 a 86,86 0 1,1 -172,0"
+            />
+          </defs>
+          <text
+            fill="currentColor"
+            font-size="clamp(10px, 2.2vw, 14px)"
+            font-weight="700"
+            letter-spacing="clamp(1.5px, 0.6vw, 3.5px)"
+            font-family="Poppins, 'Helvetica Neue', Arial, sans-serif"
           >
-            • SNACK GIVER • CHILDREN'S BOOK AUTHOR • LOVER • MOM • KIMCHI
-            STEALER
-          </textPath>
-        </text>
-      </svg>
+            <textPath
+              href="#logoCirclePath"
+              startOffset="50%"
+              text-anchor="middle"
+              textLength="540"
+              lengthAdjust="spacingAndGlyphs"
+            >
+              • SNACK GIVER • CHILDREN'S BOOK AUTHOR • LOVER • MOM • KIMCHI
+              STEALER
+            </textPath>
+          </text>
+        </svg>
+      </div>
+
+      <!-- Welcome Section -->
+      <div
+        class="welcome-content text-center lg:text-left max-w-xl transition-all duration-700 ease-out origin-left rounded-3xl p-8 border border-white/10"
+        style={showWelcome
+          ? 'opacity: 1; transform: scale(1) translateX(0); max-height: 1000px; pointer-events: auto; background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);'
+          : 'opacity: 0; transform: scale(0.9) translateX(-20px); max-height: 0; pointer-events: none; overflow: hidden; background: rgba(255, 255, 255, 0); backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px);'}
+      >
+        <p class="text-5xl sm:text-6xl font-['Great_Vibes',cursive] text-[#d2234c] mb-2">
+          Welcome
+        </p>
+        <h1 class="text-3xl sm:text-4xl font-semibold tracking-tight text-gray-900 mb-4">
+          Stories that sparkle with courage and heart.
+        </h1>
+        <p class="text-base sm:text-lg leading-relaxed text-gray-800 mb-6">
+          Step into a world of imagination where every page whispers
+          encouragement and every character finds their voice. Alice Foronda
+          crafts magical adventures that help young readers feel seen, brave,
+          and brilliantly themselves.
+        </p>
+        <div class="flex flex-wrap gap-3 justify-center lg:justify-start">
+          <a
+            class="inline-flex items-center rounded-full bg-[#d2234c] px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg hover:bg-[#b01d3c] hover:shadow-2xl"
+            href={resolve("/book")}
+            style="transition: all 800ms cubic-bezier(0.165, 0.84, 0.44, 1);"
+            onmouseenter={(e) => { e.currentTarget.style.transform = 'translateY(-4px) scale(1.05)'; }}
+            onmouseleave={(e) => { e.currentTarget.style.transform = 'translateY(0) scale(1)'; }}
+          >
+            Learn More
+          </a>
+          <a
+            class="inline-flex items-center rounded-full border-2 border-[#d2234c] bg-white/5 px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.2em] text-[#d2234c] hover:bg-[#d2234c] hover:text-white backdrop-blur-sm shadow-md hover:shadow-xl"
+            href={resolve("/quiz")}
+            style="transition: all 800ms cubic-bezier(0.165, 0.84, 0.44, 1);"
+            onmouseenter={(e) => { e.currentTarget.style.transform = 'translateY(-4px) scale(1.05)'; }}
+            onmouseleave={(e) => { e.currentTarget.style.transform = 'translateY(0) scale(1)'; }}
+          >
+            Take the Quiz
+          </a>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="w-full h-32 relative">
-    <svg
-      viewBox="0 0 1000 200"
-      class="h-32 w-full transform -scale-y-100 absolute bottom-0"
-      preserveAspectRatio="none"
-    >
-      <defs>
-        <linearGradient id="waveGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" style="stop-color:#fce7f3;stop-opacity:1" />
-          <stop offset="50%" style="stop-color:rgba(252,231,243,0.7);stop-opacity:1" />
-          <stop offset="100%" style="stop-color:rgba(255,255,255,0.3);stop-opacity:1" />
-        </linearGradient>
-      </defs>
-      <path
-        d="M0 0v4c154 96 190 17.9 300 17.9 92 0 92 78.1 200 78.1s108-78.2 200-78.2c110 0 146 78.2 300-17.8V0H0Z"
-        fill="url(#waveGradient)"
-      />
-    </svg>
   </div>
 </section>
 
-<section class="relative w-full overflow-hidden bg-pink-100">
-  <div class="relative z-10 mx-auto max-w-6xl px-6 py-20 sm:py-24">
+<section
+  class="relative w-full overflow-hidden bg-pink-100 flex items-center justify-center scroll-reveal"
+  style="min-height: 100vh;"
+>
+  <div class="relative z-10 mx-auto max-w-6xl px-6 py-20 sm:py-24 w-full">
     <div class="grid items-center gap-10 lg:grid-cols-[320px_1fr] lg:gap-16">
-      <div class="relative mx-auto max-w-sm rounded-3xl bg-white p-4 shadow-xl">
+      <div
+        class="relative mx-auto max-w-sm rounded-3xl bg-[dodgerblue] p-3 shadow-xl hover:shadow-2xl"
+        style="transition: all 1000ms cubic-bezier(0.165, 0.84, 0.44, 1);"
+        onmouseenter={(e) => { e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)'; }}
+        onmouseleave={(e) => { e.currentTarget.style.transform = 'translateY(0) scale(1)'; }}
+      >
         <img
           alt="Crosby's Cosmic Adventure book cover featuring a crocodile in space"
           src={bookImage}
           class="h-full w-full rounded-2xl object-cover"
+          loading="lazy"
         />
       </div>
       <div>
@@ -330,8 +329,11 @@
           story reminds young dreamers that every wobble can become a wonder.
         </p>
         <a
-          class="mt-8 inline-flex items-center rounded-full bg-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg transition hover:bg-[#d2234c]-dark"
+          class="mt-8 inline-flex items-center rounded-full bg-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg hover:bg-[#b01d3c] hover:shadow-2xl"
           href={resolve("/book")}
+          style="transition: all 800ms cubic-bezier(0.165, 0.84, 0.44, 1);"
+          onmouseenter={(e) => { e.currentTarget.style.transform = 'translateY(-4px) scale(1.05)'; }}
+          onmouseleave={(e) => { e.currentTarget.style.transform = 'translateY(0) scale(1)'; }}
         >
           Learn More
         </a>
@@ -341,8 +343,8 @@
 </section>
 
 <section
-  class="characters-section relative w-full overflow-hidden bg-blue-900 text-white"
-  style="min-height: clamp(540px, 85vh, 820px)"
+  class="characters-section relative w-full overflow-hidden bg-blue-900 text-white scroll-reveal"
+  style="min-height: 100vh;"
 >
   <div class="pointer-events-none absolute inset-0 opacity-80">
     {#each characterStars as star}
@@ -400,6 +402,54 @@
       </div>
 
       <style>
+        .logo-container {
+          will-change: transform, opacity;
+          transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+          transform: scale(1) translateX(0);
+          opacity: 1;
+        }
+
+        .logo-shrunk {
+          transform: scale(0) translateX(0);
+          opacity: 0;
+        }
+
+        @media (min-width: 1024px) {
+          .logo-shrunk {
+            transform: scale(0.75) translateX(-50%);
+            opacity: 1;
+          }
+        }
+
+        .welcome-content {
+          will-change: opacity, transform, max-height;
+          transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .logo-container,
+          .welcome-content {
+            transition: none !important;
+          }
+        }
+
+        @media (max-width: 1023px) {
+          .welcome-content {
+            padding: 1.5rem !important;
+          }
+
+          .logo-container {
+            /* On mobile/tablet, don't translate as much */
+          }
+        }
+
+        @media (max-width: 640px) {
+          .welcome-content {
+            padding: 1.25rem !important;
+          }
+        }
+
         .character-frame {
           width: 345px;
           height: 345px;
@@ -488,18 +538,24 @@
         >
           <div class="flex items-center gap-2">
             <button
-              class="inline-flex items-center justify-center rounded-full border border-white/60 px-4 py-2 text-[13px] font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-white/10 sm:px-5 sm:py-3 sm:text-sm whitespace-nowrap"
+              class="inline-flex items-center justify-center rounded-full border border-white/60 px-4 py-2 text-[13px] font-semibold uppercase tracking-[0.2em] text-white hover:bg-white/10 hover:shadow-lg sm:px-5 sm:py-3 sm:text-sm whitespace-nowrap"
               type="button"
               onclick={prevCharacter}
               aria-label="Previous character"
+              style="transition: all 600ms cubic-bezier(0.165, 0.84, 0.44, 1);"
+              onmouseenter={(e) => { e.currentTarget.style.transform = 'translateY(-3px) scale(1.03)'; }}
+              onmouseleave={(e) => { e.currentTarget.style.transform = 'translateY(0) scale(1)'; }}
             >
               ← <span class="hidden sm:inline ml-1">Meet Previous</span>
             </button>
             <button
-              class="inline-flex items-center justify-center rounded-full bg-white px-4 py-2 text-[13px] font-semibold uppercase tracking-[0.2em] text-[#052238] shadow-lg transition hover:-translate-y-1 hover:shadow-xl sm:px-5 sm:py-3 sm:text-sm whitespace-nowrap"
+              class="inline-flex items-center justify-center rounded-full bg-white px-4 py-2 text-[13px] font-semibold uppercase tracking-[0.2em] text-[#052238] shadow-lg hover:shadow-2xl sm:px-5 sm:py-3 sm:text-sm whitespace-nowrap"
               type="button"
               onclick={nextCharacter}
               aria-label="Next character"
+              style="transition: all 600ms cubic-bezier(0.165, 0.84, 0.44, 1);"
+              onmouseenter={(e) => { e.currentTarget.style.transform = 'translateY(-4px) scale(1.05)'; }}
+              onmouseleave={(e) => { e.currentTarget.style.transform = 'translateY(0) scale(1)'; }}
             >
               <span class="hidden sm:inline">Next Up</span>
               <span class="sm:ml-1">→</span>
@@ -530,23 +586,11 @@
       </div>
     </div>
   </div>
-  <div class="w-full h-32 bg-pink-100">
-    <svg
-      viewBox="0 0 1000 200"
-      class="h-32 w-full text-blue-900"
-      preserveAspectRatio="none"
-    >
-      <path
-        d="M0 0v4c154 96 190 17.9 300 17.9 92 0 92 78.1 200 78.1s108-78.2 200-78.2c110 0 146 78.2 300-17.8V0H0Z"
-        class="fill-current"
-      />
-    </svg>
-  </div>
 </section>
 
 <!-- About the Author section - commented out
-<section class="relative w-full overflow-hidden bg-pink-100">
-  <div class="relative z-10 mx-auto max-w-6xl px-6 py-20 sm:py-24">
+<section class="relative w-full overflow-hidden bg-pink-100 flex items-center justify-center" style="min-height: calc(100vh - 200px);">
+  <div class="relative z-10 mx-auto max-w-6xl px-6 py-20 sm:py-24 w-full">
     <div
       class="grid items-center gap-10 lg:grid-cols-[1fr_minmax(220px,320px)] lg:gap-16"
     >
@@ -624,6 +668,62 @@
       top: 105%;
       transform: rotate(calc(var(--rotate, 0deg) + 60deg));
       opacity: 0;
+    }
+  }
+
+  /* Scroll-triggered animations - slide in from left */
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateX(-80px);
+    transition: opacity 800ms cubic-bezier(0.165, 0.84, 0.44, 1),
+                transform 800ms cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+
+  .scroll-reveal.animate-in {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .scroll-reveal.animate-in .scroll-reveal-child {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .scroll-reveal-child {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity 600ms cubic-bezier(0.165, 0.84, 0.44, 1),
+                transform 600ms cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+
+  /* Staggered delays for child elements */
+  .scroll-reveal-child:nth-child(1) {
+    transition-delay: 150ms;
+  }
+
+  .scroll-reveal-child:nth-child(2) {
+    transition-delay: 250ms;
+  }
+
+  .scroll-reveal-child:nth-child(3) {
+    transition-delay: 350ms;
+  }
+
+  /* Character section slides from right */
+  .characters-section.scroll-reveal {
+    transform: translateX(80px);
+  }
+
+  .characters-section.scroll-reveal.animate-in {
+    transform: translateX(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-reveal,
+    .scroll-reveal-child {
+      opacity: 1;
+      transform: none;
+      transition: none;
     }
   }
 </style>

@@ -429,7 +429,7 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
               </span>
             </div>
 
-            <h2 class={`question-text text-2xl font-semibold leading-snug ${isFirstSlide ? 'first-slide-text first-slide-question' : ''}`}>
+            <h2 class={`question-text font-semibold leading-snug ${isFirstSlide ? 'first-slide-text first-slide-question' : ''}`}>
               {questions[activeSlide].q}
             </h2>
             <img
@@ -447,7 +447,7 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
               {@const choiceText = questions[activeSlide].choices[originalIndex]}
               <button
                 type="button"
-                class={`flex w-full items-center gap-4 rounded-full border-2 px-5 py-3 text-left text-[15px] font-semibold shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition duration-200 answer-card answer-border ${answers[activeSlide] === originalIndex ? 'selected' : ''}`}
+                class={`flex w-full items-center gap-4 rounded-full border-2 px-5 py-3 text-left font-semibold shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition duration-200 answer-card answer-border ${answers[activeSlide] === originalIndex ? 'selected' : ''}`}
                 aria-pressed={answers[activeSlide] === originalIndex}
                 onclick={() => selectAnswer(activeSlide, originalIndex)}
                 style={`border-color:${currentTheme.accent};`}
@@ -579,6 +579,8 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
   .question-text {
     text-align: center;
     margin: 0 auto;
+    font-size: clamp(18px, 4vw, 28px);
+    line-height: 1.3;
   }
 
   .question-progress {
@@ -976,81 +978,105 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
 
   @media (max-width: 900px) {
     .result-card {
-      width: 88%;
+      width: 94%;
       height: auto;
-      max-height: none;
+      max-height: 88vh;
+      padding: 20px 16px;
+      overflow-y: auto;
     }
 
     .result-main {
       grid-template-columns: 1fr;
-      gap: 14px;
+      gap: 18px;
     }
 
     .combo-center-oval {
-      width: 99%;
-      height: calc(100% - 36px);
-      top: 54%;
-      padding: 30px;
+      width: 98%;
+      height: calc(100% - 40px);
+      top: 52%;
+      padding: clamp(24px, 5vw, 36px);
     }
 
     .combo-desc {
-      max-width: min(74%, 440px);
-      font-size: clamp(18px, 4.4vw, 28px);
+      max-width: min(82%, 440px);
+      font-size: clamp(16px, 4vw, 24px);
+      line-height: 1.3;
     }
 
     .combo-character--tank {
-      left: -6%;
+      left: -4%;
       top: auto;
-      bottom: -2%;
+      bottom: 0%;
       transform: none;
     }
 
     .combo-character--crosby {
-      top: -6%;
-      left: 2%;
+      top: -4%;
+      left: 4%;
       transform: none;
     }
 
     .combo-character--carla {
-      right: -6%;
+      right: -4%;
       top: auto;
-      bottom: -2%;
+      bottom: 0%;
       transform: none;
     }
 
     .combo-img {
-      width: clamp(128px, 28vw, 210px);
-      height: clamp(128px, 28vw, 210px);
+      width: clamp(110px, 25vw, 180px);
+      height: clamp(110px, 25vw, 180px);
     }
 
     .result-title {
-      gap: 8px;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
     .result-title-youare {
       grid-template-columns: repeat(2, auto);
       grid-template-rows: 1fr;
-      column-gap: 8px;
+      column-gap: 6px;
       justify-content: center;
+      font-size: clamp(24px, 5vw, 38px);
     }
 
     .result-title-name {
       min-height: auto;
-      font-size: clamp(42px, 10vw, 72px);
+      font-size: clamp(36px, 9vw, 64px);
+      width: 100%;
     }
 
     .result-desc-shell {
       width: 100%;
-      padding: 16px;
+      padding: clamp(18px, 4vw, 24px);
+      margin-top: 8px;
+    }
+
+    .result-desc-inner {
+      font-size: clamp(15px, 3.5vw, 20px);
+      line-height: 1.4;
     }
 
     .result-figures {
-      min-height: 200px;
+      min-height: 180px;
+      padding: 12px;
     }
 
     .result-img.single {
-      width: clamp(230px, 56vw, 360px);
-      height: clamp(230px, 56vw, 360px);
+      width: clamp(200px, 48vw, 320px);
+      height: clamp(200px, 48vw, 320px);
+    }
+
+    .result-actions {
+      flex-direction: row;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .result-btn {
+      font-size: clamp(12px, 3vw, 14px);
+      padding: 10px 16px;
     }
   }
 
@@ -1105,7 +1131,7 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
     }
 
     .question-text {
-      font-size: clamp(16px, 4.5vw, 22px);
+      font-size: clamp(15px, 4.2vw, 20px);
       line-height: 1.2;
     }
 
@@ -1123,9 +1149,16 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
       padding: 12px 16px !important;
     }
 
+  .answer-text {
+    font-size: clamp(14px, 3.2vw, 18px);
+    line-height: 1.4;
+  }
+
+  @media (max-width: 640px) {
     .answer-text {
-      font-size: clamp(15px, 4vw, 20px);
+      font-size: clamp(13px, 3.8vw, 16px);
     }
+  }
 
     .nav-actions {
       flex-direction: column;
@@ -1156,5 +1189,51 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
     opacity: 0.55;
     cursor: not-allowed;
     box-shadow: none;
+  }
+
+  @media (max-width: 480px) {
+    .result-card {
+      width: 96%;
+      max-height: 90vh;
+      padding: 16px 12px;
+    }
+
+    .result-title-youare {
+      font-size: clamp(20px, 5.5vw, 32px);
+      column-gap: 4px;
+    }
+
+    .result-title-name {
+      font-size: clamp(32px, 10vw, 56px);
+    }
+
+    .result-desc-shell {
+      padding: 16px;
+      margin-top: 6px;
+    }
+
+    .result-desc-inner {
+      font-size: clamp(14px, 3.8vw, 18px);
+    }
+
+    .combo-desc {
+      font-size: clamp(14px, 4.2vw, 20px);
+      max-width: 85%;
+    }
+
+    .combo-img {
+      width: clamp(90px, 24vw, 150px);
+      height: clamp(90px, 24vw, 150px);
+    }
+
+    .result-img.single {
+      width: clamp(170px, 52vw, 280px);
+      height: clamp(170px, 52vw, 280px);
+    }
+
+    .result-btn {
+      font-size: 12px;
+      padding: 8px 14px;
+    }
   }
 </style>
