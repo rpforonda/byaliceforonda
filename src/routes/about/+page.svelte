@@ -24,7 +24,7 @@
         <span class="font-[Corinthia] text-4xl sm:text-5xl text-[#db2108]">Alice</span>
       </p>
     </div>
-    <div class="flex justify-end lg:justify-center">
+    <div class="flex justify-center">
       <picture>
         <source srcset={resolve("/aboutMe.webp")} type="image/webp" />
         <img

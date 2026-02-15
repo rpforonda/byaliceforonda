@@ -223,13 +223,23 @@
   @media (max-width: 640px) {
     .quiz-stage {
       min-height: auto;
-      padding: 16px 0;
+      padding: 0;
     }
   }
 
   .quiz-stage--quiz {
     align-items: stretch;
     justify-content: flex-start;
+    animation: quizEnter 600ms cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+
+  @keyframes quizEnter {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   .quiz-splash-actions {
@@ -449,45 +459,60 @@
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
   text-align: center;
   line-height: 1.1;
+  transition: all 600ms cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 @media (max-width: 640px) {
   .quiz-stage--splash {
-    overflow: visible;
+    overflow: hidden;
     height: auto;
-    min-height: 440px;
+    min-height: 100vh;
     border-radius: 24px;
+    display: flex;
+    flex-direction: column;
   }
 
   .splash-row {
-    gap: 16px;
-    padding: 12px 0;
+    gap: 0;
+    padding: 0;
+    flex: 1;
+    display: flex;
+    min-height: 0;
   }
 
   .splash-col {
-    padding: 12px 12px 24px;
-    gap: 8px;
+    padding: 0 6px 12px;
+    gap: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
   }
 
   .splash-blob {
     position: relative;
     top: auto;
     left: auto;
-    transform: scale(0.85);
-    -webkit-mask-size: contain;
-    mask-size: contain;
+    transform: scale(1);
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
     min-width: 0;
-    min-height: 240px;
-    width: 240px;
-    padding: 32px 48px;
-    font-size: clamp(20px, 5vw, 28px);
+    min-height: 360px;
+    width: 360px;
+    padding: 48px 68px;
+    font-size: clamp(28px, 7vw, 44px);
     height: auto;
-    margin-bottom: 8px;
+    margin-top: -60px;
+    margin-bottom: -40px;
+    flex-shrink: 0;
   }
 
   .splash-figure {
-    margin-top: 8px;
-    max-width: 140px;
+    margin-top: 0;
+    max-width: 100%;
+    width: 100%;
+    flex-shrink: 0;
   }
 
   .splash-img {
@@ -509,6 +534,7 @@
     justify-content: space-between;
     padding: clamp(20px, 3vw, 36px) clamp(8px, 2vw, 12px);
     gap: clamp(12px, 2vw, 18px);
+    transition: all 600ms cubic-bezier(0.165, 0.84, 0.44, 1);
   }
 
   .splash-figure {
@@ -516,6 +542,7 @@
     width: 95%;
     margin-top: auto;
     padding-bottom: clamp(90px, 10vw, 104px);
+    transition: all 600ms cubic-bezier(0.165, 0.84, 0.44, 1);
   }
 
   .splash-img {
@@ -523,6 +550,7 @@
     height: clamp(240px, 32vw, 320px);
     display: block;
     object-fit: contain;
+    transition: all 600ms cubic-bezier(0.165, 0.84, 0.44, 1);
   }
 
   .text-splash-green {
@@ -540,35 +568,52 @@
 
   @media (max-width: 480px) {
     .quiz-stage--splash {
-      min-height: 400px;
+      min-height: 100vh;
       border-radius: 20px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
 
     .splash-row {
-      gap: 12px;
-      padding: 8px 0;
+      gap: 0;
+      padding: 0;
+      flex: 1;
+      display: flex;
+      min-height: 0;
     }
 
     .splash-col {
-      padding: 8px 8px 20px;
-      gap: 6px;
+      padding: 0 4px 8px;
+      gap: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
     }
 
     .splash-blob {
       position: relative;
       top: auto;
       left: auto;
-      transform: scale(0.75);
-      min-height: 210px;
-      width: 210px;
-      padding: 28px 40px;
-      font-size: clamp(18px, 5.2vw, 26px);
-      margin-bottom: 6px;
+      transform: scale(1);
+      -webkit-mask-size: 100% 100%;
+      mask-size: 100% 100%;
+      min-height: 450px;
+      width: 450px;
+      padding: 60px 84px;
+      font-size: clamp(36px, 9vw, 54px);
+      margin-top: -80px;
+      margin-bottom: -60px;
+      flex-shrink: 0;
     }
 
     .splash-figure {
-      margin-top: 6px;
-      max-width: 120px;
+      margin-top: 0;
+      max-width: 100%;
+      width: 100%;
+      flex-shrink: 0;
     }
 
     .quiz-splash-actions {
@@ -578,6 +623,12 @@
     .quiz-pill {
       padding: 14px 28px;
       font-size: 20px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .quiz-stage--quiz {
+      animation: none !important;
     }
   }
 </style>

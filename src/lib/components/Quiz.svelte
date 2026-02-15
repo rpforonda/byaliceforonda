@@ -121,6 +121,9 @@
   let questionBg = $state(questionColors[0] ?? '#ff7bac');
   let toast = $state(null); // { message: string, accent?: string } | null
   let toastTimer;
+  let showShareMenu = $state(false);
+  let slideDirection = $state('none'); // 'forward', 'back', or 'none'
+  let isAnimating = $state(false);
 
   $effect(() => {
     questionBg = questionColors[activeSlide] ?? questionColors[0] ?? '#ff7bac';
@@ -210,28 +213,115 @@
 
   async function shareResult() {
     if (!showCard || !finalKey) return;
-    const card = results[finalKey] ?? results.combo;
 
+    // try Web Share API first (works on mobile)
+    if (navigator.share) {
+      const card = results[finalKey] ?? results.combo;
+      const shareText = `${
+        finalKey === 'combo' ? "You're a Cosmic Combo!" : `You're ${card.title}!`
+      } — ${card.desc}
+Find out your Crosby's Cosmic Adventure character!`;
+
+      try {
+        await navigator.share({
+          title: "Crosby's Cosmic Adventure Quiz",
+          text: shareText,
+          url: window.location?.href
+        });
+        showToast('Shared your result!', accentByKey[finalKey] ?? currentTheme.accent);
+        return;
+      } catch (err) {
+        // User cancelled or error occurred
+        if (err.name !== 'AbortError') {
+          console.log('Share failed:', err);
+        }
+      }
+    }
+
+    // fallback: show social share menu (desktop)
+    showShareMenu = true;
+  }
+
+  function getShareUrl(platform) {
+    if (!finalKey) return '';
+    const card = results[finalKey] ?? results.combo;
+    const shareText = `${
+      finalKey === 'combo' ? "You're a Cosmic Combo!" : `You're ${card.title}!`
+    } — ${card.desc}`;
+    const url = window.location?.href ?? '';
+
+    if (platform === 'email') {
+      return `mailto:?subject=${encodeURIComponent("Crosby's Cosmic Adventure Quiz Result")}&body=${encodeURIComponent(shareText + '\n\n' + url)}`;
+    }
+    return '';
+  }
+
+  async function shareToInstagram() {
+    if (!finalKey) return;
+    const card = results[finalKey] ?? results.combo;
     const shareText = `${
       finalKey === 'combo' ? "You're a Cosmic Combo!" : `You're ${card.title}!`
     } — ${card.desc}
 Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''}`.trim();
 
-    // try Web Share API first
     if (navigator.share) {
       try {
-        await navigator.share({ text: shareText, url: window.location?.href });
-        showToast('Shared your result!', accentByKey[finalKey] ?? currentTheme.accent);
-        return;
-      } catch {
-        /* ignore if user cancels */
+        await navigator.share({
+          title: "Crosby's Cosmic Adventure Quiz Result",
+          text: shareText,
+          url: window.location?.href
+        });
+        showToast('Shared!', accentByKey[finalKey] ?? currentTheme.accent);
+        showShareMenu = false;
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          await copyToClipboard();
+        }
       }
+    } else {
+      await copyToClipboard();
     }
+  }
 
-    // fallback: copy to clipboard
+  async function shareToTikTok() {
+    if (!finalKey) return;
+    const card = results[finalKey] ?? results.combo;
+    const shareText = `${
+      finalKey === 'combo' ? "You're a Cosmic Combo!" : `You're ${card.title}!`
+    } — ${card.desc}
+Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''}`.trim();
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Crosby's Cosmic Adventure Quiz Result",
+          text: shareText,
+          url: window.location?.href
+        });
+        showToast('Shared!', accentByKey[finalKey] ?? currentTheme.accent);
+        showShareMenu = false;
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          await copyToClipboard();
+        }
+      }
+    } else {
+      await copyToClipboard();
+    }
+  }
+
+  async function copyToClipboard() {
+    if (!finalKey) return;
+    const card = results[finalKey] ?? results.combo;
+    const shareText = `${
+      finalKey === 'combo' ? "You're a Cosmic Combo!" : `You're ${card.title}!`
+    } — ${card.desc}
+Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''}`.trim();
+
     try {
       await navigator.clipboard.writeText(shareText);
-      showToast('Result copied — paste it anywhere to share!', accentByKey[finalKey] ?? currentTheme.accent);
+      showToast('Result copied to clipboard!', accentByKey[finalKey] ?? currentTheme.accent);
+      showShareMenu = false;
     } catch {
       showToast('Could not copy to clipboard', '#f87171');
     }
@@ -259,12 +349,21 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
     }
   }
 
-  function goToSlide(index) {
-    activeSlide = Math.max(0, Math.min(index, questions.length - 1));
+  function goToSlide(index, direction = 'none') {
+    if (isAnimating) return;
+    const newSlide = Math.max(0, Math.min(index, questions.length - 1));
+    if (newSlide === activeSlide) return;
+
+    isAnimating = true;
+    activeSlide = newSlide;
+
+    setTimeout(() => {
+      isAnimating = false;
+    }, 600);
   }
 
   function prevSlide() {
-    goToSlide(activeSlide - 1);
+    goToSlide(activeSlide - 1, 'back');
   }
 
   function nextSlide() {
@@ -274,7 +373,7 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
     }
 
     if (activeSlide < questions.length - 1) {
-      activeSlide += 1;
+      goToSlide(activeSlide + 1, 'forward');
       return;
     }
 
@@ -294,10 +393,21 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
   function closeResult() {
     showCard = false;
     finalKey = null;
+    showShareMenu = false;
+  }
+
+  function handleClickOutside(event) {
+    if (showShareMenu) {
+      const shareButton = event.target.closest('.result-btn--share');
+      const shareMenuEl = event.target.closest('.share-menu');
+      if (!shareButton && !shareMenuEl) {
+        showShareMenu = false;
+      }
+    }
   }
 </script>
 
-<svelte:window onkeydown={handleKey} />
+<svelte:window onkeydown={handleKey} onclick={handleClickOutside} />
 
 <div class="relative w-full quiz-frame text-[#ffffff]">
   {#if toast}
@@ -323,7 +433,14 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
 
   <div class="quiz-body">
     {#if showCard && finalKey}
-      <div class="result-overlay" onclick={closeResult}>
+      <div
+        class="result-overlay"
+        role="button"
+        tabindex="0"
+        onclick={closeResult}
+        onkeydown={(e) => e.key === 'Enter' && closeResult()}
+        aria-label="Close result card"
+      >
         <div
           id="resultCard"
           role="dialog"
@@ -333,6 +450,7 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
           class="result-card rounded-3xl border border-white/5 p-6 text-[#0b1a2d] shadow-[0_20px_40px_rgba(0,0,0,0.4)]"
           style={`--result-base:${solidBackgroundForResult(finalKey)}; --result-oval:#faed68; background:${backgroundForResult(finalKey)}; background-color:${solidBackgroundForResult(finalKey)}; opacity:1; backdrop-filter:none; -webkit-backdrop-filter:none; box-shadow:0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px ${(accentForResult(finalKey))}55; border-color:${(accentForResult(finalKey))}55;`}
           onclick={(event) => event.stopPropagation()}
+          onkeydown={(e) => e.stopPropagation()}
         >
           {#if finalKey === 'combo'}
             <div class="combo-stage" aria-label="All three characters result">
@@ -402,25 +520,90 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
               Retake Quiz
             </button>
 
-            <button
-              type="button"
-              onclick={shareResult}
-              class="result-btn result-btn--share rounded-xl px-3 py-2 text-[14px] font-semibold"
-              aria-label="Share your quiz result"
-            >
-              Share Result
-            </button>
+            <div class="relative">
+              <button
+                type="button"
+                onclick={shareResult}
+                class="result-btn result-btn--share rounded-xl px-3 py-2 text-[14px] font-semibold"
+                aria-label="Share your quiz result"
+              >
+                Share Result
+              </button>
+
+              {#if showShareMenu}
+                <div
+                  class="share-menu"
+                  role="menu"
+                  onclick={(e) => e.stopPropagation()}
+                  onkeydown={(e) => e.stopPropagation()}
+                >
+                  <button
+                    type="button"
+                    class="share-menu-close"
+                    onclick={() => showShareMenu = false}
+                    aria-label="Close share menu"
+                  >×</button>
+
+                  <div class="share-menu-title">Share your result</div>
+
+                  <button
+                    type="button"
+                    class="share-menu-item"
+                    onclick={shareToInstagram}
+                  >
+                    <svg viewBox="0 0 24 24" class="share-icon" aria-hidden="true">
+                      <path fill="currentColor" d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/>
+                    </svg>
+                    Share to Instagram
+                  </button>
+
+                  <button
+                    type="button"
+                    class="share-menu-item"
+                    onclick={shareToTikTok}
+                  >
+                    <svg viewBox="0 0 24 24" class="share-icon" aria-hidden="true">
+                      <path fill="currentColor" d="M16.6 5.82s.51.5 0 0A4.278 4.278 0 0 1 15.54 3h-3.09v12.4a2.592 2.592 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6c0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64c0 3.33 2.76 5.7 5.69 5.7c3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48z"/>
+                    </svg>
+                    Share to TikTok
+                  </button>
+
+                  <a
+                    href={getShareUrl('email')}
+                    class="share-menu-item"
+                    onclick={() => showShareMenu = false}
+                  >
+                    <svg viewBox="0 0 24 24" class="share-icon" aria-hidden="true">
+                      <path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                    Share via Email
+                  </a>
+
+                  <button
+                    type="button"
+                    class="share-menu-item"
+                    onclick={copyToClipboard}
+                  >
+                    <svg viewBox="0 0 24 24" class="share-icon" aria-hidden="true">
+                      <path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                    </svg>
+                    Copy to Clipboard
+                  </button>
+                </div>
+              {/if}
+            </div>
           </div>
         </div>
       </div>
     {/if}
 
-      <div class="slide-two-col" aria-live="polite">
-        <div
-          class={`question-panel ${isFirstSlide ? 'first-slide-card' : ''}`}
-          style={`--question-bg:${questionBg}; background:${questionBg}; background-color:${questionBg};`}
-        >
-          <div class="question-content">
+      {#key activeSlide}
+        <div class="slide-two-col" aria-live="polite">
+          <div
+            class={`question-panel ${isFirstSlide ? 'first-slide-card' : ''}`}
+            style={`--question-bg:${questionBg}; background:${questionBg}; background-color:${questionBg};`}
+          >
+            <div class="question-content">
             <!-- Progress indicator -->
             <div class="question-progress" aria-label={`Question ${activeSlide + 1} of ${questions.length}`}>
               <span class="sr-only">Question {activeSlide + 1} of {questions.length}</span>
@@ -493,6 +676,7 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
         </div>
       </div>
     </div>
+      {/key}
     <div class="slide-footer">
       <div class="opacity-90">
         Made with stardust • Crosby’s Cosmic Adventure
@@ -560,6 +744,41 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
     flex: 1;
     min-height: 0;
     align-items: stretch;
+    animation: slideIn 600ms cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideInBack {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .slide-forward {
+    animation: slideIn 600ms cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+
+  .slide-back {
+    animation: slideInBack 600ms cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slide-two-col,
+    .slide-forward,
+    .slide-back {
+      animation: none !important;
+    }
   }
 
   .question-panel {
@@ -616,8 +835,6 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
     width: clamp(160px, 32vw, 220px);
     height: clamp(120px, 24vw, 180px);
     object-fit: cover;
-    border-radius: 16px;
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
   }
 
   .answer-panel {
@@ -718,6 +935,7 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
     padding: 16px;
     background: rgba(6, 12, 26, 0.55);
     backdrop-filter: blur(6px);
+    border-radius: 18px;
     z-index: 15;
   }
 
@@ -1234,6 +1452,115 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
     .result-btn {
       font-size: 12px;
       padding: 8px 14px;
+    }
+  }
+
+  .share-menu {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.1);
+    min-width: 240px;
+    z-index: 100;
+    animation: shareMenuFadeIn 200ms ease;
+  }
+
+  @keyframes shareMenuFadeIn {
+    from {
+      opacity: 0;
+      transform: translateX(-50%) translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  }
+
+  .share-menu-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+    color: #0b1a2d;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 140ms ease;
+  }
+
+  .share-menu-close:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  .share-menu-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0b1a2d;
+    margin-bottom: 12px;
+    padding-right: 24px;
+  }
+
+  .share-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    color: #0b1a2d;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 140ms ease, transform 100ms ease;
+    width: 100%;
+    text-align: left;
+  }
+
+  .share-menu-item:hover {
+    background: rgba(0, 0, 0, 0.05);
+    transform: translateX(2px);
+  }
+
+  .share-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 640px) {
+    .share-menu {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      min-width: calc(100vw - 32px);
+      max-width: 400px;
+    }
+
+    @keyframes shareMenuFadeIn {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
     }
   }
 </style>

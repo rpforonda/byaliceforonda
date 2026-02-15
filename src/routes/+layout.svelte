@@ -92,7 +92,7 @@
     Skip to main content
   </a>
 
-  <header class="fixed top-0 left-0 right-0 z-50">
+  <header class="relative md:fixed md:top-0 left-0 right-0 z-50">
     <div class="bg-white">
       <div
         class="relative mx-auto flex max-w-6xl items-center justify-between gap-3 px-6 py-5 md:block"
@@ -217,11 +217,11 @@
     </div>
   </header>
 
-  <main id="main-content" class="flex-1 overflow-x-hidden overflow-y-auto" style="padding-top: 120px; padding-bottom: 280px; min-height: 100vh;">
+  <main id="main-content" class="flex-1 overflow-x-hidden overflow-y-auto pt-0 pb-0 md:pt-30 md:pb-70" style="min-height: 100vh;">
     {@render children?.()}
   </main>
 
-  <footer class="fixed bottom-0 left-0 right-0 z-50 overflow-hidden text-center text-sm">
+  <footer class="relative md:fixed md:bottom-0 left-0 right-0 z-50 overflow-hidden text-center text-sm">
     <div class="relative h-28 bg-pink-100">
       <div class="absolute inset-x-0 bottom-0 h-10 bg-rose-200"></div>
       <div class="absolute left-1/2 bottom-[.1rem] z-20 -translate-x-1/2">
