@@ -100,7 +100,7 @@
         <div class="flex items-center justify-start md:justify-center gap-3">
           <a
             href={resolve("/")}
-            class="flex w-fit"
+            class="flex w-fit wordmark-link"
           >
             <picture>
               <source srcset={logoWebpSrc} type="image/webp" />

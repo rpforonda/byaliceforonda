@@ -4,18 +4,32 @@
 
   let showIntro = $state(true);
   let showSplash = $state(false);
+  let currentCharacter = $state(0); // 0 = Tank, 1 = Crosby, 2 = Carla
 
   function startQuiz() {
     console.log('Take the Quiz clicked');
 
     showIntro = false;
     showSplash = true;
+    currentCharacter = 0;
     console.log('showIntro now', showIntro, 'showSplash now', showSplash);
   }
 
   function goToQuiz() {
     showSplash = false;
     console.log('Splash done, showing quiz');
+  }
+
+  function nextCharacter() {
+    if (currentCharacter < 2) {
+      currentCharacter += 1;
+    }
+  }
+
+  function prevCharacter() {
+    if (currentCharacter > 0) {
+      currentCharacter -= 1;
+    }
   }
 
   const starfield = [
@@ -78,7 +92,7 @@
           aria-hidden="true"
         >
           <div class="splash-row flex h-full flex-col overflow-hidden sm:flex-row">
-            <div class="splash-col bg-[#afab23]">
+            <div class="splash-col bg-[#afab23]" class:splash-col--active={currentCharacter === 0}>
               <div class="splash-blob text-splash-green">
                 TANK
               </div>
@@ -89,7 +103,7 @@
                 </picture>
               </div>
             </div>
-            <div class="splash-col bg-[#b8cee8]">
+            <div class="splash-col bg-[#b8cee8]" class:splash-col--active={currentCharacter === 1}>
               <div class="splash-blob text-splash-blue">
                 CROSBY
               </div>
@@ -100,7 +114,7 @@
                 </picture>
               </div>
             </div>
-            <div class="splash-col bg-[#ef6f3c]">
+            <div class="splash-col bg-[#ef6f3c]" class:splash-col--active={currentCharacter === 2}>
               <div class="splash-blob text-splash-orange">
                 CARLA
               </div>
@@ -112,7 +126,45 @@
               </div>
             </div>
           </div>
-          <div class="quiz-splash-actions">
+
+          <!-- Mobile navigation arrows -->
+          <div class="splash-nav-mobile">
+            {#if currentCharacter > 0}
+              <button class="splash-nav-arrow splash-nav-arrow--prev" type="button" onclick={prevCharacter} aria-label="Previous character">
+                ←
+              </button>
+            {/if}
+            {#if currentCharacter < 2}
+              <button class="splash-nav-arrow splash-nav-arrow--next" type="button" onclick={nextCharacter} aria-label="Next character">
+                →
+              </button>
+            {/if}
+          </div>
+
+          <!-- Dots indicator for mobile -->
+          <div class="splash-dots">
+            <button
+              class="splash-dot"
+              class:splash-dot--active={currentCharacter === 0}
+              onclick={() => currentCharacter = 0}
+              aria-label="View Tank"
+            ></button>
+            <button
+              class="splash-dot"
+              class:splash-dot--active={currentCharacter === 1}
+              onclick={() => currentCharacter = 1}
+              aria-label="View Crosby"
+            ></button>
+            <button
+              class="splash-dot"
+              class:splash-dot--active={currentCharacter === 2}
+              onclick={() => currentCharacter = 2}
+              aria-label="View Carla"
+            ></button>
+          </div>
+
+          <!-- Show NEXT button only on last character (mobile) or always (desktop) -->
+          <div class="quiz-splash-actions" class:quiz-splash-actions--show={currentCharacter === 2}>
             <button class="quiz-pill" type="button" onclick={goToQuiz}>
               NEXT
             </button>
@@ -194,13 +246,6 @@
     margin: 0 auto;
   }
 
-  @media (max-width: 640px) {
-    .quiz-shell {
-      width: 100%;
-      max-width: 100%;
-    }
-  }
-
   .quiz-shell > * {
     width: 100%;
   }
@@ -221,8 +266,12 @@
   }
 
   @media (max-width: 640px) {
+    .quiz-shell {
+      width: 100%;
+      max-width: 100%;
+    }
+
     .quiz-stage {
-      min-height: auto;
       padding: 0;
     }
   }
@@ -249,6 +298,14 @@
     transform: translateX(-50%);
     display: flex;
     justify-content: center;
+  }
+
+  .splash-nav-mobile {
+    display: none;
+  }
+
+  .splash-dots {
+    display: none;
   }
 
   .splash-row {
@@ -466,7 +523,6 @@
   .quiz-stage--splash {
     overflow: hidden;
     height: auto;
-    min-height: 100vh;
     border-radius: 24px;
     display: flex;
     flex-direction: column;
@@ -478,16 +534,28 @@
     flex: 1;
     display: flex;
     min-height: 0;
+    position: relative;
   }
 
   .splash-col {
     padding: 0 6px 12px;
     gap: 0;
     flex: 1;
-    display: flex;
+    min-width: 100%;
+    display: none;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 400ms ease;
+  }
+
+  .splash-col--active {
+    display: flex;
+    opacity: 1;
+    position: relative;
   }
 
   .splash-blob {
@@ -522,6 +590,89 @@
 
   .quiz-splash-actions {
     bottom: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 300ms ease;
+  }
+
+  .quiz-splash-actions--show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .splash-nav-mobile {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    padding: 0 16px;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .splash-nav-arrow {
+    pointer-events: auto;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #25533F;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 200ms ease;
+  }
+
+  .splash-nav-arrow:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.1);
+  }
+
+  .splash-nav-arrow:active {
+    transform: scale(0.95);
+  }
+
+  .splash-nav-arrow--prev {
+    margin-right: auto;
+  }
+
+  .splash-nav-arrow--next {
+    margin-left: auto;
+  }
+
+  .splash-dots {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+  }
+
+  .splash-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    border: none;
+    cursor: pointer;
+    transition: all 200ms ease;
+    padding: 0;
+  }
+
+  .splash-dot--active {
+    background: rgba(255, 255, 255, 0.95);
+    width: 12px;
+    height: 12px;
   }
 }
 
@@ -568,7 +719,6 @@
 
   @media (max-width: 480px) {
     .quiz-stage--splash {
-      min-height: 100vh;
       border-radius: 20px;
       overflow: hidden;
       display: flex;
@@ -581,16 +731,28 @@
       flex: 1;
       display: flex;
       min-height: 0;
+      position: relative;
     }
 
     .splash-col {
       padding: 0 4px 8px;
       gap: 0;
       flex: 1;
-      display: flex;
+      min-width: 100%;
+      display: none;
       flex-direction: column;
       justify-content: flex-start;
       align-items: center;
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 400ms ease;
+    }
+
+    .splash-col--active {
+      display: flex;
+      opacity: 1;
+      position: relative;
     }
 
     .splash-blob {
@@ -600,12 +762,12 @@
       transform: scale(1);
       -webkit-mask-size: 100% 100%;
       mask-size: 100% 100%;
-      min-height: 450px;
-      width: 450px;
-      padding: 60px 84px;
-      font-size: clamp(36px, 9vw, 54px);
-      margin-top: -80px;
-      margin-bottom: -60px;
+      min-height: 320px;
+      width: 320px;
+      padding: 44px 60px;
+      font-size: clamp(32px, 8vw, 48px);
+      margin-top: -60px;
+      margin-bottom: -40px;
       flex-shrink: 0;
     }
 
@@ -623,6 +785,16 @@
     .quiz-pill {
       padding: 14px 28px;
       font-size: 20px;
+    }
+
+    .splash-nav-arrow {
+      width: 44px;
+      height: 44px;
+      font-size: 22px;
+    }
+
+    .splash-dots {
+      bottom: 72px;
     }
   }
 
