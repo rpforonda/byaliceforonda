@@ -81,7 +81,7 @@
 </svelte:head>
 
 <div
-  class="min-h-screen bg-pink-50 text-gray-900 flex flex-col"
+  class="min-h-screen bg-[#FDF8E2] text-gray-900 flex flex-col"
   style="font-family: 'Nunito', sans-serif;"
 >
   <!-- Skip to main content link for keyboard users -->
@@ -141,7 +141,7 @@
         >
           <a
             href={resolve("/book")}
-            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-rose-600 text-rose-600 shadow-sm transition hover:bg-pink-50 sm:h-10 sm:w-10"
+            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-rose-600 text-rose-600 shadow-sm transition hover:bg-[#FDF8E2] sm:h-10 sm:w-10"
             aria-label="Shop books"
           >
             <svg
@@ -185,7 +185,7 @@
               >
                 {#each navItems as item}
                   <a
-                    class="block px-4 py-2 text-sm font-semibold lowercase hover:bg-pink-50"
+                    class="block px-4 py-2 text-sm font-semibold lowercase hover:bg-[#FDF8E2]"
                     href={item.href}
                     onclick={() => {
                       menuOpen = false;
@@ -217,16 +217,16 @@
     </div>
   </header>
 
-  <main id="main-content" class="flex-1 overflow-x-hidden overflow-y-auto pt-0 pb-0 md:pt-30 md:pb-70" style="min-height: 100vh;">
+  <main id="main-content" class="flex-1 overflow-x-hidden overflow-y-auto pt-0 pb-0 md:pt-30" style="min-height: 100vh;">
     {@render children?.()}
   </main>
 
-  <footer class="relative md:fixed md:bottom-0 left-0 right-0 z-50 overflow-hidden text-center text-sm">
-    <div class="relative h-28 bg-pink-100">
-      <div class="absolute inset-x-0 bottom-0 h-10 bg-rose-200"></div>
+  <footer class="relative left-0 right-0 overflow-hidden text-center text-sm">
+    <div class="relative h-28 bg-[#FDF8E2]">
+      <div class="absolute inset-x-0 bottom-0 h-10 bg-[#EADFBF]"></div>
       <div class="absolute left-1/2 bottom-[.1rem] z-20 -translate-x-1/2">
         <span
-          class="inline-flex items-center justify-center rounded-full bg-rose-200 p-2"
+          class="inline-flex items-center justify-center rounded-full bg-[#EADFBF] p-2"
         >
           <picture>
             <source srcset={resolve("/alice_logopink.webp")} type="image/webp" />

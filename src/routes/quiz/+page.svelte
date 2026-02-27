@@ -2,9 +2,10 @@
   import { resolve } from '$app/paths';
   import Quiz from '$lib/components/Quiz.svelte';
 
-  let showIntro = $state(true);
-  let showSplash = $state(false);
+  let showIntro = $state(false);
+  let showSplash = $state(true);
   let currentCharacter = $state(0); // 0 = Tank, 1 = Crosby, 2 = Carla
+  const quizTitleImage = resolve("/quiz title.png");
 
   function startQuiz() {
     console.log('Take the Quiz clicked');
@@ -91,11 +92,14 @@
           role="presentation"
           aria-hidden="true"
         >
+          <img
+            class="splash-title-image"
+            src={quizTitleImage}
+            alt="Quiz title"
+            loading="lazy"
+          />
           <div class="splash-row flex h-full flex-col overflow-hidden sm:flex-row">
             <div class="splash-col bg-[#afab23]" class:splash-col--active={currentCharacter === 0}>
-              <div class="splash-blob text-splash-green">
-                TANK
-              </div>
               <div class="splash-figure">
                 <picture>
                   <source srcset={resolve("/Tank.webp")} type="image/webp" />
@@ -104,20 +108,14 @@
               </div>
             </div>
             <div class="splash-col bg-[#b8cee8]" class:splash-col--active={currentCharacter === 1}>
-              <div class="splash-blob text-splash-blue">
-                CROSBY
-              </div>
               <div class="splash-figure">
                 <picture>
                   <source srcset={resolve("/Crosby.webp")} type="image/webp" />
-                  <img src={resolve("/Crosby.png")} alt="Crosby" class="splash-img" />
+                  <img src={resolve("/Crosby.png")} alt="Crosby" class="splash-img splash-img-crosby" />
                 </picture>
               </div>
             </div>
             <div class="splash-col bg-[#ef6f3c]" class:splash-col--active={currentCharacter === 2}>
-              <div class="splash-blob text-splash-orange">
-                CARLA
-              </div>
               <div class="splash-figure">
                 <picture>
                   <source srcset={resolve("/Carla.webp")} type="image/webp" />
@@ -182,25 +180,6 @@
               class="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,#104836_0%,transparent_34%),radial-gradient(circle_at_84%_12%,#0f4e3a_0%,transparent_36%)]"
               aria-hidden="true"
             ></div>
-            <div class="starfield" aria-hidden="true">
-              {#each starfield as star}
-                <span
-                  class="starfield-star"
-                  style={`left:${star.left}; top:${star.top}; width:calc(${star.size} * 0.9); height:calc(${star.size} * 0.9); transform: rotate(${star.rotate}); opacity:${star.opacity ?? 0.88};`}
-                >
-                  <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
-                    <polygon
-                      points="50,6 62,38 95,38 68,57 78,91 50,72 22,91 32,57 5,38 38,38"
-                      fill="#ffc5d9"
-                      stroke="#ffc5d9"
-                      stroke-width="6"
-                      stroke-linejoin="round"
-                      stroke-linecap="round"
-                    />
-                  </svg>
-                </span>
-              {/each}
-            </div>
           </div>
 
           <div class="relative z-10 flex flex-col items-center text-center">
@@ -311,6 +290,19 @@
   .splash-row {
     flex: 1;
     min-height: 100%;
+    padding-top: clamp(148px, 18vw, 250px);
+  }
+
+  .splash-title-image {
+    position: absolute;
+    top: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200%;
+    max-width: 200%;
+    height: auto;
+    z-index: 40;
+    pointer-events: none;
   }
 
   .starfield {
@@ -488,37 +480,6 @@
     font-family: 'Chewy', 'Fredoka', system-ui, sans-serif;
   }
 
-.splash-blob {
-  position: absolute;
-  top: -4rem;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: clamp(48px, 12vw, 80px) clamp(72px, 16vw, 120px);
-  height: clamp(55%, 30vw, 75%);
-  min-height: 325px;
-  min-width: 575px;
-  display: grid;
-  place-items: center;
-  background: #f5d255;
-  --splash-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 180'%3E%3Cpath fill='white' d='M100 56 L107.8 70.7 L125 60.6 L121.2 75.9 L143.3 73 L129 84.8 L150 90 L129 95.2 L143.3 107 L121.2 104.1 L125 119.4 L107.8 109.3 L100 124 L92.2 109.3 L75 119.4 L78.8 104.1 L56.7 107 L71 95.2 L50 90 L71 84.8 L56.7 73 L78.8 75.9 L75 60.6 L92.2 70.7 Z'/%3E%3C/svg%3E");
-  -webkit-mask-image: var(--splash-mask);
-  mask-image: var(--splash-mask);
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  font-family: 'Chewy', 'Fredoka', system-ui, sans-serif;
-  font-size: clamp(26px, 6.5vw, 50px);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
-  text-align: center;
-  line-height: 1.1;
-  transition: all 600ms cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-
 @media (max-width: 640px) {
   .quiz-stage--splash {
     overflow: hidden;
@@ -530,7 +491,7 @@
 
   .splash-row {
     gap: 0;
-    padding: 0;
+    padding: 124px 0 0;
     flex: 1;
     display: flex;
     min-height: 0;
@@ -556,24 +517,6 @@
     display: flex;
     opacity: 1;
     position: relative;
-  }
-
-  .splash-blob {
-    position: relative;
-    top: auto;
-    left: auto;
-    transform: scale(1);
-    -webkit-mask-size: 100% 100%;
-    mask-size: 100% 100%;
-    min-width: 0;
-    min-height: 360px;
-    width: 360px;
-    padding: 48px 68px;
-    font-size: clamp(28px, 7vw, 44px);
-    height: auto;
-    margin-top: -60px;
-    margin-bottom: -40px;
-    flex-shrink: 0;
   }
 
   .splash-figure {
@@ -704,17 +647,9 @@
     transition: all 600ms cubic-bezier(0.165, 0.84, 0.44, 1);
   }
 
-  .text-splash-green {
-    color: #afab23;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.24);
-  }
-  .text-splash-blue {
-    color: #b8cee8;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.28);
-  }
-  .text-splash-orange {
-    color: #ef6f3c;
-    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.32);
+  .splash-img-crosby {
+    transform: scale(1.2);
+    transform-origin: center;
   }
 
   @media (max-width: 480px) {
@@ -727,7 +662,7 @@
 
     .splash-row {
       gap: 0;
-      padding: 0;
+      padding: 112px 0 0;
       flex: 1;
       display: flex;
       min-height: 0;
@@ -753,22 +688,6 @@
       display: flex;
       opacity: 1;
       position: relative;
-    }
-
-    .splash-blob {
-      position: relative;
-      top: auto;
-      left: auto;
-      transform: scale(1);
-      -webkit-mask-size: 100% 100%;
-      mask-size: 100% 100%;
-      min-height: 320px;
-      width: 320px;
-      padding: 44px 60px;
-      font-size: clamp(32px, 8vw, 48px);
-      margin-top: -60px;
-      margin-bottom: -40px;
-      flex-shrink: 0;
     }
 
     .splash-figure {

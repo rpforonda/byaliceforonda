@@ -2,26 +2,29 @@
   import { resolve } from '$app/paths';
 </script>
 
-<section class="mx-auto max-w-5xl px-6 py-8 sm:py-12 md:py-16 min-h-[calc(100vh-400px)]">
+<section class="mx-auto max-w-5xl px-6 py-8 sm:py-12 md:py-16 min-h-[calc(100vh-400px)] text-center">
   <div class="grid gap-8 sm:gap-10 items-start lg:grid-cols-[1.2fr_0.8fr]">
     <div>
-      <div class="mt-4 space-y-2 text-base sm:text-lg leading-7 sm:leading-8 text-gray-700">
-        <span class="font-[Borel] text-2xl sm:text-3xl leading-tight block text-[#db2108]">Hello,</span><span class="block">I'm Alice!</span>
-        <span class="block">I live in Baden-Württemberg, Germany with my husband and three children.</span>
-        <span class="block">
-          I love to write stories inspired by my own experiences and imagination.
-        </span>
-        <span class="block">
-          When I'm not writing, I study German and play volleyball.
-        </span>
-        <span class="block">
-          My debut children's book, Crosby's Cosmic Adventure, was inspired by my own struggle with belonging and self-acceptance.
-          I hope you are able to see yourself and connect with the stories and characters I write about.
-        </span>
+      <div class="mt-4 space-y-1 text-base sm:text-lg leading-7 sm:leading-8 text-gray-700">
+        <span class="text-8xl sm:text-9xl leading-none block text-[#db2108] text-center lowercase" style="font-family: 'New Icon Script', cursive;">hello,</span>
+        <div style="font-family: 'Alice Regular', serif;">
+          <span class="block">I'm Alice!</span>
+          <span class="block">I live in Baden-Württemberg, Germany with my husband and three children.</span>
+          <span class="block">
+            I love to write stories inspired by my own experiences and imagination.
+          </span>
+          <span class="block">
+            When I'm not writing, I study German and play volleyball.
+          </span>
+          <span class="block">
+            My debut children's book, Crosby's Cosmic Adventure, was inspired by my own struggle with belonging and self-acceptance.
+            I hope you are able to see yourself and connect with the stories and characters I write about.
+          </span>
+        </div>
       </div>
-      <p class="mt-6 text-base sm:text-lg leading-relaxed text-gray-700">
+      <p class="mt-6 text-base sm:text-lg leading-relaxed text-gray-700" style="font-family: 'Alice Regular', serif;">
         All my love,<br />
-        <span class="font-[Corinthia] text-4xl sm:text-5xl text-[#db2108]">Alice</span>
+        <span class="text-4xl sm:text-5xl text-[#db2108]" style="font-family: 'Great Vibes', cursive;">Alice</span>
       </p>
     </div>
     <div class="flex justify-center">

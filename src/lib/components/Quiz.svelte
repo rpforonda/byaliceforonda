@@ -53,15 +53,6 @@
   const comboPattern =
     "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 260 160'%3E%3Crect width='260' height='160' fill='%23f878ab'/%3E%3Cg fill='%23ffffff'%3E%3Cpath d='M18 12 L22 22 L18 32 L14 22 Z M8 22 L18 18 L28 22 L18 26 Z'/%3E%3Cpath d='M238 30 L242 40 L238 50 L234 40 Z M228 40 L238 36 L248 40 L238 44 Z'/%3E%3Cpath d='M110 124 L114 134 L110 144 L106 134 Z M100 134 L110 130 L120 134 L110 138 Z'/%3E%3C/g%3E%3Cg fill='%23d9d9dd'%3E%3Cpolygon points='64,22 67,29 74,30 69,35 70,42 64,38 58,42 59,35 54,30 61,29'/%3E%3Cpolygon points='208,14 211,21 218,22 213,27 214,34 208,30 202,34 203,27 198,22 205,21'/%3E%3Cpolygon points='42,108 45,115 52,116 47,121 48,128 42,124 36,128 37,121 32,116 39,115'/%3E%3C/g%3E%3Cg fill='%23f9d66a'%3E%3Cpath d='M148 12 L151 19 L158 22 L151 25 L148 32 L145 25 L138 22 L145 19 Z M136 22 L143 25 L146 32 L149 25 L156 22 L149 19 L146 12 L143 19 Z'/%3E%3Cpath d='M224 94 L227 101 L234 104 L227 107 L224 114 L221 107 L214 104 L221 101 Z M212 104 L219 107 L222 114 L225 107 L232 104 L225 101 L222 94 L219 101 Z'/%3E%3Cpath d='M92 68 L95 75 L102 78 L95 81 L92 88 L89 81 L82 78 L89 75 Z M80 78 L87 81 L90 88 L93 81 L100 78 L93 75 L90 68 L87 75 Z'/%3E%3C/g%3E%3C/svg%3E";
 
-  // Yellow background versions for answer panel
-  const tankPatternYellow =
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 140'%3E%3Crect width='200' height='140' fill='%23edc257'/%3E%3Cg fill='%234a715f'%3E%3Cpath d='M22 12 l3 9 9 3-9 3-3 9-3-9-9-3 9-3z'/%3E%3Cpath d='M82 26 l3 9 9 3-9 3-3 9-3-9-9-3 9-3z'/%3E%3Cpath d='M152 18 l3 9 9 3-9 3-3 9-3-9-9-3 9-3z'/%3E%3Cpath d='M48 76 l3 9 9 3-9 3-3 9-3-9-9-3 9-3z'/%3E%3Cpath d='M126 82 l3 9 9 3-9 3-3 9-3-9-9-3 9-3z'/%3E%3Cpath d='M168 112 l3 9 9 3-9 3-3 9-3-9-9-3 9-3z'/%3E%3C/g%3E%3C/svg%3E";
-  const carlaPatternYellow =
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 160'%3E%3Crect width='220' height='160' fill='%23edc257'/%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='0.95' stroke-width='1.6' stroke-linejoin='round' stroke-linecap='round'%3E%3Cpath d='M24 18 L29 30 L42 32 L32 39 L35 52 L24 45 L13 52 L16 39 L6 32 L19 30 Z'/%3E%3Cpath d='M112 24 L117 36 L129 38 L120 45 L123 58 L112 51 L101 58 L104 45 L95 38 L107 36 Z'/%3E%3Cpath d='M188 20 L193 31 L205 34 L196 41 L199 53 L188 47 L177 53 L180 41 L171 34 L183 31 Z'/%3E%3Cpath d='M56 84 L61 96 L74 98 L64 105 L67 118 L56 111 L45 118 L48 105 L38 98 L51 96 Z'/%3E%3Cpath d='M156 92 L161 103 L173 106 L164 113 L167 125 L156 119 L145 125 L148 113 L139 106 L151 103 Z'/%3E%3Cpath d='M98 132 L103 143 L115 146 L106 153 L109 165 L98 159 L87 165 L90 153 L81 146 L93 143 Z'/%3E%3C/g%3E%3C/svg%3E";
-  const crosbyPatternYellow =
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 200'%3E%3Crect width='320' height='200' fill='%23edc257'/%3E%3Cg fill='%23d8dde5' opacity='0.95'%3E%3Cpolygon points='36,20 42,34 56,36 45,44 48,58 36,50 24,58 27,44 16,36 30,34'/%3E%3Cpolygon points='150,34 156,48 172,50 160,58 163,73 150,64 137,73 140,58 128,50 144,48'/%3E%3Cpolygon points='270,22 276,36 291,38 279,47 282,61 270,53 258,61 261,47 249,38 264,36'/%3E%3Cpolygon points='94,116 100,130 115,132 103,140 106,155 94,146 82,155 85,140 73,132 88,130'/%3E%3Cpolygon points='220,128 226,142 241,144 229,153 232,167 220,159 208,167 211,153 199,144 214,142'/%3E%3Cpolygon points='302,90 307,102 319,104 310,111 312,124 302,117 292,124 294,111 285,104 297,102'/%3E%3C/g%3E%3C/svg%3E";
-  const comboPatternYellow =
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 260 160'%3E%3Crect width='260' height='160' fill='%23edc257'/%3E%3Cg fill='%23ffffff'%3E%3Cpath d='M18 12 L22 22 L18 32 L14 22 Z M8 22 L18 18 L28 22 L18 26 Z'/%3E%3Cpath d='M238 30 L242 40 L238 50 L234 40 Z M228 40 L238 36 L248 40 L238 44 Z'/%3E%3Cpath d='M110 124 L114 134 L110 144 L106 134 Z M100 134 L110 130 L120 134 L110 138 Z'/%3E%3C/g%3E%3Cg fill='%23d9d9dd'%3E%3Cpolygon points='64,22 67,29 74,30 69,35 70,42 64,38 58,42 59,35 54,30 61,29'/%3E%3Cpolygon points='208,14 211,21 218,22 213,27 214,34 208,30 202,34 203,27 198,22 205,21'/%3E%3Cpolygon points='42,108 45,115 52,116 47,121 48,128 42,124 36,128 37,121 32,116 39,115'/%3E%3C/g%3E%3Cg fill='%23f9d66a'%3E%3Cpath d='M148 12 L151 19 L158 22 L151 25 L148 32 L145 25 L138 22 L145 19 Z M136 22 L143 25 L146 32 L149 25 L156 22 L149 19 L146 12 L143 19 Z'/%3E%3Cpath d='M224 94 L227 101 L234 104 L227 107 L224 114 L221 107 L214 104 L221 101 Z M212 104 L219 107 L222 114 L225 107 L232 104 L225 101 L222 94 L219 101 Z'/%3E%3Cpath d='M92 68 L95 75 L102 78 L95 81 L92 88 L89 81 L82 78 L89 75 Z M80 78 L87 81 L90 88 L93 81 L100 78 L93 75 L90 68 L87 75 Z'/%3E%3C/g%3E%3C/svg%3E";
   const backgroundForResult = (key) => {
     if (key === 'tank') return `#afab23 url("${tankPattern}") center/300px repeat`;
     if (key === 'carla') return `#ef6f3c url("${carlaPattern}") center/260px repeat`;
@@ -128,16 +119,6 @@
     tankPattern,     // slide 7 - yellow-brown
     tankPattern      // slide 8 - green
   ];
-  const answerPatterns = [
-    carlaPatternYellow,    // slide 1
-    crosbyPatternYellow,   // slide 2
-    carlaPatternYellow,    // slide 3
-    crosbyPatternYellow,   // slide 4
-    comboPatternYellow,    // slide 5
-    carlaPatternYellow,    // slide 6
-    tankPatternYellow,     // slide 7
-    tankPatternYellow      // slide 8
-  ];
   const questionImages = [
     resolve("/marshmellowPlanet.png"), // marshmallow planet
     resolve("/apples.png"), // apples
@@ -149,7 +130,7 @@
     resolve("/rocket.png") // rocket
   ];
   let questionBg = $state(questionColors[0] ?? '#ff7bac');
-  let answerBg = $state(`url("${answerPatterns[0]}") center/280px repeat`);
+  let answerBg = $state('transparent');
   let toast = $state(null); // { message: string, accent?: string } | null
   let toastTimer;
   let showShareMenu = $state(false);
@@ -158,8 +139,7 @@
 
   $effect(() => {
     questionBg = questionColors[activeSlide] ?? questionColors[0] ?? '#ff7bac';
-    const pattern = answerPatterns[activeSlide] ?? answerPatterns[0];
-    answerBg = `url("${pattern}") center/280px repeat`;
+    answerBg = 'transparent';
   });
 
   $effect(() => {
@@ -631,7 +611,7 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
     {/if}
 
       {#key activeSlide}
-        <div class="slide-two-col" aria-live="polite">
+        <div class="slide-two-col" aria-live="polite" style={`--question-bg:${questionBg};`}>
           <div
             class={`question-panel ${isFirstSlide ? 'first-slide-card' : ''}`}
             style={`--question-bg:${questionBg}; background:${questionBg}; background-color:${questionBg};`}
@@ -648,22 +628,16 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
             <h2 class={`question-text font-semibold leading-snug ${isFirstSlide ? 'first-slide-text first-slide-question' : ''}`}>
               {questions[activeSlide].q}
             </h2>
-            <img
-              class="question-illustration"
-              src={questionImages[activeSlide]}
-              alt="Decorative illustration for question {activeSlide + 1}"
-              loading="lazy"
-            />
           </div>
         </div>
 
         <div class="answer-panel" style={`background:${answerBg};`}>
-          <div class="grid gap-3">
+          <div class="grid gap-3 answer-options-grid">
             {#each choiceOrders[activeSlide] as originalIndex, ci}
               {@const choiceText = questions[activeSlide].choices[originalIndex]}
               <button
                 type="button"
-                class={`flex w-full items-center gap-4 rounded-full border-2 px-5 py-3 text-left font-semibold shadow-[0_12px_32px_rgba(0,0,0,0.35)] transition duration-200 answer-card answer-border ${answers[activeSlide] === originalIndex ? 'selected' : ''}`}
+                class={`flex w-full items-center gap-4 rounded-none border-2 px-5 py-3 text-left font-semibold transition duration-200 answer-card answer-border ${answers[activeSlide] === originalIndex ? 'selected' : ''}`}
                 aria-pressed={answers[activeSlide] === originalIndex}
                 onclick={() => selectAnswer(activeSlide, originalIndex)}
                 style={`border-color:${currentTheme.accent};`}
@@ -770,8 +744,10 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
 
   .slide-two-col {
     display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
     gap: 0;
+    background: var(--question-bg, #ff7bac);
     border-radius: 18px;
     overflow: hidden;
     flex: 1;
@@ -817,15 +793,15 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
   .question-panel {
     position: relative;
     background: var(--question-bg, #ff7bac) !important;
-    padding: clamp(16px, 3vw, 26px);
+    padding: clamp(10px, 1.8vw, 14px);
     display: flex;
     align-items: center;
     justify-content: center;
     color: #ffffff;
-    border-radius: 18px 0 0 18px;
+    border-radius: 18px 18px 0 0;
     text-transform: uppercase;
     font-family: 'DynaPuff', 'More Sugar', 'Chewy', system-ui, sans-serif;
-    height: 100%;
+    min-height: clamp(140px, 20vh, 190px);
   }
 
   .question-text {
@@ -865,15 +841,15 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
   }
 
   .question-illustration {
-    width: clamp(160px, 32vw, 220px);
-    height: clamp(120px, 24vw, 180px);
+    width: clamp(120px, 24vw, 165px);
+    height: clamp(90px, 18vw, 135px);
     object-fit: contain;
   }
 
   .answer-panel {
-    background: #edc257;
+    background: transparent;
     padding: 20px 18px;
-    border-radius: 0 18px 18px 0;
+    border-radius: 0 0 18px 18px;
     position: relative;
     display: grid;
     grid-template-rows: 1fr auto;
@@ -882,7 +858,6 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
 
   @media (max-width: 768px) {
     .slide-two-col {
-      grid-template-columns: 1fr;
       min-height: unset;
       height: auto;
       gap: 0;
@@ -908,53 +883,49 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
 
 
   .answer-card {
-    background: rgba(255, 255, 255, 0.15) !important;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-radius: 999px !important;
-    border-width: 3px;
+    background: rgba(255, 255, 255, 0.06) !important;
+    border-radius: 0 !important;
+    border-width: 2px;
     align-items: center;
+    min-height: clamp(70px, 9vh, 92px);
+    height: 100%;
     transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
   }
 
+  .answer-options-grid {
+    grid-auto-rows: 1fr;
+  }
+
   .answer-card::before {
-    content: '';
-    position: absolute;
-    inset: -3px;
-    border-radius: 999px;
-    padding: 3px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05));
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
+    content: none;
   }
 
   .answer-card:hover {
-    background: rgba(255, 255, 255, 0.25) !important;
+    background: rgba(255, 255, 255, 0.12) !important;
     border-color: rgba(255, 255, 255, 0.85);
-    transform: translateY(-3px) scale(1.01);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    transform: translateY(-1px);
+    box-shadow: none;
   }
 
   .answer-card:active {
-    transform: translateY(1px) scale(0.99);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    background: rgba(255, 255, 255, 0.35) !important;
+    transform: translateY(0);
+    box-shadow: none;
+    background: rgba(255, 255, 255, 0.16) !important;
   }
 
   .answer-text {
     font-family: 'Oswald', 'Chewy', system-ui, sans-serif;
     text-transform: uppercase;
     color: #ffffff;
-    font-size: clamp(18px, 3.4vw, 24px);
-    line-height: 1.3;
+    font-size: clamp(14px, 2.4vw, 18px);
+    line-height: 1.2;
+    overflow-wrap: anywhere;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
   }
 
   .answer-border {
-    border: 3px solid rgba(255, 255, 255, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.5);
   }
 
   .answer-bullet {
@@ -962,22 +933,22 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
     height: 18px;
     min-width: 18px;
     min-height: 18px;
-    border-radius: 999px !important;
+    border-radius: 2px !important;
     flex-shrink: 0;
   }
 
   .selected.answer-border {
-    background: rgba(255, 255, 255, 0.4) !important;
+    background: rgba(255, 255, 255, 0.2) !important;
     border-color: rgba(255, 255, 255, 1);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), 0 0 0 6px rgba(255, 255, 255, 0.2);
+    box-shadow: none;
   }
 
   .selected.answer-border:hover {
-    transform: translateY(-3px) scale(1.01);
+    transform: translateY(-1px);
   }
 
   .selected.answer-border:active {
-    transform: translateY(1px) scale(0.99);
+    transform: translateY(0);
   }
 
   .slide-footer {
@@ -1118,18 +1089,9 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
     width: 100%;
     max-width: 100%;
     align-self: stretch;
-    padding: 30px 32px;
-    border-radius: 24px;
-    background: var(--result-oval, #faed68);
-    --result-rect-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath fill='white' d='M10 20 C12 12 20 8 30 10 C46 7 64 7 80 10 C90 8 96 14 96 24 C98 40 98 60 96 76 C95 88 88 94 78 92 C60 95 40 95 22 92 C12 94 5 88 6 76 C4 60 4 40 6 24 C6 22 8 21 10 20 Z'/%3E%3C/svg%3E");
-    -webkit-mask-image: var(--result-rect-mask);
-    mask-image: var(--result-rect-mask);
-    -webkit-mask-size: 104% 104%;
-    mask-size: 104% 104%;
-    -webkit-mask-position: center;
-    mask-position: center;
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
   }
 
   .result-desc-inner {
@@ -1138,18 +1100,10 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
     font-size: clamp(16px, 1.7vw, 24px);
     line-height: 1.24;
     color: #0b1a2d;
-    background: var(--result-base, #ffffff);
-    border-radius: 14px;
-    min-height: clamp(120px, 16vh, 180px);
-    padding: clamp(26px, 3.6vw, 40px);
-    -webkit-mask-image: var(--result-rect-mask);
-    mask-image: var(--result-rect-mask);
-    -webkit-mask-size: 104% 104%;
-    mask-size: 104% 104%;
-    -webkit-mask-position: center;
-    mask-position: center;
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
+    background: #faed68;
+    border-radius: 0;
+    min-height: 0;
+    padding: clamp(18px, 2.4vw, 28px);
     font-family: 'More Sugar', 'DynaPuff', 'Chewy', system-ui, sans-serif;
   }
 
@@ -1203,15 +1157,15 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    width: 96%;
-    height: calc(100% - 44px);
+    width: 110%;
+    height: calc(115% - 44px);
     background: #faed68;
     color: #0b1a2d;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: clamp(10px, 1.2vw, 16px);
+    gap: clamp(4px, 0.7vw, 8px);
     padding: clamp(36px, 4vw, 56px);
     text-align: center;
     border-radius: 50%;
@@ -1231,6 +1185,7 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
   }
 
   .combo-desc {
+    margin-top: 0;
     max-width: min(62%, 520px);
     font-size: clamp(22px, 2.4vw, 36px);
     line-height: 1.2;
@@ -1251,7 +1206,7 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
   }
 
   .combo-character--crosby {
-    left: 2%;
+    left: -1%;
     top: -2%;
     transform: none;
   }
@@ -1287,9 +1242,9 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
     }
 
     .combo-center-oval {
-      width: 96%;
+      width: 110%;
       height: auto;
-      min-height: 420px;
+      min-height: 483px;
       top: 50%;
       padding: clamp(32px, 6vw, 48px) clamp(20px, 4vw, 32px);
       gap: clamp(16px, 3vw, 24px);
@@ -1398,21 +1353,21 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
   .nav-actions {
     display: flex;
     gap: 12px;
-    justify-content: flex-end;
-    align-items: flex-end;
+    justify-content: center;
+    align-items: center;
     margin-top: 0;
   }
 
   .nav-cloud {
     position: relative;
-    padding: 14px 22px;
+    padding: 10px 15px;
     background: #fff;
     color: #ff7bac;
     border: 3px solid #ffffff;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    font-size: 16px;
+    font-size: 11px;
     cursor: pointer;
     border-radius: 999px;
     box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
@@ -1477,16 +1432,16 @@ Find out your Crosby's Cosmic Adventure character! ${window.location?.href ?? ''
 
     .nav-actions {
       flex-direction: column;
-      align-items: stretch;
+      align-items: center;
       gap: 8px;
       margin-top: 8px;
     }
 
     .nav-cloud {
-      width: 100%;
+      width: auto;
       text-align: center;
-      padding: 12px 18px;
-      font-size: 14px;
+      padding: 8px 13px;
+      font-size: 10px;
     }
 
     .slide-footer {

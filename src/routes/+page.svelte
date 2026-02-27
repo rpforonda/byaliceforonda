@@ -105,7 +105,7 @@
         { label: "Superpower", value: "Soft bravery that grows" },
       ],
       image: resolve("/Crosby.png"),
-      imageWebp: resolve("/Crosby.webp"),
+      imageWebp: resolve("/Crosby.png"),
       accent: "#b8cee8",
     },
     {
@@ -257,12 +257,9 @@
           ? 'opacity: 1; transform: scale(1) translateX(0); max-height: 1000px; pointer-events: auto; background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);'
           : 'opacity: 0; transform: scale(0.9) translateX(-20px); max-height: 0; pointer-events: none; overflow: hidden; background: rgba(255, 255, 255, 0); backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px);'}
       >
-        <p class="text-5xl sm:text-6xl font-['Great_Vibes',cursive] text-[#d2234c] mb-2">
-          Welcome
+        <p class="text-5xl sm:text-6xl font-['Great_Vibes',cursive] lowercase tracking-[0.08em] text-[#d2234c] mb-2">
+          welcome
         </p>
-        <h1 class="text-3xl sm:text-4xl font-semibold tracking-tight text-gray-900 mb-4">
-          Stories that sparkle with courage and heart.
-        </h1>
         <p class="text-base sm:text-lg leading-relaxed text-gray-800 mb-6">
           Step into a world of imagination where every page whispers
           encouragement and every character finds their voice. Alice Foronda
@@ -295,13 +292,13 @@
 </section>
 
 <section
-  class="relative w-full overflow-hidden bg-pink-100 flex items-center justify-center scroll-reveal"
+  class="relative w-full overflow-hidden bg-[#F9F5E9] flex items-center justify-center scroll-reveal"
   style="min-height: 100vh;"
 >
   <div class="relative z-10 mx-auto max-w-6xl px-6 py-20 sm:py-24 w-full">
     <div class="grid items-center gap-10 lg:grid-cols-[320px_1fr] lg:gap-16">
       <div
-        class="relative mx-auto max-w-sm rounded-3xl bg-[dodgerblue] p-3 shadow-xl hover:shadow-2xl"
+        class="relative mx-auto max-w-sm shadow-xl hover:shadow-2xl"
         style="transition: all 1000ms cubic-bezier(0.165, 0.84, 0.44, 1);"
         onmouseenter={(e) => { e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)'; }}
         onmouseleave={(e) => { e.currentTarget.style.transform = 'translateY(0) scale(1)'; }}
@@ -309,24 +306,28 @@
         <img
           alt="Crosby's Cosmic Adventure book cover featuring a crocodile in space"
           src={bookImage}
-          class="h-full w-full rounded-2xl object-cover"
+          class="h-full w-full object-cover"
           loading="lazy"
         />
       </div>
-      <div>
-        <p class="text-2xl font-['Great_Vibes',_cursive] text-[#d2234c]">
+      <div class="text-center">
+        <p class="text-4xl font-['Lora',_serif] font-bold text-[#d2234c]">
           Debut Book!
         </p>
         <h2
-          class="mt-2 text-3xl font-semibold tracking-tight text-[#1b1b1d] sm:text-4xl"
+          class="mt-2 text-3xl font-['Roboto',_sans-serif] font-light uppercase tracking-tight text-[#1b1b1d] sm:text-4xl"
         >
           Crosby's Cosmic Adventure
         </h2>
         <p class="mt-5 text-base leading-relaxed text-gray-700">
-          Crosby the crocodile feels a little too different—but when the
-          moonlight sparkles, he learns that bravery is about trying, not about
-          being perfect. With joyful illustrations and a heartfelt message, this
-          story reminds young dreamers that every wobble can become a wonder.
+          Join Crosby and his pals, Carla the capybara and Tank the turtle on
+          an adventure of a lifetime! But even the best of adventures can bring
+          mixed feelings. When misunderstandings pop up and self-doubt sneaks
+          in, the friends must find the courage to listen, speak up, and be
+          there for one another.
+          <br /><br />
+          A heartwarming story about friendship, bravery, and believing in
+          yourself.
         </p>
         <a
           class="mt-8 inline-flex items-center rounded-full bg-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg hover:bg-[#b01d3c] hover:shadow-2xl"
@@ -369,36 +370,38 @@
   <div class="relative z-10 mx-auto flex h-full max-w-6xl flex-col px-6 py-24">
     <div class="mb-10 text-center">
       <p
-        class="text-3xl font-['Great_Vibes',_cursive] text-[#ffb4c6] sm:text-4xl"
+        class="text-3xl font-['Hanken_Grotesk',_sans-serif] uppercase tracking-[0.2em] text-[#ffb4c6] sm:text-4xl"
       >
         Meet the Characters
-      </p>
-      <h2
-        class="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl whitespace-nowrap text-center mx-auto"
-      >
-        {characters[activeCharacter].name}
-      </h2>
-      <p class="mt-2 text-base text-[#b8d4ff]">
-        {characters[activeCharacter].role}
       </p>
     </div>
     <div
       class="grid gap-10 lg:grid-cols-[minmax(320px,420px)_1fr] lg:gap-16 flex-1"
       aria-live="polite"
     >
-      <div
-        class="character-frame overflow-hidden rounded-full border-8 bg-white/10 p-2 shadow-[0_15px_40px_rgba(0,0,0,0.25)] mx-auto flex items-center justify-center"
-        style={`border-color:${characters[activeCharacter].accent}`}
-      >
-        <picture>
-          <source srcset={characters[activeCharacter].imageWebp} type="image/webp" />
-          <img
-            alt={`Illustration of ${characters[activeCharacter].name}`}
-            src={characters[activeCharacter].image}
-            class={`rounded-full object-contain character-img ${activeCharacter === 0 ? 'character-img-crosby' : ''} ${activeCharacter === 2 ? 'character-img-tank' : ''}`}
-            loading="lazy"
-          />
-        </picture>
+      <div class="mx-auto flex flex-col items-center gap-4">
+        <div
+          class="character-frame overflow-hidden rounded-full border-8 bg-white/10 p-2 shadow-[0_15px_40px_rgba(0,0,0,0.25)] mx-auto flex items-center justify-center"
+          style={`border-color:${characters[activeCharacter].accent}`}
+        >
+          <picture>
+            <source srcset={characters[activeCharacter].imageWebp} type="image/webp" />
+            <img
+              alt={`Illustration of ${characters[activeCharacter].name}`}
+              src={characters[activeCharacter].image}
+              class={`rounded-full object-contain character-img ${activeCharacter === 0 ? 'character-img-crosby' : ''} ${activeCharacter === 2 ? 'character-img-tank' : ''}`}
+              loading="lazy"
+            />
+          </picture>
+        </div>
+        <h2
+          class="text-3xl font-['Inter',_sans-serif] font-semibold tracking-tight sm:text-4xl whitespace-nowrap text-center mx-auto"
+        >
+          {characters[activeCharacter].name}
+        </h2>
+        <p class="text-base text-[#b8d4ff] text-center">
+          {characters[activeCharacter].role}
+        </p>
       </div>
 
       <style>
@@ -461,8 +464,8 @@
         }
 
         .character-img-crosby {
-          width: 320px;
-          height: 320px;
+          width: 246px;
+          height: 246px;
         }
 
         .character-img-tank {
@@ -482,8 +485,8 @@
           }
 
           .character-img-crosby {
-            width: 360px;
-            height: 360px;
+            width: 276px;
+            height: 276px;
           }
 
           .character-img-tank {
@@ -504,8 +507,8 @@
           }
 
           .character-img-crosby {
-            width: 430px;
-            height: 430px;
+            width: 333px;
+            height: 333px;
           }
 
           .character-img-tank {
@@ -589,7 +592,7 @@
 </section>
 
 <!-- About the Author section - commented out
-<section class="relative w-full overflow-hidden bg-pink-100 flex items-center justify-center" style="min-height: calc(100vh - 200px);">
+<section class="relative w-full overflow-hidden bg-[#FDF8E2] flex items-center justify-center" style="min-height: calc(100vh - 200px);">
   <div class="relative z-10 mx-auto max-w-6xl px-6 py-20 sm:py-24 w-full">
     <div
       class="grid items-center gap-10 lg:grid-cols-[1fr_minmax(220px,320px)] lg:gap-16"
