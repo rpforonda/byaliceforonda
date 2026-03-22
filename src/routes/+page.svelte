@@ -2,9 +2,9 @@
   import { resolve } from "$app/paths";
   import { onMount } from "svelte";
 
-  const bookImage = resolve("/CrosbyCover.PNG");
+  const crosbyFrameImage = resolve("/Crosbyframe.png");
+  const greenBlobImage = resolve("/greenblob.png");
   const authorImage = resolve("/alice_logopink.jpg");
-  const headerImage = resolve("/alHeader_opt.jpg");
   const characterStars = [
     {
       left: "6%",
@@ -91,7 +91,6 @@
       rotate: "5deg",
     },
   ];
-
   const characters = [
     {
       name: "Crosby the Crocodile",
@@ -196,60 +195,25 @@
 </script>
 
 <section
-  class="relative w-full overflow-hidden"
-  style={`background-image: url('${headerImage}'); background-size: cover; background-position: center; background-repeat: no-repeat; min-height: 100vh;`}
+  class="relative w-full overflow-hidden bg-[#d7e6ff]"
+  style="min-height: 100vh;"
 >
-  <picture style="display: none;">
-    <source srcset={resolve("/alHeader.webp")} type="image/webp" />
-  </picture>
-
   <div class="relative z-10 mx-auto max-w-6xl px-6 transition-all duration-700 ease-out" style={showWelcome ? 'padding-top: 5rem; padding-bottom: 8rem;' : 'padding-top: 2rem; padding-bottom: 3rem;'}>
-    <div class="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12 transition-all duration-700 ease-out">
-      <!-- Logo -->
-      <div class={`logo-container relative inline-flex items-center justify-center shrink-0 transition-all duration-700 ease-out ${showWelcome ? '' : 'logo-shrunk'}`}>
-        <picture>
-          <source srcset={resolve("/alice_logopink.webp")} type="image/webp" />
-          <img
-            src={resolve("/alice_logopink.jpg")}
-            alt="Alice Foronda smiling, author of Crosby's Cosmic Adventure"
-            class="h-40 w-40 rounded-full shadow-lg sm:h-48 sm:w-48 lg:h-56 lg:w-56 transition-shadow duration-700 ease-out"
-            loading="lazy"
-            style={showWelcome ? 'box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);' : 'box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);'}
-          />
-        </picture>
-        <svg
-          class="pointer-events-none absolute inset-[-15%] h-[130%] w-[130%] text-[#d2234c] transition-opacity duration-700 ease-out"
-          viewBox="0 0 200 200"
-          aria-hidden="true"
-          style={showWelcome ? 'opacity: 1;' : 'opacity: 0.6;'}
-        >
-          <defs>
-            <path
-              id="logoCirclePath"
-              d="M100,100 m -86,0 a 86,86 0 1,1 172,0 a 86,86 0 1,1 -172,0"
-            />
-          </defs>
-          <text
-            fill="currentColor"
-            font-size="clamp(10px, 2.2vw, 14px)"
-            font-weight="700"
-            letter-spacing="clamp(1.5px, 0.6vw, 3.5px)"
-            font-family="Poppins, 'Helvetica Neue', Arial, sans-serif"
-          >
-            <textPath
-              href="#logoCirclePath"
-              startOffset="50%"
-              text-anchor="middle"
-              textLength="540"
-              lengthAdjust="spacingAndGlyphs"
-            >
-              • SNACK GIVER • CHILDREN'S BOOK AUTHOR • LOVER • MOM • KIMCHI
-              STEALER
-            </textPath>
-          </text>
-        </svg>
+    <div class="flex flex-col lg:flex-row items-start justify-start gap-8 lg:gap-12 transition-all duration-700 ease-out">
+      <div class="w-full max-w-[340px] lg:max-w-[420px] shrink-0">
+        <img
+          src={crosbyFrameImage}
+          alt="Crosby frame artwork"
+          class="w-full h-auto object-contain"
+          loading="lazy"
+        />
+        <img
+          src={greenBlobImage}
+          alt="Decorative green blob"
+          class="pointer-events-none absolute left-1/2 -translate-x-1/2 mt-3 w-[130%] max-w-none h-[48vh] sm:h-[58vh] lg:h-[72vh] object-contain"
+          loading="lazy"
+        />
       </div>
-
       <!-- Welcome Section -->
       <div
         class="welcome-content text-center lg:text-left max-w-xl transition-all duration-700 ease-out origin-left rounded-3xl p-8 border border-white/10"
@@ -257,14 +221,11 @@
           ? 'opacity: 1; transform: scale(1) translateX(0); max-height: 1000px; pointer-events: auto; background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);'
           : 'opacity: 0; transform: scale(0.9) translateX(-20px); max-height: 0; pointer-events: none; overflow: hidden; background: rgba(255, 255, 255, 0); backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px);'}
       >
-        <p class="text-5xl sm:text-6xl font-['Great_Vibes',cursive] lowercase tracking-[0.08em] text-[#d2234c] mb-2">
+        <p class="text-5xl sm:text-6xl font-['Cedarville_Cursive',cursive] lowercase tracking-[0.02em] text-[#d2234c] mb-2">
           welcome
         </p>
         <p class="text-base sm:text-lg leading-relaxed text-gray-800 mb-6">
-          Step into a world of imagination where every page whispers
-          encouragement and every character finds their voice. Alice Foronda
-          crafts magical adventures that help young readers feel seen, brave,
-          and brilliantly themselves.
+          I'm glad you're here. Step into my stories and explore.
         </p>
         <div class="flex flex-wrap gap-3 justify-center lg:justify-start">
           <a
@@ -286,58 +247,6 @@
             Take the Quiz
           </a>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section
-  class="relative w-full overflow-hidden bg-[#F9F5E9] flex items-center justify-center scroll-reveal"
-  style="min-height: 100vh;"
->
-  <div class="relative z-10 mx-auto max-w-6xl px-6 py-20 sm:py-24 w-full">
-    <div class="grid items-center gap-10 lg:grid-cols-[320px_1fr] lg:gap-16">
-      <div
-        class="relative mx-auto max-w-sm shadow-xl hover:shadow-2xl"
-        style="transition: all 1000ms cubic-bezier(0.165, 0.84, 0.44, 1);"
-        onmouseenter={(e) => { e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)'; }}
-        onmouseleave={(e) => { e.currentTarget.style.transform = 'translateY(0) scale(1)'; }}
-      >
-        <img
-          alt="Crosby's Cosmic Adventure book cover featuring a crocodile in space"
-          src={bookImage}
-          class="h-full w-full object-cover"
-          loading="lazy"
-        />
-      </div>
-      <div class="text-center">
-        <p class="text-4xl font-['Lora',_serif] font-bold text-[#d2234c]">
-          Debut Book!
-        </p>
-        <h2
-          class="mt-2 text-3xl font-['Roboto',_sans-serif] font-light uppercase tracking-tight text-[#1b1b1d] sm:text-4xl"
-        >
-          Crosby's Cosmic Adventure
-        </h2>
-        <p class="mt-5 text-base leading-relaxed text-gray-700">
-          Join Crosby and his pals, Carla the capybara and Tank the turtle on
-          an adventure of a lifetime! But even the best of adventures can bring
-          mixed feelings. When misunderstandings pop up and self-doubt sneaks
-          in, the friends must find the courage to listen, speak up, and be
-          there for one another.
-          <br /><br />
-          A heartwarming story about friendship, bravery, and believing in
-          yourself.
-        </p>
-        <a
-          class="mt-8 inline-flex items-center rounded-full bg-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg hover:bg-[#b01d3c] hover:shadow-2xl"
-          href={resolve("/book")}
-          style="transition: all 800ms cubic-bezier(0.165, 0.84, 0.44, 1);"
-          onmouseenter={(e) => { e.currentTarget.style.transform = 'translateY(-4px) scale(1.05)'; }}
-          onmouseleave={(e) => { e.currentTarget.style.transform = 'translateY(0) scale(1)'; }}
-        >
-          Learn More
-        </a>
       </div>
     </div>
   </div>
@@ -592,7 +501,7 @@
 </section>
 
 <!-- About the Author section - commented out
-<section class="relative w-full overflow-hidden bg-[#FDF8E2] flex items-center justify-center" style="min-height: calc(100vh - 200px);">
+<section class="relative w-full overflow-hidden bg-[#d7e6ff] flex items-center justify-center" style="min-height: calc(100vh - 200px);">
   <div class="relative z-10 mx-auto max-w-6xl px-6 py-20 sm:py-24 w-full">
     <div
       class="grid items-center gap-10 lg:grid-cols-[1fr_minmax(220px,320px)] lg:gap-16"

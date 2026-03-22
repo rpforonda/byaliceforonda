@@ -17,10 +17,10 @@
     { href: resolve("/quiz"), label: "quiz" },
   ];
 
-  const logoSrc = resolve("/al_wordm.png");
-  const logoWebpSrc = resolve("/al_wordm.webp");
   const logoWhiteSrc = resolve("/al_wordm_white.png");
   const logoWhiteWebpSrc = resolve("/al_wordm_white.webp");
+  const headerLogoSrc = resolve("/Crosby.png");
+  const headerLogoWebpSrc = resolve("/Crosby.webp");
   let { children } = $props();
   let menuOpen = $state(false);
   let menuButtonRef = $state(null);
@@ -81,7 +81,7 @@
 </svelte:head>
 
 <div
-  class="min-h-screen bg-[#FDF8E2] text-gray-900 flex flex-col"
+  class="min-h-screen bg-[#d7e6ff] text-gray-900 flex flex-col"
   style="font-family: 'Nunito', sans-serif;"
 >
   <!-- Skip to main content link for keyboard users -->
@@ -100,13 +100,14 @@
         <div class="flex items-center justify-start md:justify-center gap-3">
           <a
             href={resolve("/")}
-            class="flex w-fit wordmark-link"
+            class="flex w-fit"
+            aria-label="Go to home"
           >
             <picture>
-              <source srcset={logoWebpSrc} type="image/webp" />
+              <source srcset={headerLogoWebpSrc} type="image/webp" />
               <img
-                src={logoSrc}
-                alt="Alice Foronda wordmark"
+                src={headerLogoSrc}
+                alt="Crosby"
                 class="h-12 w-auto md:h-16"
               />
             </picture>
@@ -141,7 +142,7 @@
         >
           <a
             href={resolve("/book")}
-            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-rose-600 text-rose-600 shadow-sm transition hover:bg-[#FDF8E2] sm:h-10 sm:w-10"
+            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-rose-600 text-rose-600 shadow-sm transition hover:bg-[#d7e6ff] sm:h-10 sm:w-10"
             aria-label="Shop books"
           >
             <svg
@@ -185,7 +186,7 @@
               >
                 {#each navItems as item}
                   <a
-                    class="block px-4 py-2 text-sm font-semibold lowercase hover:bg-[#FDF8E2]"
+                    class="block px-4 py-2 text-sm font-semibold lowercase hover:bg-[#d7e6ff]"
                     href={item.href}
                     onclick={() => {
                       menuOpen = false;
@@ -201,7 +202,7 @@
       </div>
     </div>
 
-    <div class="bg-black text-white">
+    <div class="bg-[#352f47] text-white">
       <div class="mx-auto max-w-6xl px-6">
         <nav class="hidden justify-center gap-8 py-4 text-sm md:flex">
           {#each navItems as item}
@@ -222,11 +223,11 @@
   </main>
 
   <footer class="relative left-0 right-0 overflow-hidden text-center text-sm">
-    <div class="relative h-28 bg-[#FDF8E2]">
-      <div class="absolute inset-x-0 bottom-0 h-10 bg-[#EADFBF]"></div>
+    <div class="relative h-28 bg-[#d7e6ff]">
+      <div class="absolute inset-x-0 bottom-0 h-10 bg-[#c4d7f6]"></div>
       <div class="absolute left-1/2 bottom-[.1rem] z-20 -translate-x-1/2">
         <span
-          class="inline-flex items-center justify-center rounded-full bg-[#EADFBF] p-2"
+          class="inline-flex items-center justify-center rounded-full bg-[#c4d7f6] p-2"
         >
           <picture>
             <source srcset={resolve("/alice_logopink.webp")} type="image/webp" />
