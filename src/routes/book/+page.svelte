@@ -1,77 +1,77 @@
 <script>
   import { resolve } from "$app/paths";
-  import BuyButtons from '$lib/components/BuyButtons.svelte';
 
-  const bookImage = resolve("/CrosbyCover.PNG");
-  const crosbyInset = resolve("/Crosby.png");
+  const lionKingImage = resolve("/lionking.jpeg");
+  const darkBlobImage = resolve("/darkblob.png");
+  const crosbyCoverImage = resolve("/CrosbyCover.PNG");
+  const preorderImage = resolve("/preorder.png");
+  const descriptionImage = resolve("/description.png");
 </script>
 
-<section
-  class="w-full px-6 py-8 sm:py-12 md:py-16 text-center min-h-[calc(100vh-400px)]"
->
-  <div class="mx-auto max-w-6xl">
-    <div class="grid gap-6 md:grid-cols-[minmax(220px,360px)_1fr] md:gap-8 items-stretch">
-      <div class="relative mr-auto ml-0 max-w-[280px] sm:max-w-sm shadow-xl mb-2 sm:mb-2 h-full">
+<section class="w-full">
+  <div class="page-shell">
+    <img
+      src={lionKingImage}
+      alt="Lion King"
+      width="2240"
+      height="1053"
+      sizes="100vw"
+      class="w-full h-auto object-contain"
+      decoding="async"
+      loading="lazy"
+    />
+  </div>
+</section>
+
+<section class="w-full min-h-screen">
+  <div class="page-shell pt-14 pb-10 md:pt-20 md:pb-14">
+    <div class="flex w-full flex-col items-center gap-8 lg:flex-row lg:items-center lg:justify-center lg:gap-8">
+      <div class="relative w-full max-w-md">
         <img
-          alt="Crosby's Cosmic Adventure book cover featuring a crocodile in space"
-          src={bookImage}
-          class="h-full w-full object-contain md:min-h-full"
+          src={darkBlobImage}
+          alt="Dark blob"
+          width="472"
+          height="367"
+          sizes="(max-width: 768px) 100vw, 472px"
+          class="w-full h-auto object-contain"
+          decoding="async"
+          loading="lazy"
+        />
+        <img
+          src={crosbyCoverImage}
+          alt="Crosby's Cosmic Adventure cover"
+          width="1080"
+          height="1350"
+          sizes="(max-width: 768px) 68vw, 330px"
+          class="absolute left-1/2 top-1/2 z-10 w-[74%] h-auto -translate-x-1/2 -translate-y-1/2 -rotate-6 object-contain drop-shadow-[0_14px_24px_rgba(0,0,0,0.35)]"
+          decoding="async"
           loading="lazy"
         />
       </div>
-
-      <div class="book-copy mx-auto w-full max-w-2xl px-4 text-left">
-        <p class="text-base sm:text-lg leading-relaxed text-gray-700">
-          <img
-            src={crosbyInset}
-            alt="Crosby character illustration"
-            class="float-right w-48 sm:w-56 h-auto ml-4 mt-10 mb-2"
-            style="transform: scaleX(-1);"
-            loading="lazy"
-          />
-          "My tail's too thick.
-          <br />
-          My claws too long.
-          <br />
-          Don't you think I'll do this all wrong?"
-          <br /><br />
-          Have you ever felt a little nervous about trying something new?
-          <br />
-          Crosby the crocodile feels the same way!
-          <br />
-          But with a little courage and some help from his friends, he discovers just
-          how brightly he can shine.
-          <br /><br />
-          <span class="inline-flex items-center gap-2">
-            <span class="text-yellow-500 text-sm" aria-hidden="true">★</span>
-            <span>Perfect for ages 4-8</span>
-            <span class="text-yellow-500 text-sm" aria-hidden="true">★</span>
-          </span>
-          <br />
-          Join Crosby and his crew on a starry adventure full of friendship fun, and
-          learning to love who you are.
-        </p>
-        <div class="clear-both"></div>
+      <div class="w-full max-w-lg">
+        <img
+          src={preorderImage}
+          alt="Preorder"
+          width="545"
+          height="459"
+          sizes="(max-width: 768px) 92vw, 560px"
+          class="w-full h-auto object-contain"
+          decoding="async"
+          loading="lazy"
+        />
       </div>
     </div>
-    <div class="mt-6 sm:mt-8 flex justify-center">
-      <BuyButtons amazonAsin="B0XXXXXXX" amazonTag="" ingramLink="" />
+    <div class="mt-8 flex w-full justify-center md:mt-10">
+      <img
+        src={descriptionImage}
+        alt="Description"
+        width="1054"
+        height="558"
+        sizes="(max-width: 768px) 92vw, 980px"
+        class="w-full max-w-5xl h-auto object-contain"
+        decoding="async"
+        loading="lazy"
+      />
     </div>
   </div>
-
 </section>
-
-<style>
-  .book-copy {
-    padding: clamp(20px, 3vw, 30px);
-  }
-
-  @media (max-width: 640px) {
-    .book-copy img {
-      float: none !important;
-      display: block;
-      margin: 0 auto 12px !important;
-      width: 140px !important;
-    }
-  }
-</style>

@@ -1,6 +1,19 @@
 @import "tailwindcss";
 
 @layer base {
+  /* Hide caret on non-editable page content (e.g. links/headings) */
+  body {
+    caret-color: transparent;
+  }
+
+  /* Preserve normal caret behavior for editable controls */
+  input,
+  textarea,
+  select,
+  [contenteditable="true"] {
+    caret-color: auto;
+  }
+
   /* Keyboard navigation focus styles */
   *:focus-visible {
     outline: 2px solid #d2234c;
@@ -23,6 +36,9 @@
 
   /* Enhanced hover effects */
   img {
+    max-width: 100%;
+    height: auto;
+    display: block;
     transition: transform 800ms cubic-bezier(0.165, 0.84, 0.44, 1),
                 box-shadow 800ms cubic-bezier(0.165, 0.84, 0.44, 1);
     will-change: transform;
@@ -107,4 +123,27 @@
   font-family: "Yusei Magic", sans-serif;
   font-weight: 400;
   font-style: normal;
+}
+
+.freckle-face-regular {
+  font-family: "Freckle Face", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.page-shell {
+  width: min(100% - 2rem, 68.75rem);
+  margin-inline: auto;
+}
+
+@media (min-width: 640px) {
+  .page-shell {
+    width: min(100% - 3rem, 68.75rem);
+  }
+}
+
+@media (min-width: 1280px) {
+  .page-shell {
+    width: min(100% - 4rem, 68.75rem);
+  }
 }

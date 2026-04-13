@@ -6,7 +6,7 @@
 
   const site = {
     title: "Alice Foronda - Official Site",
-    desc: "Alice Foronda: about me, book info, and character quiz.",
+    desc: "Alice Foronda: about me and book info.",
     //image: "/og-cover.jpg",
   };
 
@@ -14,7 +14,6 @@
     { href: resolve("/"), label: "home" },
     { href: resolve("/about"), label: "about" },
     { href: resolve("/book"), label: "books" },
-    { href: resolve("/quiz"), label: "quiz" },
   ];
 
   const logoWhiteSrc = resolve("/al_wordm_white.png");
@@ -31,7 +30,6 @@
     const path = $page.url.pathname;
     if (path === resolve("/about")) return "About - Alice Foronda";
     if (path === resolve("/book")) return "Books - Alice Foronda";
-    if (path === resolve("/quiz")) return "Character Quiz - Alice Foronda";
     return "Alice Foronda - Children's Book Author";
   });
 
@@ -95,12 +93,12 @@
   <header class="relative md:fixed md:top-0 left-0 right-0 z-50">
     <div class="bg-white">
       <div
-        class="relative mx-auto flex max-w-6xl items-center justify-between gap-3 px-6 py-5 md:block"
+        class="page-shell relative flex items-center justify-between gap-3 py-5 md:block"
       >
         <div class="flex items-center justify-start md:justify-center gap-3">
           <a
             href={resolve("/")}
-            class="flex w-fit"
+            class="header-logo-link flex w-fit select-none leading-none"
             aria-label="Go to home"
           >
             <picture>
@@ -108,63 +106,14 @@
               <img
                 src={headerLogoSrc}
                 alt="Crosby"
-                class="h-12 w-auto md:h-16"
+                class="block h-12 w-auto md:h-16"
               />
             </picture>
-          </a>
-          <a
-            class="inline-flex items-center text-sm transition hover:opacity-80"
-            href="https://www.instagram.com/byaliceforonda"
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Follow me @byaliceforonda"
-          >
-            <span
-              class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-rose-600"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
-                class="h-4 w-4 text-rose-600"
-              >
-                <rect width="14" height="14" x="5" y="5" rx="4" ry="4"></rect>
-                <circle cx="12" cy="12" r="3.5"></circle>
-                <circle cx="16.5" cy="7.5" r=".8" fill="currentColor"></circle>
-              </svg>
-            </span>
           </a>
         </div>
         <div
           class="flex flex-shrink-0 items-center gap-3 md:absolute md:right-6 md:top-1/2 md:-translate-y-1/2"
         >
-          <a
-            href={resolve("/book")}
-            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-rose-600 text-rose-600 shadow-sm transition hover:bg-[#d7e6ff] sm:h-10 sm:w-10"
-            aria-label="Shop books"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              class="h-4 w-4 sm:h-5 sm:w-5"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M9 7V6a3 3 0 0 1 6 0v1"
-              />
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M5.25 7h13.5l-.84 10.08A2.25 2.25 0 0 1 15.69 19.5H8.31a2.25 2.25 0 0 1-2.22-2.42L5.25 7Z"
-              />
-            </svg>
-          </a>
           <div class="relative md:hidden">
             <button
               class="inline-flex items-center rounded-md bg-rose-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-rose-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-600 focus-visible:ring-offset-2 sm:px-3 sm:py-2 sm:text-sm"
@@ -203,7 +152,7 @@
     </div>
 
     <div class="bg-[#352f47] text-white">
-      <div class="mx-auto max-w-6xl px-6">
+      <div class="page-shell">
         <nav class="hidden justify-center gap-8 py-4 text-sm md:flex">
           {#each navItems as item}
             <a
@@ -218,7 +167,7 @@
     </div>
   </header>
 
-  <main id="main-content" class="flex-1 overflow-x-hidden overflow-y-auto pt-0 pb-0 md:pt-30" style="min-height: 100vh;">
+  <main id="main-content" class="flex-1 overflow-x-hidden pt-0 pb-0 md:pt-36 lg:pt-40">
     {@render children?.()}
   </main>
 
@@ -254,7 +203,7 @@
         </picture>
       </div>
       <div
-        class="mx-auto flex max-w-6xl flex-col items-center gap-3 px-6 pb-6 text-pink-200"
+        class="page-shell flex flex-col items-center gap-3 pb-6 text-pink-200"
       >
         <span
           >&copy; {new Date().getFullYear()} Alice Foronda. All rights reserved.
@@ -264,3 +213,16 @@
     </div>
   </footer>
 </div>
+
+<style>
+  .header-logo-link {
+    user-select: none;
+    -webkit-user-select: none;
+    caret-color: transparent;
+  }
+
+  .header-logo-link picture,
+  .header-logo-link img {
+    display: block;
+  }
+</style>
