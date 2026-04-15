@@ -5,7 +5,6 @@
   const crosbyFrameImage = resolve("/Crosbyframe.png");
   const greenBlobImage = resolve("/greenblob.png");
   const heroPopupImage = resolve("/cosmic.jpeg");
-  const authorImage = resolve("/alice_logopink.jpg");
   const meetCharactersImage = resolve("/mtc.png");
   const joinCrosbyImage = resolve("/joincrosby.png");
   const creamBlobImage = resolve("/creamblob.png");
@@ -13,6 +12,8 @@
   const crosbyGreenImage = resolve("/crosbygreen.png");
   const carlaPinkImage = resolve("/carlapink.png");
   const tankYellowImage = resolve("/tankyellow.png");
+  const mailerLiteFormId = "QQryIS";
+  const mailerLitePopupUrl = `https://assets.mailerlite.com/jsonp/2261437/forms/${mailerLiteFormId}/content`;
   const characterStars = [
     {
       left: "6%",
@@ -149,6 +150,48 @@
 
   // Track scroll state for welcome and logo visibility
   let showWelcome = $state(true);
+  let isMailerLiteOpen = $state(false);
+  let mailerLiteFrameSrc = $state("");
+  let mailerLiteAutoOpened = false;
+
+  function updateMailerLiteFrameSrc() {
+    if (typeof window === "undefined") return;
+
+    const frameWidth = Math.max(320, Math.min(window.innerWidth - 32, 765));
+    mailerLiteFrameSrc = `${mailerLitePopupUrl}?windowWidth=${Math.round(frameWidth)}`;
+  }
+
+  function openMailerLitePopup() {
+    isMailerLiteOpen = true;
+  }
+
+  function closeMailerLitePopup() {
+    isMailerLiteOpen = false;
+  }
+
+  function maybeAutoOpenMailerLite() {
+    if (mailerLiteAutoOpened || isMailerLiteOpen) return;
+
+    mailerLiteAutoOpened = true;
+    openMailerLitePopup();
+  }
+
+  function handleMailerLiteBackdropClick(event) {
+    if (event.currentTarget === event.target) {
+      closeMailerLitePopup();
+    }
+  }
+
+  $effect(() => {
+    if (typeof document === "undefined") return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = isMailerLiteOpen ? "hidden" : "";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  });
 
   // Handle scroll to hide welcome and logo
   $effect(() => {
@@ -164,9 +207,41 @@
 
   // Scroll-triggered animations - repeatable on every scroll
   onMount(() => {
+    updateMailerLiteFrameSrc();
+
+    const autoPopupTimeout = window.setTimeout(() => {
+      maybeAutoOpenMailerLite();
+    }, 5000);
+
+    const handleResize = () => {
+      updateMailerLiteFrameSrc();
+    };
+
+    const handlePopupScroll = () => {
+      const scrollableHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+
+      if (scrollableHeight <= 0) return;
+
+      if (window.scrollY / scrollableHeight >= 0.75) {
+        maybeAutoOpenMailerLite();
+      }
+    };
+
+    const handlePopupKeyDown = (event) => {
+      if (event.key === "Escape" && isMailerLiteOpen) {
+        closeMailerLitePopup();
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("scroll", handlePopupScroll, { passive: true });
+    window.addEventListener("keydown", handlePopupKeyDown);
+
     // Small delay to ensure layout is complete
-    setTimeout(() => {
-      const observer = new IntersectionObserver(
+    let observer;
+    const revealTimer = window.setTimeout(() => {
+      observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
@@ -187,21 +262,18 @@
         observer.observe(el);
       });
     }, 150);
+
+    return () => {
+      window.clearTimeout(autoPopupTimeout);
+      window.clearTimeout(revealTimer);
+      observer?.disconnect();
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("scroll", handlePopupScroll);
+      window.removeEventListener("keydown", handlePopupKeyDown);
+    };
   });
 
 </script>
-
-<svelte:head>
-  <!-- MailerLite Universal -->
-  <script>
-    (function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[])
-    .push(arguments);},l=d.createElement(e),l.async=1,l.src=u,
-    n=d.getElementsByTagName(e)[0],n.parentNode.insertBefore(l,n);})
-    (window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');
-    ml('account', '2261437');
-  </script>
-  <!-- End MailerLite Universal -->
-</svelte:head>
 
 <section
   class="relative w-full overflow-hidden bg-[#d7e6ff]"
@@ -294,6 +366,43 @@
     </div>
   </div>
 </section>
+
+{#if isMailerLiteOpen}
+  <div
+    class="mailerlite-modal-backdrop"
+    role="presentation"
+    onclick={handleMailerLiteBackdropClick}
+  >
+    <div
+      class="mailerlite-modal-shell"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="mailerlite-modal-title"
+    >
+      <h2 id="mailerlite-modal-title" class="sr-only">
+        Join Crosby's Crew newsletter signup
+      </h2>
+      <button
+        class="mailerlite-modal-close"
+        type="button"
+        aria-label="Close newsletter popup"
+        onclick={closeMailerLitePopup}
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="mailerlite-modal-frame-wrap">
+        <div class="mailerlite-modal-mask mailerlite-modal-mask-top" aria-hidden="true"></div>
+        <iframe
+          title="Join Crosby's Crew newsletter signup"
+          src={mailerLiteFrameSrc}
+          class="mailerlite-modal-frame"
+          loading="eager"
+          allow="clipboard-write"
+        ></iframe>
+      </div>
+    </div>
+  </div>
+{/if}
 
 <section
   class="characters-section relative w-full overflow-hidden bg-blue-900 text-white scroll-reveal"
@@ -485,21 +594,6 @@
     justify-content: center;
   }
 
-  .green-blob-heading {
-    margin: 0 0 0.75rem;
-    font-size: clamp(1.45rem, 3.1vw, 2.6rem);
-    line-height: 1.08;
-    font-weight: 700;
-    color: #2d471a;
-  }
-
-  .green-blob-copy {
-    margin: 0;
-    max-width: 34ch;
-    font-size: clamp(0.95rem, 1.4vw, 1.2rem);
-    line-height: 1.45;
-    color: rgba(33, 53, 20, 0.88);
-  }
 
   .green-blob-col-right {
     width: 100%;
@@ -513,21 +607,6 @@
     margin: 0 auto;
   }
 
-  .green-blob-panel {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: min(100%, 21.25rem);
-    min-height: clamp(6.25rem, 16vw, 11.25rem);
-    border: 2px dashed rgba(43, 71, 23, 0.5);
-    border-radius: 1.125rem;
-    background: rgba(255, 255, 255, 0.14);
-    padding: 1rem;
-    text-align: center;
-    font-size: clamp(0.9rem, 1.2vw, 1rem);
-    font-weight: 600;
-    color: rgba(40, 63, 22, 0.82);
-  }
 
   .welcome-content {
     will-change: opacity, transform, max-height;
@@ -543,21 +622,76 @@
     border-radius: 1.25rem;
   }
 
-  .character-card-frame {
-    width: min(100%, 13.75rem);
-    aspect-ratio: 1 / 1;
+  .mailerlite-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 12000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(26, 18, 35, 0.62);
+    backdrop-filter: blur(6px);
   }
 
-  .character-card-frame picture {
+  .mailerlite-modal-shell {
+    position: relative;
+    width: min(100%, 48rem);
+    border-radius: 1.5rem;
+    overflow: hidden;
+    background: #8fc279;
+    box-shadow: 0 28px 60px rgba(18, 10, 24, 0.28);
+  }
+
+  .mailerlite-modal-close {
+    position: absolute;
+    top: 0.65rem;
+    right: 0.65rem;
+    z-index: 4;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(20, 18, 27, 0.76);
+    color: #fff;
+    padding: 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .mailerlite-modal-frame-wrap {
+    position: relative;
+    overflow: hidden;
+    border-radius: inherit;
+  }
+
+  .mailerlite-modal-frame {
     display: block;
     width: 100%;
-    height: 100%;
+    height: min(85vh, 43rem);
+    border: 0;
+    background: #8fc279;
   }
 
-  .character-card-image {
-    width: 100%;
-    height: 100%;
+  .mailerlite-modal-mask {
+    position: absolute;
+    pointer-events: none;
+    z-index: 3;
   }
+
+  .mailerlite-modal-mask-top {
+    top: 0;
+    right: 0;
+    width: 4.25rem;
+    height: 4.25rem;
+    background: #8fc279;
+    border-bottom-left-radius: 1.25rem;
+  }
+
 
   @media (min-width: 768px) {
     .green-blob-content {
@@ -581,6 +715,31 @@
     .green-blob-mask {
       width: min(100%, 68.75rem);
       margin-inline: auto;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .mailerlite-modal-backdrop {
+      padding: 0.75rem;
+    }
+
+    .mailerlite-modal-shell {
+      border-radius: 1.1rem;
+    }
+
+    .mailerlite-modal-close {
+      width: 2.25rem;
+      height: 2.25rem;
+      font-size: 1.45rem;
+    }
+
+    .mailerlite-modal-frame {
+      height: min(88vh, 40rem);
+    }
+
+    .mailerlite-modal-mask-top {
+      width: 3.75rem;
+      height: 3.75rem;
     }
   }
 
