@@ -280,7 +280,7 @@
 >
   <div class="page-shell relative z-10 transition-all duration-700 ease-out" style={showWelcome ? 'padding-top: 4rem; padding-bottom: 2.5rem;' : 'padding-top: 1.5rem; padding-bottom: 1.5rem;'}>
     <div class="flex flex-col lg:flex-row items-start justify-start gap-8 lg:gap-8 transition-all duration-700 ease-out">
-      <div class="w-full max-w-[21rem] lg:max-w-[26rem] shrink-0">
+      <div class="w-full max-w-[21rem] lg:max-w-[26rem] shrink-0 mx-auto lg:mx-0 self-center lg:self-auto">
         <img
           src={crosbyFrameImage}
           alt="Crosby frame artwork"
