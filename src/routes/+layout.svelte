@@ -13,7 +13,7 @@
   const navItems = [
     { href: resolve("/"), label: "home" },
     { href: resolve("/about"), label: "about" },
-    { href: resolve("/book"), label: "books" },
+    { href: resolve("/book"), label: "book" },
   ];
 
   const logoWhiteSrc = resolve("/al_wordm_white.png");
@@ -172,7 +172,7 @@
   </main>
 
   <footer class="relative left-0 right-0 overflow-hidden text-center text-sm">
-    <div class="relative h-28 bg-[#d7e6ff]">
+    <div class="relative h-24 bg-[#d7e6ff]">
       <div class="absolute inset-x-0 bottom-0 h-10 bg-[#c4d7f6]"></div>
       <div class="absolute left-1/2 bottom-[.1rem] z-20 -translate-x-1/2">
         <span
@@ -192,7 +192,7 @@
     <div
       class="relative border-t border-pink-200 bg-stone-800 text-white"
     >
-      <div class="flex justify-center p-6">
+      <div class="flex justify-center pt-3 pb-4">
         <picture>
           <source srcset={logoWhiteWebpSrc} type="image/webp" />
           <img
@@ -205,6 +205,18 @@
       <div
         class="page-shell flex flex-col items-center gap-3 pb-6 text-pink-200"
       >
+        <a
+          href="https://instagram.com/byaliceforonda"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Visit Alice Foronda on Instagram"
+        >
+          <img
+            src={resolve("/whiteig.png")}
+            alt="Instagram"
+            class="h-10 w-10 cursor-pointer"
+          />
+        </a>
         <span
           >&copy; {new Date().getFullYear()} Alice Foronda. All rights reserved.
           No personal data collected. Purchases happen on retailer sites.</span

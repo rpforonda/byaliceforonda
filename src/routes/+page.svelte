@@ -339,7 +339,7 @@
             />
             <div class="pointer-events-none absolute inset-0 flex items-center justify-center px-6 sm:px-10">
               <p
-                class="freckle-face-regular max-w-[34ch] text-center text-black text-[clamp(0.8rem,1.25vw,1.05rem)] leading-[1.35]"
+                class="poppins-regular max-w-[34ch] text-center text-black text-[clamp(0.8rem,1.25vw,1.05rem)] leading-[1.35]"
               >
                 Join Crosby, Carla the capybara, and Tank the turtle on an
                 adventure of a lifetime!

@@ -2,7 +2,7 @@
   import { resolve } from '$app/paths';
 
   const charimeImage = resolve('/charime.jpeg');
-  const letterMeImage = resolve('/letterme.jpeg');
+  const letterMeImage = resolve('/lettermetwo.png');
 </script>
 
 <section class="page-shell flex min-h-[35vh] items-center justify-center py-8 sm:min-h-[45vh] sm:py-12 md:min-h-[50vh] md:py-16">

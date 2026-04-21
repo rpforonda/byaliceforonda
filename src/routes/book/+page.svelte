@@ -4,9 +4,21 @@
   const lionKingImage = resolve("/lionking.jpeg");
   const darkBlobImage = resolve("/darkblob.png");
   const crosbyCoverImage = resolve("/CrosbyCover.PNG");
-  const preorderImage = resolve("/preorder.png");
+  const preorderImage = resolve("/comingsoon.png");
   const descriptionImage = resolve("/description.png");
 </script>
+
+<svelte:head>
+  <script>
+    (function(m,a,i,l,e,r){ m['MailerLiteObject']=e;function f(){
+    var c={ a:arguments,q:[]};var r=this.push(c);return "number"!=typeof r?r:f.bind(c.q);}
+    f.q=f.q||[];m[e]=m[e]||f.bind(f.q);m[e].q=m[e].q||f.q;r=a.createElement(i);
+    var _=a.getElementsByTagName(i)[0];r.async=1;r.src=l+'?v'+(~~(new Date().getTime()/1000000));
+    _.parentNode.insertBefore(r,_);})(window, document, 'script', 'https://static.mailerlite.com/js/universal.js', 'ml');
+
+    ml('account', 'ketchupmitalice@gmail.com');
+  </script>
+</svelte:head>
 
 <section class="w-full">
   <div class="page-shell">
@@ -49,16 +61,22 @@
         />
       </div>
       <div class="w-full max-w-lg">
-        <img
-          src={preorderImage}
-          alt="Preorder"
-          width="545"
-          height="459"
-          sizes="(max-width: 768px) 92vw, 560px"
-          class="w-full h-auto object-contain"
-          decoding="async"
-          loading="lazy"
-        />
+        <a
+          href="javascript:void(0)"
+          onclick={() => ml("show", "QQryIS", true)}
+          class="block w-full"
+        >
+          <img
+            src={preorderImage}
+            alt="Join newsletter"
+            width="545"
+            height="459"
+            sizes="(max-width: 768px) 92vw, 560px"
+            class="w-full h-auto cursor-pointer object-contain"
+            decoding="async"
+            loading="lazy"
+          />
+        </a>
       </div>
     </div>
     <div class="mt-8 flex w-full justify-center md:mt-10">
