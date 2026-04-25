@@ -17,8 +17,6 @@ jobs:
           node-version: 20
       - run: npm ci
       - run: npm run build
-        env:
-          BASE_PATH: "/byaliceforonda"
       - uses: actions/upload-pages-artifact@v3
         with:
           path: build
