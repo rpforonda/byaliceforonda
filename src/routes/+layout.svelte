@@ -14,6 +14,7 @@
     { href: resolve("/"), label: "home" },
     { href: resolve("/about"), label: "about" },
     { href: resolve("/book"), label: "book" },
+    { href: resolve("/freebies"), label: "freebies" },
   ];
 
   const logoWhiteSrc = resolve("/al_wordm_white.png");
@@ -30,6 +31,8 @@
     const path = $page.url.pathname;
     if (path === resolve("/about")) return "About - Alice Foronda";
     if (path === resolve("/book")) return "Books - Alice Foronda";
+    if (path === resolve("/shop")) return "Shop - Alice Foronda";
+    if (path === resolve("/freebies")) return "Freebies - Alice Foronda";
     return "Alice Foronda - Children's Book Author";
   });
 
@@ -205,18 +208,34 @@
       <div
         class="page-shell flex flex-col items-center gap-3 pb-6 text-pink-200"
       >
-        <a
-          href="https://instagram.com/byaliceforonda"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Visit Alice Foronda on Instagram"
-        >
-          <img
-            src={resolve("/whiteig.png")}
-            alt="Instagram"
-            class="h-10 w-10 cursor-pointer"
-          />
-        </a>
+        <div class="flex items-center gap-4">
+          <a
+            href="https://instagram.com/byaliceforonda"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Visit Alice Foronda on Instagram"
+            class="flex h-10 w-10 items-center justify-center"
+          >
+            <img
+              src={resolve("/whiteig.png")}
+              alt="Instagram"
+              class="h-10 w-10 cursor-pointer object-contain"
+            />
+          </a>
+          <a
+            href="https://www.tiktok.com/@catchupwithalice"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Visit Alice Foronda on TikTok"
+            class="flex h-10 w-10 items-center justify-center"
+          >
+            <img
+              src={resolve("/tiktok-round-icon-png-removebg-preview.png")}
+              alt="TikTok"
+              class="h-10 w-10 cursor-pointer object-cover"
+            />
+          </a>
+        </div>
         <span
           >&copy; {new Date().getFullYear()} Alice Foronda. All rights reserved.
           No personal data collected. Purchases happen on retailer sites.</span
