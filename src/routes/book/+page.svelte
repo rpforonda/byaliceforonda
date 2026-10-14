@@ -2,7 +2,6 @@
   import { onMount } from "svelte";
 
   const mailerLiteAccountId = "2261437";
-  const mailerLiteFormId = "QQryIS";
   const mailerLiteScriptUrl = "https://assets.mailerlite.com/js/universal.js";
 
   function bootMailerLite() {
@@ -26,11 +25,6 @@
     if (typeof window.ml === "function") {
       window.ml("account", mailerLiteAccountId);
     }
-  }
-
-  function openMailerLitePopup() {
-    bootMailerLite();
-    window.ml?.("show", mailerLiteFormId, true);
   }
 
   onMount(() => {
