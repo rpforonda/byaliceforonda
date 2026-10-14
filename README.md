@@ -62,7 +62,7 @@ SHARP_IGNORE_GLOBAL_LIBVIPS=1 npm ci
 ```
 vite.config.ts          # Vite plugins + SvelteKit options (adapter-static, paths, prerender)
 src/
-  app.html              # document shell; loads Nunito + Poppins, injects SvelteKit head/body
+  app.html              # document shell; injects SvelteKit head/body (fonts load via +layout)
   app.css               # Tailwind import + base layer (focus styles, motion, .page-shell)
   lib/
     CosmicDash.svelte   # "Crosby's Cosmic Dash" — canvas endless-runner game
@@ -125,6 +125,10 @@ Teal Galaxy → Rosy Starfield → Golden Comet Belt).
   auto-pauses on tab-hide (`visibilitychange`) and on blur.
 - **Persistence:** high score only, in `localStorage` (`catchupwithalice-cosmic-dash-hi`),
   guarded by try/catch. No network, no personal data.
+- **Share score:** the game-over screen offers a "share my score" button (Web Share API with a
+  clipboard fallback). The share text is built in the browser from the run's numbers only
+  (score, character, game, site URL) — no name, identifier, or server call, so it collects
+  nothing.
 - **Accessibility:** `role="application"` with descriptive label, keyboard-operable, an
   `aria-live` region announcing game-over, and a visible focus outline.
 
@@ -202,8 +206,10 @@ Because the host serves static files only, keep these in mind:
 This is a static site with a narrow attack surface. No user input reaches the DOM (no forms,
 no `fetch`, no reading of URL params), no `{@html}`, and all external links carry
 `rel="noopener noreferrer"`. The only embedded third party is the MailerLite signup iframe,
-whose `src` is hardcoded. No analytics or trackers are bundled. The sole hardening gap is the
-absence of a Content-Security-Policy `<meta>` tag (GitHub Pages can't set CSP headers).
+whose `src` is hardcoded. No analytics or trackers are bundled, and **fonts are self-hosted**
+(`@fontsource`, bundled at build) rather than fetched from Google — so no visitor data leaves
+for a third party and the site stays cookieless. The sole hardening gap is the absence of a
+Content-Security-Policy `<meta>` tag (GitHub Pages can't set CSP headers).
 
 ## License
 
