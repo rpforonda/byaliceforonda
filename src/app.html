@@ -6,15 +6,9 @@
 		<link rel="apple-touch-icon" href="%sveltekit.assets%/apple-touch-icon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-		<!-- Preconnect to Google Fonts for faster loading -->
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-		<!-- Only the families the site uses: Nunito (UI, headings, game) and Poppins (book blurb) -->
-		<link
-			href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Poppins:wght@400&display=swap"
-			rel="stylesheet"
-		/>
+		<!-- Fonts (Nunito, Poppins) are self-hosted via @fontsource, imported in
+		     +layout.svelte. No third-party font requests, so no visitor IPs are
+		     sent to Google — keeps the site privacy-friendly and cookieless. -->
 
 		<!-- SvelteKit will inject all <svelte:head> tags from your layouts/pages here -->
 		%sveltekit.head%

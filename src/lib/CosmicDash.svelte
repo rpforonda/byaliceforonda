@@ -151,6 +151,11 @@
   let uiCharge = $state(0);
   let uiActive = $state(false);
   let announcement = $state("");
+  // Results shown on the game-over screen (reactive copies of the plain run vars).
+  let lastScore = $state(0);
+  let lastIsBest = $state(false);
+  let shareMsg = $state("");
+  let shareTimer;
 
   const selected = $derived(characters.find((c) => c.id === selectedId) ?? characters[0]);
 
@@ -420,6 +425,9 @@
     mode = "over";
     uiState = "over";
     overLockUntil = performance.now() + 450;
+    lastScore = Math.floor(score);
+    lastIsBest = score > hiScore;
+    shareMsg = "";
     if (score > hiScore) {
       hiScore = score;
       saveHiScore();
@@ -440,6 +448,45 @@
       if (now < burstEnd && mode === "over") rafId = requestAnimationFrame(tail);
     };
     rafId = requestAnimationFrame(tail);
+  }
+
+  // Share the score. Privacy-safe by design: the text is built in the browser
+  // from the run's own numbers (no name, device, or identifier), nothing is sent
+  // to any server, and it only runs when the player taps the button. We hand the
+  // text to the OS share sheet (Web Share API) or copy it to the clipboard.
+  function shareText() {
+    const pts = Math.floor(lastScore).toLocaleString();
+    const best = lastIsBest ? " (new best!)" : "";
+    return `🚀 I scored ${pts} as ${selected.name} in Crosby's Cosmic Dash!${best}\nPlay at https://catchupwithalice.com/freebies`;
+  }
+
+  async function shareScore() {
+    const text = shareText();
+    shareMsg = "";
+    clearTimeout(shareTimer);
+    const flash = (msg) => {
+      shareMsg = msg;
+      shareTimer = setTimeout(() => (shareMsg = ""), 2600);
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share({ text });
+      } else if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        flash("Copied — paste it anywhere!");
+      } else {
+        flash("Copy: " + text);
+      }
+    } catch (err) {
+      // AbortError = the player dismissed the share sheet; nothing to report.
+      if (err && err.name === "AbortError") return;
+      try {
+        await navigator.clipboard.writeText(text);
+        flash("Copied — paste it anywhere!");
+      } catch {
+        flash("Couldn't share — long-press to copy your score.");
+      }
+    }
   }
 
   function pause() {
@@ -1455,6 +1502,7 @@
 
     return () => {
       cancelAnimationFrame(rafId);
+      clearTimeout(shareTimer);
       ro.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
     };
@@ -1552,6 +1600,22 @@
     </div>
   </div>
 
+  {#if uiState === "over"}
+    <div class="flex flex-col items-center gap-2">
+      <p class="text-sm font-bold text-[#352f47]">
+        You scored {lastScore.toLocaleString()} as {selected.name}{#if lastIsBest} — new best!{/if}
+      </p>
+      <button
+        type="button"
+        class="share-btn rounded-full px-5 py-2 text-sm font-bold lowercase text-white shadow-[0_6px_14px_rgba(210,35,76,0.3)]"
+        onclick={shareScore}
+      >
+        🚀 share my score
+      </button>
+      <p class="min-h-[1.1rem] text-xs text-[#4c465f]" aria-live="polite">{shareMsg}</p>
+    </div>
+  {/if}
+
   <p id="cosmic-dash-help" class="text-sm text-[#4c465f]">
     Space / ↑ to jump (hold for higher) · ↓ to duck · X for your special move · on phones, tap to jump, swipe down to duck,
     and use the ★ button
@@ -1585,5 +1649,13 @@
     to {
       box-shadow: 0 0 0 6px rgba(243, 211, 111, 0);
     }
+  }
+
+  .share-btn {
+    background-color: #d2234c;
+  }
+
+  .share-btn:hover {
+    background-color: #b31d41;
   }
 </style>

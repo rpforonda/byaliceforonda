@@ -56,13 +56,12 @@ approachable feel (`font-black`, `lowercase`, slight letter-spacing e.g. `tracki
 - **Body & UI:** Nunito (400 / 600 / 700)
 - **Secondary:** Poppins 400 (available, used sparingly)
 
-Fonts are loaded from **Google Fonts** in `app.html`, limited to the two families the site
-uses: Nunito (400/600/700) and Poppins (400). The character names on the home page ask for
-`Inter`, which is never loaded, so they fall back to the system sans.
-
-> **Recommendation:** self-host Nunito + Poppins (e.g. `@fontsource/*`). This removes the
-> render-blocking third-party CSS and avoids sending visitor IPs to Google (a GDPR
-> consideration for EU visitors), matching the site's privacy posture.
+Fonts are **self-hosted via `@fontsource`** — Nunito (400/600/700) and Poppins (400) are
+imported in `+layout.svelte` and bundled from `node_modules` at build time (served as subset
+`.woff2` from the site's own origin). There are **no third-party font requests**, so no
+visitor IPs are sent to Google and the site stays cookieless — matching its privacy posture.
+The character names on the home page ask for `Inter`, which is not bundled, so they fall back
+to the system sans.
 
 ### Type treatment conventions
 
@@ -130,6 +129,10 @@ an arcade game.
   on game-over. Note this canvas animation does **not** currently consult
   `prefers-reduced-motion` (acceptable because play is user-initiated and pausable, but worth a
   future toggle).
+- **Share score:** the game-over screen shows the final score and a rose "share my score"
+  button. It uses the Web Share API (OS share sheet) with a clipboard fallback. The share text
+  is built client-side from the run's own numbers only — score, character, game name, and the
+  site URL — with **no name, identifier, or server call**, so sharing adds no privacy surface.
 - **Focus/affordances:** a 3px `#d2234c` focus-visible outline on the frame matches the
   site-wide focus treatment; the site's global image-hover zoom is explicitly disabled on the
   character portraits so they don't jostle.
@@ -191,11 +194,10 @@ Documented so they aren't mistaken for intent:
 
 1. **No color tokens** — colors are hardcoded hex values; move the core palette into
    `@theme` in `app.css`.
-2. **Third-party fonts** — Nunito + Poppins still come from Google Fonts (plus `Inter`,
-   referenced but never loaded); self-host them.
-3. **No CSP** — add a `<meta http-equiv="Content-Security-Policy">` in `app.html` (GitHub
-   Pages can't set the header) allowing self, Google Fonts, and `assets.mailerlite.com`.
-4. **Text in artwork** — the about letter and book description are images with hidden text
+2. **No CSP** — add a `<meta http-equiv="Content-Security-Policy">` in `app.html` (GitHub
+   Pages can't set the header) allowing self and `assets.mailerlite.com` (fonts are now
+   self-hosted, so no font origin is needed).
+3. **Text in artwork** — the about letter and book description are images with hidden text
    transcripts; real HTML text styled to match would be better for SEO and accessibility.
-5. **Game & reduced motion** — Cosmic Dash's canvas loop ignores `prefers-reduced-motion`;
+4. **Game & reduced motion** — Cosmic Dash's canvas loop ignores `prefers-reduced-motion`;
    consider a reduced-motion or "pause animations" affordance for motion-sensitive players.
