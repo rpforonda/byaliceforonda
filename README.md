@@ -5,8 +5,8 @@ fully static marketing site built with SvelteKit and deployed to GitHub Pages at
 [catchupwithalice.com](https://catchupwithalice.com).
 
 There is no backend: no server code, no database, no API, no runtime request handling. Every
-page is prerendered to a plain HTML file at build time, and all dynamic behavior (menus,
-animations, the newsletter popup) runs in the browser. Purchases and sign-ups happen on
+route gets its own HTML file at build time, and everything else (page content, menus,
+animations, the newsletter popup) is rendered in the browser. Purchases and sign-ups happen on
 third-party sites (Shopify, MailerLite), so the site itself collects no personal data.
 
 > Looking for the visual language — colors, type, components, motion? See
@@ -16,15 +16,22 @@ third-party sites (Shopify, MailerLite), so the site itself collects no personal
 
 | Concern        | Choice                                                            |
 | -------------- | ----------------------------------------------------------------- |
-| Framework      | [SvelteKit 2](https://kit.svelte.dev) with **Svelte 5 runes**     |
-| Rendering      | `@sveltejs/adapter-static` — prerendered, client-side hydrated    |
+| Framework      | [SvelteKit 3](https://svelte.dev/docs/kit) with **Svelte 5 runes** |
+| Rendering      | `@sveltejs/adapter-static` — one HTML file per route, rendered client-side |
 | Styling        | [Tailwind CSS v4](https://tailwindcss.com) via `@tailwindcss/vite`|
-| Build          | [Vite 6](https://vitejs.dev)                                      |
+| Images         | [`@sveltejs/enhanced-img`](https://svelte.dev/docs/kit/images) — AVIF/WebP + `srcset` at build time |
+| Build          | [Vite 8](https://vite.dev)                                        |
 | Hosting        | GitHub Pages (custom domain via `static/CNAME`)                   |
 | CI/CD          | GitHub Actions (`.github/workflows/deploy.yml`)                   |
 
-`+layout.js` sets `ssr = false`, `csr = true`, `prerender = true`: pages are generated as
-static HTML at build time and take over on the client after load.
+`+layout.js` sets `ssr = false`, `csr = true`, `prerender = true`. Because SSR is off, each
+prerendered HTML file is an empty shell (head + scripts) and the page content is rendered by
+JavaScript after load.
+
+SvelteKit 3 has no `svelte.config.js`: the SvelteKit options (adapter, `paths`, `prerender`,
+compiler options) are passed to the `sveltekit()` plugin in `vite.config.ts`. Imports from
+`src/lib` use the `#lib/...` subpath import defined in `package.json` (SvelteKit 3 removed
+`$lib`).
 
 ## Getting started
 
@@ -38,16 +45,27 @@ npm run preview    # serve the production build locally
 `npm run build` also runs a `postbuild` step that copies `build/index.html` to
 `build/404.html` so client-side routing survives a hard refresh on GitHub Pages.
 
-Requires Node 20 (matching CI). A `.mise.toml` is present if you use [mise](https://mise.jdx.dev).
+Requires **Node 22.17 or newer** (SvelteKit 3's minimum); CI builds with Node 24.
+
+If your system has libvips installed (e.g. Arch Linux), `sharp` (used by enhanced-img) tries
+to compile against it and `npm install` fails with *"Please add node-addon-api to your
+dependencies"*. Use its prebuilt binary instead:
+
+```bash
+SHARP_IGNORE_GLOBAL_LIBVIPS=1 npm ci
+```
 
 ## Project structure
 
 ```
+vite.config.ts          # Vite plugins + SvelteKit options (adapter-static, paths, prerender)
 src/
   app.html              # document shell; loads Google Fonts, injects SvelteKit head/body
   app.css               # Tailwind import + base layer (focus styles, motion, .page-shell)
   lib/
     CosmicDash.svelte   # "Crosby's Cosmic Dash" — canvas endless-runner game
+    assets/             # all images the pages use (processed at build time)
+      game/             # Cosmic Dash character sprites
   routes/
     +layout.svelte      # header, nav, footer, mobile menu, View Transitions
     +layout.js          # prerender / csr / ssr flags
@@ -56,7 +74,7 @@ src/
     book/+page.svelte   # book info + buy buttons → Shopify
     freebies/+page.svelte  # coloring-page PDFs + Cosmic Dash game
     shop/+page.svelte   # "coming soon" placeholder (not in nav)
-static/                 # images, PDFs, robots.txt, CNAME, .nojekyll
+static/                 # served as-is: coloring-page PDFs, favicons, robots.txt, CNAME, .nojekyll
 .github/workflows/deploy.yml
 ```
 
@@ -70,8 +88,8 @@ placeholder.
   (`catchupwithalice.myshopify.com`) in a new tab.
 - **Newsletter:** "Join Crosby's Crew" — a MailerLite embedded form shown in a popup
   modal on the home page (`assets.mailerlite.com`, form id `QQryIS`).
-- **Freebies:** three printable coloring-page PDFs (Crosby, Tank, Carla) served from `static/`,
-  plus **Crosby's Cosmic Dash**, a browser game (see below).
+- **Freebies:** three printable coloring-page PDFs (Crosby, Tank, Carla) served from `static/`
+  and linked with `asset()`, plus **Crosby's Cosmic Dash**, a browser game (see below).
 - **Social:** Instagram `@byaliceforonda`, TikTok `@catchupwithalice` (footer).
 
 ### Crosby's Cosmic Dash
@@ -103,11 +121,49 @@ Teal Galaxy → Rosy Starfield → Golden Comet Belt).
 - **Accessibility:** `role="application"` with descriptive label, keyboard-operable, an
   `aria-live` region announcing game-over, and a visible focus outline.
 
+## Images
+
+Every image a page shows lives in `src/lib/assets/` and is rendered with `<enhanced:img>`,
+which generates AVIF + WebP (plus a PNG/JPEG fallback) at build time and adds `width`/`height`
+to prevent layout shift:
+
+```svelte
+<enhanced:img src="#lib/assets/cosmic.jpeg" alt="…" width="1280" class="…" />
+```
+
+Pick the sizing that matches how the image is displayed:
+
+- **Source is at least 2× its displayed size:** set `width` to 2× the largest CSS width (e.g.
+  `width="160"` for an 80px logo). You get a 1× and a 2× version.
+- **Image spans the layout responsively:** set `sizes` (e.g.
+  `sizes="(min-width: 1280px) 1100px, 100vw"`). You get a range of widths for the browser to
+  choose from.
+- **Source is smaller than 2× its display size:** use one width at the source size:
+  `src="#lib/assets/joincrosby.png?w=463"` **and** `sizes="463px"`. Without `sizes`, the
+  browser assumes `100vw` and the image renders larger than intended.
+
+Mark the largest above-the-fold image `fetchpriority="high"` and leave out `loading="lazy"`
+on anything visible without scrolling. Assets used from script (like the game sprites) are
+imported normally (`import sprite from "#lib/assets/game/crosby.webp"`) so Vite fingerprints
+them and a missing file fails the build.
+
+`<enhanced:img>` wraps each `<img>` in a `<picture>`. `app.css` sets `picture { display:
+contents }` and hides its `<source>` children so layouts behave as if the `<img>` were
+unwrapped.
+
+Only put files in `static/` when they need a stable, unhashed URL (PDFs, favicons, CNAME).
+GitHub Pages can't redirect, so renaming or removing anything there breaks existing links.
+
 ## Deployment
 
 Pushing to `main` triggers `.github/workflows/deploy.yml`, which runs `npm ci && npm run
 build`, uploads `build/` as a Pages artifact, and deploys it. The workflow uses the official
-GitHub Pages OIDC flow with least-privilege permissions (`pages: write`, `id-token: write`).
+GitHub Pages OIDC flow; the `pages: write` / `id-token: write` permissions are scoped to the
+deploy job.
+
+Pull requests into `main` run the same build **without deploying** (the build job checks the
+PR merged with the current `main`), so a broken build shows up on the PR instead of in
+production.
 
 ### GitHub Pages constraints
 
