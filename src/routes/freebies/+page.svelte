@@ -1,5 +1,7 @@
 <script>
   import { asset } from "$app/paths";
+  import { resolve } from "$app/paths";
+  import CosmicDash from "$lib/CosmicDash.svelte";
 
   const crosbyColoringPagePdf = asset('Crosby Coloring Page.pdf');
   const tankColoringPagePdf = asset('Tank Coloring Page.pdf');
@@ -63,4 +65,14 @@
   <p class="mt-4 max-w-2xl text-base text-[#4c465f] md:text-lg">
     Free printable activities and bonus goodies are coming soon.
   </p>
+
+  <div class="mt-14 w-full max-w-3xl">
+    <h2 class="text-3xl font-black lowercase tracking-[0.04em] text-[#352f47] md:text-4xl">
+      crosby's cosmic dash
+    </h2>
+    <p class="mx-auto mt-2 mb-6 max-w-xl text-base text-[#4c465f]">
+      Pick a friend, hop over moon rocks and starberry bushes, dodge the comets, and catch falling stars!
+    </p>
+    <CosmicDash />
+  </div>
 </section>
