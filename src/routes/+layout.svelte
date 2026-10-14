@@ -1,5 +1,11 @@
 <script>
   import "../app.css";
+  // Self-hosted fonts (bundled from node_modules at build time) so no visitor
+  // data is sent to Google Fonts. Only the weights the site actually uses.
+  import "@fontsource/nunito/400.css";
+  import "@fontsource/nunito/600.css";
+  import "@fontsource/nunito/700.css";
+  import "@fontsource/poppins/400.css";
   import { resolve } from "$app/paths";
   import { onNavigate } from "$app/navigation";
 
