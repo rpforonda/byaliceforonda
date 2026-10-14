@@ -12,6 +12,7 @@ export const OG_IMAGE = {
 };
 
 export const SHOP_URL = "https://catchupwithalice.myshopify.com/";
+export const AMAZON_URL = "https://www.amazon.com/dp/B0HFTDNCKW";
 
 export const author = {
   "@type": "Person",
@@ -36,4 +37,5 @@ export const book = {
     "Crosby the crocodile worries his tail's too thick and his claws too long. With a little courage and help from his friends Carla the capybara and Tank the turtle, he discovers just how brightly he can shine. A heartwarming story about bravery, belonging, and believing in yourself, for ages 4–8.",
   image: OG_IMAGE.url,
   url: `${SITE_URL}/book`,
+  sameAs: [AMAZON_URL],
 };
