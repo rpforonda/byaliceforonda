@@ -77,11 +77,25 @@ placeholder.
 ### Crosby's Cosmic Dash
 
 A self-contained `<canvas>` endless-runner (Chrome-dino style) on the freebies page,
-implemented in `src/lib/CosmicDash.svelte`. Pick a character (Crosby, Carla, or Tank), jump
-moon rocks and starberry bushes, duck comets, and catch falling stars for bonus points.
+implemented in `src/lib/CosmicDash.svelte`. Pick a character (Crosby, Carla, or Tank), run
+across a moon surface in deep space, jump moon rocks and space crystals, duck (or jump)
+shooting comets, and collect stars. The nebula colors change every 500 points (Purple Nebula →
+Teal Galaxy → Rosy Starfield → Golden Comet Belt).
 
-- **Controls:** Space / ↑ / W to jump (hold for a higher jump), ↓ / S to duck, P / Esc to
-  pause. On touch: tap to jump, swipe down to duck.
+- **Characters & skills:** each friend has a passive perk and a special move charged by
+  collecting stars. Crosby, the main hero, is deliberately the strongest.
+
+  | Character | Passive | Special (stars to charge) |
+  | --------- | ------- | ------------------------- |
+  | Crosby | Starlight Double Jump — jump again mid-air | Brave Heart (6) — 5s invincible: smash obstacles, star magnet, double score |
+  | Carla | Navigator's Map — off-screen obstacle warnings + star magnet | Calm Compass (9) — slows the world for 4s |
+  | Tank | Spring Gadget — higher held jump | Rocket Pack (9) — fly safely over everything for 3s |
+
+- **Sprites:** colored versions of the pencil character sketches, painted in the book-cover
+  palette, in `src/lib/assets/game/` (imported, so Vite fingerprints them).
+- **Controls:** Space / ↑ / W to jump (hold for a higher jump), ↓ / S to duck, X / E / Shift
+  for the special move, P / Esc to pause. On touch: tap to jump, swipe down to duck, and the
+  ★ button under the canvas for the special.
 - **Tech:** Canvas 2D + `requestAnimationFrame`; DPR-aware sizing via `ResizeObserver`;
   auto-pauses on tab-hide (`visibilitychange`) and on blur.
 - **Persistence:** high score only, in `localStorage` (`catchupwithalice-cosmic-dash-hi`),

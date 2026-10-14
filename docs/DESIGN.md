@@ -114,11 +114,20 @@ an arcade game.
 - **Framing:** sits in a rounded, white-bordered "game-frame" over the sky-blue `#d7e6ff`
   background with a soft drop shadow — the same rounded, pastel language as the rest of the site.
 - **Character picker:** pill buttons for Crosby / Carla / Tank, each tinted with its own accent
-  (Crosby `#8fc27b`, Carla `#ef6f3c`, Tank per-character), the selected pill ringed in that accent;
-  disabled while a run is in progress.
-- **Art direction:** everything is drawn procedurally on the canvas in the site palette — moon
-  rocks, starberry bushes, comets, collectible stars, parallax clouds/doodles, and a slow
-  day↔night tint cycle. Canvas text uses **Nunito** (redrawn once `document.fonts.ready`).
+  (Crosby `#7dbd55`, Carla `#d68a4c`, Tank `#e8a24a`), the selected pill ringed in that accent;
+  Crosby carries a rose `★` and a "main hero" badge. Disabled while a run is in progress.
+- **Skill card:** under the picker, a white rounded card (bordered in the selected accent) lists
+  the character's role, a 5-star power rating, and their passive + special move. A matching
+  ★ special button sits in a dark `#241d4a` strip under the canvas and pulses gold when charged.
+- **Characters:** colored sprites (`src/lib/assets/game/`) made by painting the pencil sketches
+  in the book-cover palette with the pencil kept on top (multiply), so they read like the
+  book's watercolor art.
+- **Art direction:** deep space drawn procedurally on the canvas — a `#120f33 → #4f3a8c` sky,
+  twinkling parallax star layers, gold storybook stars, nebulae, ringed/blue planets, shooting
+  stars, a lavender cratered moon surface, moon rocks, glowing teal/pink space crystals, and
+  star-faced comets. Every 500 points the nebulae shift to a new zone palette with a
+  "✦ entering the … ✦" banner. Titles keep the cover's yellow `#f3d36f` with maroon `#7c2b28`
+  drop shadow; canvas text uses **Nunito** (redrawn once `document.fonts.ready`).
 - **Motion:** continuous `requestAnimationFrame` loop while playing; a short particle "burst"
   on game-over. Note this canvas animation does **not** currently consult
   `prefers-reduced-motion` (acceptable because play is user-initiated and pausable, but worth a

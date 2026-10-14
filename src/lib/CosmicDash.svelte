@@ -1,94 +1,158 @@
 <script>
   import { onMount } from "svelte";
-  import crosbySprite from "#lib/assets/Crosby.webp";
-  import carlaSprite from "#lib/assets/Carla.webp";
-  import tankSprite from "#lib/assets/Tank.webp";
+  import crosbySprite from "#lib/assets/game/crosby.webp";
+  import carlaSprite from "#lib/assets/game/carla.webp";
+  import tankSprite from "#lib/assets/game/tank.webp";
 
-  // Endless runner in the spirit of Chrome's offline dino game, themed after
-  // Crosby's Cosmic Adventure. Pick a character, jump the moon rocks and
-  // starberry bushes, duck (or jump) the comets, and grab stars for bonus points.
+  // Endless runner in the spirit of Chrome's offline dino game, set in the
+  // starry world of Crosby's Cosmic Adventure. Each friend has a passive perk
+  // and a special move charged by collecting stars — Crosby's are the strongest.
 
   const characters = [
     {
       id: "crosby",
       name: "Crosby",
+      role: "Gentle dreamer",
+      hero: true,
+      power: 5,
       src: crosbySprite,
-      aspect: 360 / 325,
-      height: 70,
+      aspect: 288 / 240,
+      height: 72,
       flip: false,
-      sink: 3,
-      hit: { l: 0.32, r: 0.12, t: 0.18, b: 0.06 },
-      accent: "#8fc27b",
+      hit: { l: 0.3, r: 0.1, t: 0.1, b: 0.03 },
+      accent: "#7dbd55",
+      jumps: 2,
+      holdTime: 0.17,
+      holdGravity: 0.55,
+      magnet: 0,
+      map: false,
+      passive: {
+        name: "Starlight Double Jump",
+        text: "Leap again in mid-air on a burst of starlight.",
+      },
+      special: {
+        kind: "brave",
+        name: "Brave Heart",
+        cost: 6,
+        duration: 5,
+        text: "5 seconds of glowing courage: smash through anything, pull in every star and score double.",
+      },
     },
     {
       id: "carla",
       name: "Carla",
+      role: "Fearless navigator",
+      power: 3,
       src: carlaSprite,
-      aspect: 232 / 329,
-      height: 68,
+      aspect: 172 / 240,
+      height: 70,
       flip: true,
-      sink: 2,
-      hit: { l: 0.16, r: 0.16, t: 0.1, b: 0.04 },
-      accent: "#ef6f3c",
+      hit: { l: 0.14, r: 0.14, t: 0.06, b: 0.03 },
+      accent: "#d68a4c",
+      jumps: 1,
+      holdTime: 0.17,
+      holdGravity: 0.55,
+      magnet: 80,
+      map: true,
+      passive: {
+        name: "Navigator's Map",
+        text: "Spots what's coming before it's on screen, and nearby stars drift her way.",
+      },
+      special: {
+        kind: "calm",
+        name: "Calm Compass",
+        cost: 9,
+        duration: 4,
+        text: "She sets a steady pace: the whole galaxy slows down for 4 seconds.",
+      },
     },
     {
       id: "tank",
       name: "Tank",
+      role: "Inventor and tinkerer",
+      power: 4,
       src: tankSprite,
-      aspect: 458 / 544,
-      height: 76,
+      aspect: 211 / 240,
+      height: 74,
       flip: false,
-      sink: 5,
-      hit: { l: 0.12, r: 0.24, t: 0.08, b: 0.1 },
-      accent: "#afab23",
+      hit: { l: 0.1, r: 0.25, t: 0.05, b: 0.03 },
+      accent: "#e8a24a",
+      jumps: 1,
+      holdTime: 0.2,
+      holdGravity: 0.45,
+      magnet: 0,
+      map: false,
+      passive: {
+        name: "Spring Gadget",
+        text: "Hold jump to bounce extra high.",
+      },
+      special: {
+        kind: "rocket",
+        name: "Rocket Pack",
+        cost: 9,
+        duration: 3,
+        text: "Blast off and cruise safely over everything for 3 seconds.",
+      },
     },
   ];
 
-  // Palette pulled from the site and the Crosby's Cosmic Adventure cover.
+  // Palette drawn from the book cover and the nighttime spreads.
   const C = {
-    sky: "#d7e6ff",
-    skyNight: "#3a3577",
-    skyNightLow: "#6a4f9e",
-    doodle: "#34408a",
-    doodleNight: "#ffe9a8",
+    skyTop: "#120f33",
+    skyMid: "#2b2466",
+    skyLow: "#4f3a8c",
     title: "#f3d36f",
     titleShadow: "#7c2b28",
-    ink: "#352f47",
-    ground: "#8fc27b",
-    groundNight: "#4e6b52",
-    groundEdge: "#6b8a32",
-    groundEdgeNight: "#33503c",
-    rock: "#c9c2df",
-    rockShade: "#a79fc4",
-    bush: "#8fc27b",
-    bushDark: "#25533f",
-    berry: "#d2234c",
-    star: "#ffd28d",
-    cloud: "#fff6e3",
-    moon: "#fff3cf",
+    ink: "#241d4a",
+    text: "#fff6e3",
+    gold: "#ffd28d",
+    ground1: "#a99ad8",
+    ground2: "#7d6cb8",
+    ground3: "#4a3d86",
+    groundEdge: "#e9e1ff",
+    crater: "#6a5aa6",
+    craterRim: "#c4b8ee",
+    rock: "#8e83bd",
+    rockShade: "#6f63a3",
+    rockLight: "#c9bff0",
+    navigator: "#5fe0d0",
   };
 
-  const H = 240;
-  const GROUND = 204;
+  // Each zone tints the nebulae; a new zone every ZONE_EVERY points.
+  const zones = [
+    { name: "Purple Nebula", a: "#ff8fc8", b: "#8f6bff" },
+    { name: "Teal Galaxy", a: "#5fe0d0", b: "#3a7bd5" },
+    { name: "Rosy Starfield", a: "#ffb4a0", b: "#ff6fa0" },
+    { name: "Golden Comet Belt", a: "#ffd28d", b: "#f09a58" },
+  ];
+  const ZONE_EVERY = 500;
+
+  const H = 280;
+  const GROUND = 236;
   const PLAYER_X = 48;
   const GRAVITY = 2600;
   const JUMP_V = -700;
-  const HOLD_TIME = 0.17;
-  const HOLD_GRAVITY = 0.55;
+  const AIR_JUMP_V = -640;
   const FAST_FALL = 2.4;
   const DUCK_SX = 1.18;
   const DUCK_SY = 0.6;
   const START_SPEED = 340;
   const MAX_SPEED = 760;
   const ACCEL = 9;
-  const NIGHT_EVERY = 500;
+  const SPAWN_AHEAD = 260;
+  const GRACE = 0.9;
+  const ROCKET_Y = GROUND - 128;
   const HI_KEY = "catchupwithalice-cosmic-dash-hi";
 
   let wrapper = $state();
   let canvas = $state();
   let selectedId = $state("crosby");
   let uiState = $state("ready");
+  let uiCharge = $state(0);
+  let uiActive = $state(false);
   let announcement = $state("");
+
+  const selected = $derived(characters.find((c) => c.id === selectedId) ?? characters[0]);
 
   const images = {};
   let ctx;
@@ -103,34 +167,48 @@
   let hiScore = 0;
   let distance = 0;
   let clock = 0;
-  let night = 0;
   let nextSpawn = 0;
   let overLockUntil = 0;
   let flashUntil = 0;
   let lastMilestone = 0;
   let bumpedInto = "";
-  const player = { y: GROUND, vy: 0, onGround: true, holdT: 0, held: false, ducking: false };
+  let charge = 0;
+  let active = { kind: null, t: 0, max: 0 };
+  let grace = 0;
+  let zoneIndex = 0;
+  let zoneBannerT = 0;
+  let nebA = [255, 143, 200];
+  let nebB = [143, 107, 255];
+  const player = {
+    y: GROUND,
+    vy: 0,
+    onGround: true,
+    holdT: 0,
+    held: false,
+    ducking: false,
+    jumpsUsed: 0,
+  };
   let obstacles = [];
   let pickups = [];
   let particles = [];
   let popups = [];
-  let doodles = [];
-  let clouds = [];
+  let starLayers = [];
+  let goldStars = [];
+  let nebulae = [];
+  let planets = [];
+  let shooting = null;
+  let nextShoot = 3;
 
-  const char = () => characters.find((c) => c.id === selectedId) ?? characters[0];
+  const char = () => selected;
   const rand = (a, b) => a + Math.random() * (b - a);
   const pad = (n) => String(Math.floor(n)).padStart(5, "0");
 
-  function lerpColor(a, b, t) {
-    const pa = parseInt(a.slice(1), 16);
-    const pb = parseInt(b.slice(1), 16);
-    const ch = (s) => {
-      const x = (pa >> s) & 255;
-      const y = (pb >> s) & 255;
-      return Math.round(x + (y - x) * t);
-    };
-    return `rgb(${ch(16)},${ch(8)},${ch(0)})`;
-  }
+  const hexToRgb = (hex) => {
+    const n = parseInt(hex.slice(1), 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  };
+  const rgba = ([r, g, b], a = 1) => `rgba(${r | 0},${g | 0},${b | 0},${a})`;
+  const approach = (cur, target, k) => cur.map((v, i) => v + (target[i] - v) * k);
 
   function loadHiScore() {
     try {
@@ -148,24 +226,42 @@
     }
   }
 
+  function syncUi() {
+    uiCharge = charge;
+    uiActive = !!active.kind;
+  }
+
   // ---------- world setup ----------
 
   function seedScenery() {
-    doodles = [];
-    const kinds = ["star", "flower", "star", "dot", "swirl"];
-    for (let i = 0; i < 9; i++) {
-      doodles.push({
-        x: rand(0, 900),
-        y: rand(18, GROUND - 90),
-        kind: kinds[i % kinds.length],
-        size: rand(7, 13),
-        rot: rand(-0.4, 0.4),
-      });
-    }
-    clouds = [];
-    for (let i = 0; i < 3; i++) {
-      clouds.push({ x: rand(0, 900), y: rand(30, 110), s: rand(0.7, 1.15) });
-    }
+    starLayers = [0.03, 0.07, 0.13].map((par, i) => ({
+      par,
+      stars: Array.from({ length: 46 - i * 12 }, () => ({
+        x: rand(0, 1000),
+        y: rand(4, GROUND - 14),
+        r: rand(0.5, 1) + i * 0.35,
+        tw: rand(1.2, 3.2),
+        ph: rand(0, 6.28),
+      })),
+    }));
+    goldStars = Array.from({ length: 7 }, () => ({
+      x: rand(0, 1000),
+      y: rand(14, GROUND - 70),
+      r: rand(3.5, 6),
+      ph: rand(0, 6.28),
+    }));
+    nebulae = [
+      { x: 120, y: 70, r: 150, c: "a" },
+      { x: 480, y: 130, r: 180, c: "b" },
+      { x: 820, y: 60, r: 140, c: "a" },
+    ];
+    planets = [
+      { x: 560, y: 66, r: 20, kind: "ringed" },
+      { x: 960, y: 120, r: 11, kind: "moon" },
+      { x: 260, y: 150, r: 8, kind: "blue" },
+    ];
+    shooting = null;
+    nextShoot = rand(2, 4);
   }
 
   function reset() {
@@ -173,17 +269,32 @@
     score = 0;
     distance = 0;
     clock = 0;
-    night = 0;
-    nextSpawn = 380;
+    nextSpawn = 200;
     lastMilestone = 0;
     flashUntil = 0;
     bumpedInto = "";
-    Object.assign(player, { y: GROUND, vy: 0, onGround: true, holdT: 0, held: false, ducking: false });
+    charge = 0;
+    active = { kind: null, t: 0, max: 0 };
+    grace = 0;
+    zoneIndex = 0;
+    zoneBannerT = 0;
+    nebA = hexToRgb(zones[0].a);
+    nebB = hexToRgb(zones[0].b);
+    Object.assign(player, {
+      y: GROUND,
+      vy: 0,
+      onGround: true,
+      holdT: 0,
+      held: false,
+      ducking: false,
+      jumpsUsed: 0,
+    });
     obstacles = [];
     pickups = [];
     particles = [];
     popups = [];
     seedScenery();
+    syncUi();
   }
 
   function makeBlob(w, h, n = 8) {
@@ -197,16 +308,16 @@
   }
 
   function spawnObstacle() {
-    const x = W + 30;
+    const x = W + SPAWN_AHEAD;
     const r = Math.random();
     let ob;
 
-    if (score > 220 && r < 0.24) {
-      const lanes = [GROUND - 24, GROUND - 60, GROUND - 104];
+    if (score > 150 && r < 0.25) {
+      const lanes = [GROUND - 24, GROUND - 60, GROUND - 106];
       const cy = lanes[Math.floor(Math.random() * lanes.length)];
       ob = {
         kind: "comet",
-        label: "a comet",
+        label: "a shooting comet",
         x,
         y: cy - 11,
         w: 44,
@@ -251,44 +362,46 @@
         parts,
       };
     } else {
-      const tall = Math.random() < 0.45;
-      const w = tall ? 34 : 46;
-      const h = tall ? 46 : 32;
-      const puffs = tall
-        ? [
-            [0, -h + 14, 13],
-            [-8, -h + 30, 12],
-            [8, -h + 28, 12],
-            [-6, -10, 12],
-            [7, -10, 11],
-          ]
-        : [
-            [-12, -12, 12],
-            [12, -12, 12],
-            [0, -20, 13],
-            [-2, -9, 12],
-          ];
+      const count = Math.random() < 0.5 ? 2 : 3;
+      const hue = Math.random() < 0.5 ? ["#8ff3ea", "#3fb8c9"] : ["#ffc2e6", "#e66aae"];
+      const shards = [];
+      let dx = 0;
+      let maxH = 0;
+      for (let i = 0; i < count; i++) {
+        const w = rand(12, 16);
+        const h = i === 1 ? rand(36, 46) : rand(20, 30);
+        shards.push({ dx: dx + w / 2, w, h, tilt: (i - (count - 1) / 2) * rand(3, 6) });
+        dx += w - 3;
+        maxH = Math.max(maxH, h);
+      }
+      const w = dx + 3;
       ob = {
-        kind: "bush",
-        label: "a starberry bush",
+        kind: "crystal",
+        label: "a space crystal",
         x,
-        y: GROUND - h,
+        y: GROUND - maxH,
         w,
-        h,
-        hit: { x: 5, y: 5, w: w - 10, h: h - 5 },
-        puffs,
-        berries: puffs.slice(0, 3).map(([px, py]) => [px + rand(-5, 5), py + rand(-5, 3)]),
+        h: maxH,
+        hit: { x: 4, y: 6, w: w - 8, h: maxH - 6 },
+        shards,
+        hue,
       };
     }
 
     obstacles.push(ob);
+    nextSpawn = ob.w + speed * rand(0.78, 1.55) + 60;
 
     // Reward a well-timed jump: sometimes float a star over ground obstacles.
-    if (ob.kind !== "comet" && Math.random() < 0.4) {
+    if (ob.kind !== "comet" && Math.random() < 0.32) {
       pickups.push({ x: ob.x + ob.w / 2, y: ob.y - rand(42, 62), phase: rand(0, 6) });
     }
-
-    nextSpawn = ob.w + speed * rand(0.78, 1.55) + 60;
+    // ...and sometimes a little row of stars in the gap before the next one.
+    if (Math.random() < 0.16) {
+      const mid = ob.x + ob.w + (nextSpawn - ob.w) / 2;
+      for (let i = -1; i <= 1; i++) {
+        pickups.push({ x: mid + i * 26, y: GROUND - 34, phase: i });
+      }
+    }
   }
 
   // ---------- game flow ----------
@@ -311,23 +424,15 @@
       hiScore = score;
       saveHiScore();
     }
+    active = { kind: null, t: 0, max: 0 };
+    syncUi();
     announcement = `${char().name} bumped into ${bumpedInto}. Score ${Math.floor(score)}.`;
-    for (let i = 0; i < 10; i++) {
-      particles.push({
-        x: PLAYER_X + 30,
-        y: player.y - 40,
-        vx: rand(-120, 120),
-        vy: rand(-220, -40),
-        life: 0.7,
-        max: 0.7,
-        color: i % 2 ? C.title : C.cloud,
-        star: true,
-      });
-    }
+    burst(PLAYER_X + 30, player.y - 40, 10, [C.title, C.text], 120);
     // let the burst play out briefly
     const burstEnd = performance.now() + 700;
     const tail = (now) => {
-      const dt = Math.min(0.05, (now - lastTime) / 1000);
+      // rAF timestamps can trail performance.now(), so never step backwards
+      const dt = Math.max(0, Math.min(0.05, (now - lastTime) / 1000));
       lastTime = now;
       clock += dt;
       updateParticles(dt);
@@ -360,10 +465,19 @@
     }
     if (mode === "paused") return resume();
     player.held = true;
-    if (player.onGround && !player.ducking) {
+    if (active.kind === "rocket" || player.ducking) return;
+    const c = char();
+    if (player.onGround) {
       player.vy = JUMP_V;
       player.onGround = false;
       player.holdT = 0;
+      player.jumpsUsed = 1;
+    } else if (player.jumpsUsed < c.jumps) {
+      // Crosby's starlight double jump
+      player.vy = AIR_JUMP_V;
+      player.holdT = c.holdTime;
+      player.jumpsUsed++;
+      burst(PLAYER_X + 34, player.y - 4, 8, [C.title, C.gold, C.text], 140);
     }
   }
 
@@ -376,11 +490,29 @@
     player.ducking = on;
   }
 
+  function useSpecial() {
+    if (mode === "paused") return resume();
+    if (mode !== "running" || active.kind) return;
+    const c = char();
+    if (charge < c.special.cost) return;
+    charge = 0;
+    active = { kind: c.special.kind, t: c.special.duration, max: c.special.duration };
+    if (active.kind === "rocket") {
+      player.onGround = false;
+      player.vy = 0;
+      player.ducking = false;
+    }
+    burst(PLAYER_X + 34, player.y - 36, 14, [c.accent, C.title, C.text], 180);
+    announcement = `${c.special.name}!`;
+    syncUi();
+  }
+
   // ---------- update ----------
 
   function frame(now) {
     if (mode !== "running") return;
-    const dt = Math.min(0.05, (now - lastTime) / 1000);
+    // rAF timestamps can trail performance.now(), so never step backwards
+    const dt = Math.max(0, Math.min(0.05, (now - lastTime) / 1000));
     lastTime = now;
     update(dt);
     draw();
@@ -414,36 +546,65 @@
     };
   }
 
-  function update(dt) {
-    clock += dt;
-    speed = Math.min(MAX_SPEED, speed + ACCEL * dt);
-    const move = speed * dt;
-    distance += move;
-    score += move * 0.025;
+  function burst(x, y, n, colors, power) {
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2 + rand(-0.2, 0.2);
+      particles.push({
+        x,
+        y,
+        vx: Math.cos(a) * power * rand(0.6, 1),
+        vy: Math.sin(a) * power * rand(0.6, 1) - 40,
+        life: 0.55,
+        max: 0.55,
+        color: colors[i % colors.length],
+        star: true,
+      });
+    }
+  }
 
-    const milestone = Math.floor(score / 100);
-    if (milestone > lastMilestone) {
-      lastMilestone = milestone;
-      flashUntil = clock + 0.9;
+  function updatePlayer(dt) {
+    const c = char();
+
+    if (active.kind === "rocket") {
+      player.y += (ROCKET_Y - player.y) * Math.min(1, dt * 5);
+      player.vy = 0;
+      player.onGround = false;
+      if (Math.random() < 0.8) {
+        particles.push({
+          x: PLAYER_X + 14,
+          y: player.y - 18,
+          vx: rand(-160, -90),
+          vy: rand(40, 110),
+          life: 0.4,
+          max: 0.4,
+          color: Math.random() < 0.5 ? "#ffb347" : C.title,
+        });
+      }
+      return;
     }
 
-    const targetNight = Math.floor(score / NIGHT_EVERY) % 2;
-    night += Math.sign(targetNight - night) * Math.min(Math.abs(targetNight - night), dt * 0.6);
-
-    // player physics
     if (!player.onGround) {
       let g = GRAVITY;
-      if (player.held && player.vy < 0 && player.holdT < HOLD_TIME) {
-        g *= HOLD_GRAVITY;
+      if (player.held && player.vy < 0 && player.holdT < c.holdTime) {
+        g *= c.holdGravity;
         player.holdT += dt;
       }
       if (player.ducking) g *= FAST_FALL;
       player.vy += g * dt;
       player.y += player.vy * dt;
+
+      // keep the character on screen
+      const ceiling = c.height + 6;
+      if (player.y < ceiling) {
+        player.y = ceiling;
+        player.vy = Math.max(player.vy, 0);
+      }
+
       if (player.y >= GROUND) {
         player.y = GROUND;
         player.vy = 0;
         player.onGround = true;
+        player.jumpsUsed = 0;
         for (let i = 0; i < 4; i++) {
           particles.push({
             x: PLAYER_X + rand(10, 40),
@@ -457,59 +618,125 @@
         }
       }
     }
+  }
 
-    // scenery
-    for (const d of doodles) {
-      d.x -= move * 0.12;
-      if (d.x < -20) {
-        d.x = W + rand(10, 200);
-        d.y = rand(18, GROUND - 90);
+  function updateScenery(move, dt) {
+    for (const p of planets) {
+      if (p.x - distance * 0.05 < -60) p.x += 1100 + rand(0, 300);
+    }
+    if (shooting) {
+      shooting.t += dt;
+      if (shooting.t > shooting.life) shooting = null;
+    } else {
+      nextShoot -= dt;
+      if (nextShoot <= 0) {
+        shooting = {
+          x: rand(W * 0.3, W + 40),
+          y: rand(10, 80),
+          vx: rand(-420, -320),
+          vy: rand(120, 180),
+          t: 0,
+          life: 0.9,
+        };
+        nextShoot = rand(3, 7);
       }
     }
-    for (const cl of clouds) {
-      cl.x -= move * 0.3;
-      if (cl.x < -80) {
-        cl.x = W + rand(40, 300);
-        cl.y = rand(30, 110);
+    const z = zones[zoneIndex];
+    nebA = approach(nebA, hexToRgb(z.a), Math.min(1, dt * 0.8));
+    nebB = approach(nebB, hexToRgb(z.b), Math.min(1, dt * 0.8));
+    zoneBannerT = Math.max(0, zoneBannerT - dt);
+  }
+
+  function update(dt) {
+    const c = char();
+    clock += dt;
+
+    if (active.kind) {
+      active.t -= dt;
+      if (active.t <= 0) {
+        if (active.kind === "rocket") player.held = false;
+        active = { kind: null, t: 0, max: 0 };
+        grace = GRACE;
+        syncUi();
       }
     }
+    grace = Math.max(0, grace - dt);
+
+    const timeScale = active.kind === "calm" ? 0.55 : 1;
+    const wdt = dt * timeScale;
+    speed = Math.min(MAX_SPEED, speed + ACCEL * wdt);
+    const move = speed * wdt;
+    distance += move;
+    const mult = active.kind === "brave" ? 2 : 1;
+    score += move * 0.025 * mult;
+
+    const milestone = Math.floor(score / 100);
+    if (milestone > lastMilestone) {
+      lastMilestone = milestone;
+      flashUntil = clock + 0.9;
+    }
+
+    const z = Math.max(0, Math.floor(score / ZONE_EVERY)) % zones.length;
+    if (z !== zoneIndex) {
+      zoneIndex = z;
+      zoneBannerT = 2.6;
+    }
+
+    updatePlayer(dt);
+    updateScenery(move, dt);
 
     // obstacles
     nextSpawn -= move;
     if (nextSpawn <= 0) spawnObstacle();
 
     const pb = playerBox();
+    const invulnerable = active.kind === "brave" || active.kind === "rocket" || grace > 0;
     for (const ob of obstacles) {
-      ob.x -= move + (ob.extra ?? 0) * dt;
+      ob.x -= move + (ob.extra ?? 0) * wdt;
       if (ob.kind === "comet") ob.spin += dt * 5;
+      if (ob.smashed) continue;
       const hb = { x: ob.x + ob.hit.x, y: ob.y + ob.hit.y, w: ob.hit.w, h: ob.hit.h };
-      if (boxesOverlap(pb, hb)) {
+      if (!boxesOverlap(pb, hb)) continue;
+      if (active.kind === "brave") {
+        ob.smashed = true;
+        score += 25 * mult;
+        popups.push({ x: ob.x + ob.w / 2, y: ob.y - 8, life: 0.8, text: `+${25 * mult}` });
+        burst(ob.x + ob.w / 2, ob.y + ob.h / 2, 12, [C.title, C.rockLight, "#ff9ad5"], 200);
+      } else if (!invulnerable) {
         bumpedInto = ob.label;
         gameOver();
         return;
       }
     }
-    obstacles = obstacles.filter((ob) => ob.x + ob.w > -20);
+    obstacles = obstacles.filter((ob) => !ob.smashed && ob.x + ob.w > -20);
 
+    // stars
+    let magnet = c.magnet;
+    if (active.kind === "brave") magnet = 220;
+    if (active.kind === "rocket") magnet = 150;
+    const pcx = pb.x + pb.w / 2;
+    const pcy = pb.y + pb.h / 2;
     for (const p of pickups) {
       p.x -= move;
-      if (!p.taken && boxesOverlap(pb, { x: p.x - 9, y: p.y - 9, w: 18, h: 18 })) {
-        p.taken = true;
-        score += 20;
-        popups.push({ x: p.x, y: p.y - 12, life: 0.8 });
-        for (let i = 0; i < 8; i++) {
-          const a = (i / 8) * Math.PI * 2;
-          particles.push({
-            x: p.x,
-            y: p.y,
-            vx: Math.cos(a) * 110,
-            vy: Math.sin(a) * 110,
-            life: 0.45,
-            max: 0.45,
-            color: C.title,
-            star: true,
-          });
+      if (magnet) {
+        const dx = pcx - p.x;
+        const dy = pcy - p.y;
+        const d = Math.hypot(dx, dy);
+        if (d < magnet && d > 1) {
+          const pull = (1 - d / magnet) * 900 * dt + 120 * dt;
+          p.x += (dx / d) * pull;
+          p.y += (dy / d) * pull;
         }
+      }
+      if (!p.taken && boxesOverlap(pb, { x: p.x - 10, y: p.y - 10, w: 20, h: 20 })) {
+        p.taken = true;
+        score += 20 * mult;
+        if (!active.kind && charge < c.special.cost) {
+          charge++;
+          syncUi();
+        }
+        popups.push({ x: p.x, y: p.y - 12, life: 0.8, text: `+${20 * mult}` });
+        burst(p.x, p.y, 8, [C.title], 110);
       }
     }
     pickups = pickups.filter((p) => !p.taken && p.x > -20);
@@ -547,29 +774,6 @@
     ctx.closePath();
   }
 
-  function flowerPath(cx, cy, r, rot = 0) {
-    const n = 5;
-    const step = (Math.PI * 2) / n;
-    ctx.beginPath();
-    for (let i = 0; i < n; i++) {
-      const a = rot + i * step;
-      const a0 = a - step / 2;
-      const a1 = a + step / 2;
-      const ir = r * 0.42;
-      const or = r * 1.3;
-      if (i === 0) ctx.moveTo(cx + Math.cos(a0) * ir, cy + Math.sin(a0) * ir);
-      ctx.bezierCurveTo(
-        cx + Math.cos(a - step * 0.42) * or,
-        cy + Math.sin(a - step * 0.42) * or,
-        cx + Math.cos(a + step * 0.42) * or,
-        cy + Math.sin(a + step * 0.42) * or,
-        cx + Math.cos(a1) * ir,
-        cy + Math.sin(a1) * ir,
-      );
-    }
-    ctx.closePath();
-  }
-
   function smoothBlob(cx, cy, pts) {
     ctx.beginPath();
     const n = pts.length;
@@ -587,113 +791,174 @@
     ctx.closePath();
   }
 
-  function drawBackground() {
-    const sky = ctx.createLinearGradient(0, 0, 0, GROUND);
-    sky.addColorStop(0, lerpColor(C.sky, C.skyNight, night));
-    sky.addColorStop(1, lerpColor("#e9f1ff", C.skyNightLow, night));
-    ctx.fillStyle = sky;
-    ctx.fillRect(0, 0, W, H);
+  // parallax position that wraps around a strip wider than the canvas
+  function wrapX(x, par, span = Math.max(W + 80, 1000)) {
+    return ((((x - distance * par) % span) + span) % span) - 40;
+  }
 
-    // moon fades in at night
-    if (night > 0.01) {
-      ctx.globalAlpha = night;
-      // crescent: clip away an offset circle so the sky shows through
-      ctx.save();
+  function drawPlanet(p) {
+    const x = p.x - distance * 0.05;
+    if (x < -60 || x > W + 60) return;
+    const { r } = p;
+    if (p.kind === "ringed") {
+      ctx.strokeStyle = "rgba(255,210,141,0.75)";
+      ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.rect(0, 0, W, H);
-      ctx.arc(W - 82, 46, 15, 0, Math.PI * 2);
-      ctx.clip("evenodd");
-      ctx.fillStyle = C.moon;
+      ctx.ellipse(x, p.y, r * 1.9, r * 0.5, -0.3, Math.PI, Math.PI * 2);
+      ctx.stroke();
+      const g = ctx.createRadialGradient(x - r * 0.4, p.y - r * 0.4, r * 0.2, x, p.y, r);
+      g.addColorStop(0, "#ffc4dd");
+      g.addColorStop(1, "#b06ab3");
+      ctx.fillStyle = g;
       ctx.beginPath();
-      ctx.arc(W - 90, 52, 18, 0, Math.PI * 2);
+      ctx.arc(x, p.y, r, 0, Math.PI * 2);
       ctx.fill();
-      ctx.restore();
-      ctx.globalAlpha = 1;
-    }
-
-    // cream clouds
-    ctx.fillStyle = C.cloud;
-    ctx.globalAlpha = 0.85 - night * 0.65;
-    for (const cl of clouds) {
-      const s = cl.s;
       ctx.beginPath();
-      ctx.arc(cl.x, cl.y, 13 * s, 0, Math.PI * 2);
-      ctx.arc(cl.x + 16 * s, cl.y - 7 * s, 16 * s, 0, Math.PI * 2);
-      ctx.arc(cl.x + 34 * s, cl.y, 12 * s, 0, Math.PI * 2);
-      ctx.rect(cl.x, cl.y, 34 * s, 12 * s);
+      ctx.ellipse(x, p.y, r * 1.9, r * 0.5, -0.3, 0, Math.PI);
+      ctx.stroke();
+    } else if (p.kind === "moon") {
+      ctx.fillStyle = "#d9d2f0";
+      ctx.beginPath();
+      ctx.arc(x, p.y, r, 0, Math.PI * 2);
       ctx.fill();
-    }
-    ctx.globalAlpha = 1;
-
-    // navy doodles from the book cover (they glow gold at night)
-    const doodleColor = lerpColor(C.doodle, C.doodleNight, night);
-    ctx.strokeStyle = doodleColor;
-    ctx.lineWidth = 1.6;
-    ctx.lineJoin = "round";
-    ctx.lineCap = "round";
-    for (const d of doodles) {
-      if (d.kind === "star") {
-        starPath(d.x, d.y, d.size, d.rot);
-        ctx.stroke();
-      } else if (d.kind === "flower") {
-        flowerPath(d.x, d.y, d.size * 0.8, d.rot);
-        ctx.stroke();
-      } else if (d.kind === "dot") {
-        ctx.beginPath();
-        ctx.ellipse(d.x, d.y, 3, 2.2, d.rot, 0, Math.PI * 2);
-        ctx.stroke();
-      } else {
-        ctx.beginPath();
-        for (let a = 0; a < Math.PI * 3.2; a += 0.2) {
-          const r = 1 + a * 1.1;
-          const px = d.x + Math.cos(a + d.rot) * r;
-          const py = d.y + Math.sin(a + d.rot) * r;
-          a ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
-        }
-        ctx.stroke();
-      }
+      ctx.fillStyle = "#b5abd8";
+      ctx.beginPath();
+      ctx.arc(x - r * 0.3, p.y - r * 0.2, r * 0.28, 0, Math.PI * 2);
+      ctx.arc(x + r * 0.35, p.y + r * 0.3, r * 0.2, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      const g = ctx.createRadialGradient(x - r * 0.4, p.y - r * 0.4, r * 0.1, x, p.y, r);
+      g.addColorStop(0, "#c7e9ff");
+      g.addColorStop(1, "#3a7bd5");
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(x, p.y, r, 0, Math.PI * 2);
+      ctx.fill();
     }
   }
 
+  function drawBackground() {
+    const sky = ctx.createLinearGradient(0, 0, 0, GROUND);
+    sky.addColorStop(0, C.skyTop);
+    sky.addColorStop(0.55, C.skyMid);
+    sky.addColorStop(1, C.skyLow);
+    ctx.fillStyle = sky;
+    ctx.fillRect(0, 0, W, H);
+
+    // nebulae glow in the current zone's colors
+    for (const n of nebulae) {
+      const x = wrapX(n.x, 0.02);
+      const col = n.c === "a" ? nebA : nebB;
+      const g = ctx.createRadialGradient(x, n.y, 0, x, n.y, n.r);
+      g.addColorStop(0, rgba(col, 0.32));
+      g.addColorStop(1, rgba(col, 0));
+      ctx.fillStyle = g;
+      ctx.fillRect(x - n.r, n.y - n.r, n.r * 2, n.r * 2);
+    }
+    const horizon = ctx.createLinearGradient(0, GROUND - 70, 0, GROUND);
+    horizon.addColorStop(0, rgba(nebB, 0));
+    horizon.addColorStop(1, rgba(nebB, 0.28));
+    ctx.fillStyle = horizon;
+    ctx.fillRect(0, GROUND - 70, W, 70);
+
+    // twinkling star field, three parallax layers
+    for (const layer of starLayers) {
+      for (const s of layer.stars) {
+        const x = wrapX(s.x, layer.par);
+        if (x < -4 || x > W + 4) continue;
+        ctx.globalAlpha = 0.45 + 0.55 * Math.abs(Math.sin(clock * s.tw + s.ph));
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.arc(x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    ctx.globalAlpha = 1;
+
+    for (const p of planets) drawPlanet(p);
+
+    // golden storybook stars
+    for (const s of goldStars) {
+      const x = wrapX(s.x, 0.09);
+      if (x < -10 || x > W + 10) continue;
+      const pulse = 0.8 + 0.2 * Math.sin(clock * 2 + s.ph);
+      ctx.shadowColor = C.gold;
+      ctx.shadowBlur = 8;
+      starPath(x, s.y, s.r * pulse, s.ph);
+      ctx.fillStyle = C.title;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+
+    if (shooting) {
+      const k = shooting.t;
+      const x = shooting.x + shooting.vx * k;
+      const y = shooting.y + shooting.vy * k;
+      const a = 1 - k / shooting.life;
+      const g = ctx.createLinearGradient(x, y, x - shooting.vx * 0.18, y - shooting.vy * 0.18);
+      g.addColorStop(0, `rgba(255,255,255,${a})`);
+      g.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.strokeStyle = g;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x - shooting.vx * 0.18, y - shooting.vy * 0.18);
+      ctx.stroke();
+    }
+  }
+
+  function groundY(x) {
+    const t = x + distance;
+    return GROUND + Math.sin(t * 0.02) * 1.5 + Math.sin(t * 0.007) * 1.5;
+  }
+
   function drawGround() {
-    const off = distance;
-    ctx.fillStyle = lerpColor(C.ground, C.groundNight, night);
+    const g = ctx.createLinearGradient(0, GROUND, 0, H);
+    g.addColorStop(0, C.ground1);
+    g.addColorStop(0.35, C.ground2);
+    g.addColorStop(1, C.ground3);
+    ctx.fillStyle = g;
     ctx.beginPath();
     ctx.moveTo(0, H);
-    for (let x = 0; x <= W; x += 8) {
-      ctx.lineTo(x, GROUND + Math.sin((x + off) * 0.025) * 1.6);
-    }
+    for (let x = 0; x <= W; x += 8) ctx.lineTo(x, groundY(x));
     ctx.lineTo(W, H);
     ctx.closePath();
     ctx.fill();
 
-    ctx.strokeStyle = lerpColor(C.groundEdge, C.groundEdgeNight, night);
-    ctx.lineWidth = 2;
+    ctx.strokeStyle = C.groundEdge;
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
     for (let x = 0; x <= W; x += 8) {
-      const y = GROUND + Math.sin((x + off) * 0.025) * 1.6;
-      x ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      x ? ctx.lineTo(x, groundY(x)) : ctx.moveTo(x, groundY(x));
     }
     ctx.stroke();
 
-    // grass tufts and pebbles scrolling with the ground
-    ctx.lineWidth = 1.4;
-    const spacing = 46;
-    const shift = off % spacing;
-    for (let i = -1; i < W / spacing + 1; i++) {
+    // craters and moon dust scrolling with the ground
+    const spacing = 64;
+    const shift = distance % spacing;
+    for (let i = -1; i < W / spacing + 2; i++) {
       const x = i * spacing - shift;
-      const seed = Math.floor((off + x) / spacing);
-      const y = GROUND + 10 + ((seed * 7) % 17);
-      if (seed % 3 === 0) {
+      const seed = Math.floor((distance + x) / spacing);
+      const y = GROUND + 12 + ((seed * 13) % 20);
+      const rx = 5 + (seed % 3) * 4;
+      if (seed % 2 === 0) {
+        ctx.fillStyle = C.crater;
         ctx.beginPath();
-        ctx.moveTo(x - 3, y);
-        ctx.lineTo(x, y - 5);
-        ctx.lineTo(x + 3, y);
+        ctx.ellipse(x, y, rx, rx * 0.35, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = C.craterRim;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.ellipse(x, y + 0.6, rx, rx * 0.35, 0, 0.1, Math.PI - 0.1);
         ctx.stroke();
       } else {
+        ctx.fillStyle = C.craterRim;
+        ctx.globalAlpha = 0.7;
         ctx.beginPath();
-        ctx.ellipse(x, y, 2.5, 1.4, 0, 0, Math.PI * 2);
-        ctx.stroke();
+        ctx.arc(x, y, 1.2, 0, Math.PI * 2);
+        ctx.arc(x + 9, y + 5, 0.9, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
       }
     }
   }
@@ -716,43 +981,64 @@
           ctx.arc(cx + dx, cy + dy, r, 0, Math.PI * 2);
           ctx.fill();
         }
-      }
-    } else if (ob.kind === "bush") {
-      const cx = ob.x + ob.w / 2;
-      // stroke every puff first, then fill on top so only the outer outline shows
-      ctx.strokeStyle = C.bushDark;
-      ctx.lineWidth = 4;
-      for (const [dx, dy, r] of ob.puffs) {
+        ctx.strokeStyle = C.rockLight;
+        ctx.lineWidth = 1.5;
         ctx.beginPath();
-        ctx.arc(cx + dx, GROUND + dy, r, 0, Math.PI * 2);
+        ctx.arc(cx, cy, Math.min(p.w, p.h) * 0.32, Math.PI * 1.1, Math.PI * 1.45);
+        ctx.stroke();
+        ctx.lineWidth = 2;
+      }
+    } else if (ob.kind === "crystal") {
+      const [light, dark] = ob.hue;
+      ctx.shadowColor = light;
+      ctx.shadowBlur = 12;
+      for (const s of ob.shards) {
+        const bx = ob.x + s.dx;
+        const t = s.tilt;
+        ctx.beginPath();
+        ctx.moveTo(bx - s.w / 2, GROUND);
+        ctx.lineTo(bx - s.w / 2 + t * 0.7, GROUND - s.h * 0.72);
+        ctx.lineTo(bx + t, GROUND - s.h);
+        ctx.lineTo(bx + s.w / 2 + t * 0.7, GROUND - s.h * 0.72);
+        ctx.lineTo(bx + s.w / 2, GROUND);
+        ctx.closePath();
+        const g = ctx.createLinearGradient(0, GROUND - s.h, 0, GROUND);
+        g.addColorStop(0, light);
+        g.addColorStop(1, dark);
+        ctx.fillStyle = g;
+        ctx.fill();
+        ctx.strokeStyle = C.ink;
         ctx.stroke();
       }
-      ctx.fillStyle = lerpColor(C.bush, "#79ad6b", night);
-      for (const [dx, dy, r] of ob.puffs) {
+      ctx.shadowBlur = 0;
+      ctx.strokeStyle = "rgba(255,255,255,0.7)";
+      ctx.lineWidth = 1.2;
+      for (const s of ob.shards) {
+        const bx = ob.x + s.dx;
         ctx.beginPath();
-        ctx.arc(cx + dx, GROUND + dy, r, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.fillStyle = C.berry;
-      for (const [dx, dy] of ob.berries) {
-        starPath(cx + dx, GROUND + dy, 3.4, 0, 0.5);
-        ctx.fill();
+        ctx.moveTo(bx + s.tilt, GROUND - s.h + 4);
+        ctx.lineTo(bx + s.tilt * 0.4, GROUND - 4);
+        ctx.stroke();
       }
     } else {
       const cx = ob.x + 17;
       const cy = ob.y + ob.h / 2;
-      const trail = ctx.createLinearGradient(cx, 0, cx + 46, 0);
-      trail.addColorStop(0, "rgba(255,210,141,0.9)");
-      trail.addColorStop(1, "rgba(255,210,141,0)");
+      const trail = ctx.createLinearGradient(cx, 0, cx + 56, 0);
+      trail.addColorStop(0, "rgba(255,210,141,0.95)");
+      trail.addColorStop(0.5, "rgba(255,143,200,0.5)");
+      trail.addColorStop(1, "rgba(143,107,255,0)");
       ctx.fillStyle = trail;
       ctx.beginPath();
-      ctx.moveTo(cx, cy - 8);
-      ctx.quadraticCurveTo(cx + 30, cy - 6, cx + 48, cy);
-      ctx.quadraticCurveTo(cx + 30, cy + 6, cx, cy + 8);
+      ctx.moveTo(cx, cy - 9);
+      ctx.quadraticCurveTo(cx + 34, cy - 7, cx + 58, cy);
+      ctx.quadraticCurveTo(cx + 34, cy + 7, cx, cy + 9);
       ctx.fill();
+      ctx.shadowColor = C.gold;
+      ctx.shadowBlur = 14;
       starPath(cx, cy, 13, Math.sin(ob.spin) * 0.25);
       ctx.fillStyle = C.title;
       ctx.fill();
+      ctx.shadowBlur = 0;
       ctx.strokeStyle = C.titleShadow;
       ctx.lineWidth = 2;
       ctx.stroke();
@@ -765,16 +1051,42 @@
     }
   }
 
+  // Carla's Navigator's Map: markers for things still off screen
+  function drawNavigatorMarkers() {
+    if (!char().map || mode !== "running") return;
+    for (const ob of obstacles) {
+      if (ob.x <= W - 4) continue;
+      const closeness = 1 - Math.min(1, (ob.x - W) / SPAWN_AHEAD);
+      const y = ob.y + ob.h / 2;
+      ctx.globalAlpha = 0.35 + 0.65 * closeness;
+      ctx.fillStyle = C.navigator;
+      ctx.beginPath();
+      ctx.moveTo(W - 22, y);
+      ctx.lineTo(W - 8, y - 8);
+      ctx.lineTo(W - 8, y + 8);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = C.ink;
+      ctx.font = "700 10px Nunito, system-ui, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("!", W - 12, y + 3.5);
+    }
+    ctx.globalAlpha = 1;
+  }
+
   function drawPickups() {
+    ctx.shadowColor = C.gold;
+    ctx.shadowBlur = 10;
     for (const p of pickups) {
       const y = p.y + Math.sin(clock * 5 + p.phase) * 3;
       starPath(p.x, y, 9, Math.sin(clock * 3 + p.phase) * 0.3);
-      ctx.fillStyle = C.star;
+      ctx.fillStyle = C.gold;
       ctx.fill();
       ctx.strokeStyle = C.titleShadow;
       ctx.lineWidth = 1.6;
       ctx.stroke();
     }
+    ctx.shadowBlur = 0;
   }
 
   function drawPlayer() {
@@ -786,6 +1098,8 @@
 
     if (mode === "over") {
       rot = -0.22;
+    } else if (active.kind === "rocket") {
+      rot = -0.12 + Math.sin(clock * 20) * 0.03;
     } else if (!player.onGround) {
       rot = player.vy < 0 ? -0.1 : 0.06;
     } else if (mode === "running" && !player.ducking) {
@@ -796,14 +1110,80 @@
 
     // soft shadow shrinks as the character rises
     const lift = Math.max(0, GROUND - player.y);
-    const shadowScale = Math.max(0.35, 1 - lift / 160);
-    ctx.fillStyle = "rgba(37, 83, 63, 0.25)";
+    const shadowScale = Math.max(0.3, 1 - lift / 170);
+    ctx.fillStyle = "rgba(36, 29, 74, 0.35)";
     ctx.beginPath();
-    ctx.ellipse(cx + 4, GROUND + 2, baseW * 0.38 * shadowScale * sx, 4 * shadowScale, 0, 0, Math.PI * 2);
+    ctx.ellipse(cx + 4, GROUND + 2, baseW * 0.36 * shadowScale * sx, 4 * shadowScale, 0, 0, Math.PI * 2);
     ctx.fill();
 
+    const midY = player.y - h / 2;
+
+    if (active.kind === "brave") {
+      const pr = 46 + Math.sin(clock * 10) * 4;
+      const g = ctx.createRadialGradient(cx, midY, 4, cx, midY, pr);
+      g.addColorStop(0, "rgba(255,226,140,0.75)");
+      g.addColorStop(0.6, "rgba(255,190,90,0.3)");
+      g.addColorStop(1, "rgba(255,190,90,0)");
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(cx, midY, pr, 0, Math.PI * 2);
+      ctx.fill();
+      if (Math.random() < 0.5) {
+        particles.push({
+          x: cx + rand(-20, 10),
+          y: midY + rand(-25, 25),
+          vx: rand(-200, -120),
+          vy: rand(-30, 30),
+          life: 0.4,
+          max: 0.4,
+          color: C.title,
+          star: true,
+        });
+      }
+    } else if (active.kind === "calm") {
+      ctx.strokeStyle = C.navigator;
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 2; i++) {
+        const t = (clock * 0.9 + i * 0.5) % 1;
+        ctx.globalAlpha = 1 - t;
+        ctx.beginPath();
+        ctx.ellipse(cx, midY, 20 + t * 50, 14 + t * 34, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    } else if (active.kind === "rocket") {
+      // jet flame under the rocket pack
+      const fx = cx - baseW * 0.28;
+      const fy = player.y - h * 0.3;
+      const fl = 16 + Math.random() * 10;
+      ctx.fillStyle = "#ffb347";
+      ctx.beginPath();
+      ctx.moveTo(fx - 6, fy);
+      ctx.lineTo(fx + 6, fy);
+      ctx.lineTo(fx - 4, fy + fl);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = C.title;
+      ctx.beginPath();
+      ctx.moveTo(fx - 3, fy);
+      ctx.lineTo(fx + 3, fy);
+      ctx.lineTo(fx - 2, fy + fl * 0.6);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = "#8fa3c8";
+      ctx.strokeStyle = C.ink;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.roundRect(fx - 8, fy - 22, 14, 24, 5);
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    // flicker while the post-special grace period runs out
+    if (grace > 0 && Math.floor(clock * 14) % 2 === 0) ctx.globalAlpha = 0.45;
+
     ctx.save();
-    ctx.translate(cx, player.y - bob + c.sink * sy);
+    ctx.translate(cx, player.y - bob + 1);
     ctx.rotate(rot);
     ctx.scale(sx * (c.flip ? -1 : 1), sy);
     if (img?.complete && img.naturalWidth) {
@@ -815,6 +1195,7 @@
       ctx.fill();
     }
     ctx.restore();
+    ctx.globalAlpha = 1;
 
     if (mode === "over") {
       // dizzy stars
@@ -848,23 +1229,62 @@
     ctx.textAlign = "center";
     for (const p of popups) {
       ctx.globalAlpha = Math.max(0, p.life / 0.8);
-      ctx.fillStyle = night > 0.5 ? C.title : C.titleShadow;
-      ctx.fillText("+20", p.x, p.y);
+      ctx.fillStyle = C.title;
+      ctx.fillText(p.text, p.x, p.y);
     }
     ctx.globalAlpha = 1;
   }
 
-  function drawScore() {
-    const color = lerpColor(C.ink, "#fff6e3", night);
+  function drawHud() {
+    const c = char();
+    ctx.textBaseline = "alphabetic";
+
+    // score
     ctx.font = "700 15px Nunito, system-ui, sans-serif";
     ctx.textAlign = "right";
-    ctx.textBaseline = "alphabetic";
     const flashing = clock < flashUntil && Math.floor(clock * 8) % 2 === 0;
-    ctx.fillStyle = color;
-    if (!flashing) ctx.fillText(pad(score), W - 16, 26);
+    ctx.fillStyle = C.text;
+    if (!flashing) ctx.fillText(pad(score), W - 16, 24);
     ctx.globalAlpha = 0.6;
-    ctx.fillText(`HI ${pad(hiScore)}`, W - 72, 26);
+    ctx.fillText(`HI ${pad(hiScore)}`, W - 72, 24);
     ctx.globalAlpha = 1;
+
+    // special meter
+    if (mode === "ready") return;
+    const { cost, name } = c.special;
+    const ready = charge >= cost;
+    ctx.textAlign = "right";
+    ctx.font = "700 12px Nunito, system-ui, sans-serif";
+    ctx.fillStyle = active.kind || ready ? C.title : C.text;
+    let label = name;
+    if (active.kind) label = `${name}!`;
+    else if (ready) label = `${name} ready — press X`;
+    ctx.fillText(label, W - 16, 46);
+
+    const pip = cost > 7 ? 10 : 13;
+    for (let i = 0; i < cost; i++) {
+      const x = W - 22 - (cost - 1 - i) * pip;
+      let filled = i < charge;
+      if (active.kind) filled = i < Math.ceil((active.t / active.max) * cost);
+      starPath(x, 60, pip * 0.42);
+      if (filled) {
+        ctx.fillStyle = ready && Math.floor(clock * 4) % 2 ? "#fff3c4" : C.title;
+        ctx.fill();
+      } else {
+        ctx.strokeStyle = "rgba(255,246,227,0.45)";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+    }
+
+    if (zoneBannerT > 0) {
+      ctx.globalAlpha = Math.min(1, zoneBannerT);
+      ctx.textAlign = "center";
+      ctx.font = "700 16px Nunito, system-ui, sans-serif";
+      ctx.fillStyle = C.text;
+      ctx.fillText(`✦ entering the ${zones[zoneIndex].name} ✦`, W / 2, 92);
+      ctx.globalAlpha = 1;
+    }
   }
 
   function titleText(text, x, y, size) {
@@ -876,41 +1296,35 @@
     ctx.fillText(text, x, y);
   }
 
-  function bodyText(text, x, y, size = 15) {
+  function bodyText(text, x, y, size = 15, alpha = 1) {
     ctx.font = `700 ${size}px Nunito, system-ui, sans-serif`;
     ctx.textAlign = "center";
-    ctx.fillStyle = lerpColor(C.doodle, "#fff6e3", night);
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = C.text;
     ctx.fillText(text, x, y);
+    ctx.globalAlpha = 1;
   }
 
   function drawOverlay() {
-    const cx = W / 2 + 30;
     if (mode === "running") return;
-
-    // soft panel so the doodles don't cross the text
+    const cx = W / 2 + 30;
     const pw = Math.min(W - 150, 440);
-    ctx.fillStyle = lerpColor("#eef4ff", C.skyNight, night);
-    ctx.globalAlpha = 0.82;
+    ctx.fillStyle = "rgba(18,15,51,0.6)";
     ctx.beginPath();
-    ctx.roundRect(cx - pw / 2, 48, pw, mode === "paused" ? 88 : 110, 18);
+    ctx.roundRect(cx - pw / 2, 52, pw, mode === "paused" ? 88 : 122, 18);
     ctx.fill();
-    ctx.globalAlpha = 1;
 
     if (mode === "ready") {
-      titleText("CROSBY'S COSMIC DASH", cx, 84, W < 600 ? 26 : 34);
-      bodyText("press space or tap to start", cx, 116);
-      ctx.globalAlpha = 0.75;
-      bodyText("↑ / space to jump  ·  ↓ to duck", cx, 140, 13);
-      ctx.globalAlpha = 1;
+      titleText("CROSBY'S COSMIC DASH", cx, 90, W < 600 ? 26 : 34);
+      bodyText("press space or tap to start", cx, 120);
+      bodyText("↑ jump · ↓ duck · X special move", cx, 144, 13, 0.75);
     } else if (mode === "over") {
-      titleText("OH NO!", cx, 82, 34);
-      bodyText(`${char().name} bumped into ${bumpedInto}`, cx, 112);
-      ctx.globalAlpha = 0.75;
-      bodyText("tap or press space to try again", cx, 136, 13);
-      ctx.globalAlpha = 1;
+      titleText("OH NO!", cx, 90, 34);
+      bodyText(`${char().name} bumped into ${bumpedInto}`, cx, 120);
+      bodyText("tap or press space to try again", cx, 146, 13, 0.75);
     } else if (mode === "paused") {
-      titleText("PAUSED", cx, 90, 30);
-      bodyText("tap or press space to keep going", cx, 120, 14);
+      titleText("PAUSED", cx, 94, 30);
+      bodyText("tap or press space to keep going", cx, 124, 14);
     }
   }
 
@@ -922,7 +1336,12 @@
     drawPickups();
     drawPlayer();
     drawEffects();
-    drawScore();
+    if (active.kind === "calm") {
+      ctx.fillStyle = "rgba(95,224,208,0.08)";
+      ctx.fillRect(0, 0, W, H);
+    }
+    drawNavigatorMarkers();
+    drawHud();
     drawOverlay();
   }
 
@@ -942,24 +1361,33 @@
     draw();
   }
 
+  const JUMP_KEYS = ["Space", "ArrowUp", "KeyW", "Enter"];
+  const DUCK_KEYS = ["ArrowDown", "KeyS"];
+  const SPECIAL_KEYS = ["KeyX", "KeyE", "ShiftLeft", "ShiftRight"];
+
   function handleKeyDown(event) {
-    if (event.code === "Space" || event.code === "ArrowUp" || event.code === "KeyW" || event.code === "Enter") {
+    if (JUMP_KEYS.includes(event.code)) {
       event.preventDefault();
       if (!event.repeat) pressJump();
-    } else if (event.code === "ArrowDown" || event.code === "KeyS") {
+    } else if (DUCK_KEYS.includes(event.code)) {
       event.preventDefault();
       setDuck(true);
+    } else if (SPECIAL_KEYS.includes(event.code)) {
+      event.preventDefault();
+      if (!event.repeat) useSpecial();
     } else if (event.code === "KeyP" || event.code === "Escape") {
       if (mode === "running") pause();
     }
   }
 
   function handleKeyUp(event) {
-    if (event.code === "Space" || event.code === "ArrowUp" || event.code === "KeyW" || event.code === "Enter") {
-      releaseJump();
-    } else if (event.code === "ArrowDown" || event.code === "KeyS") {
-      setDuck(false);
-    }
+    if (JUMP_KEYS.includes(event.code)) releaseJump();
+    else if (DUCK_KEYS.includes(event.code)) setDuck(false);
+  }
+
+  function handleFocusOut(event) {
+    // keep playing when focus moves to the special button inside the game
+    if (!wrapper?.contains(event.relatedTarget)) pause();
   }
 
   let touchStartY = null;
@@ -985,14 +1413,19 @@
     setDuck(false);
   }
 
+  function handleSpecialPointerDown(event) {
+    // don't steal keyboard focus from the game
+    event.preventDefault();
+    event.stopPropagation();
+    useSpecial();
+  }
+
   function selectCharacter(id) {
     if (mode === "running") return;
     selectedId = id;
-    if (mode === "over" || mode === "paused") {
-      reset();
-      mode = "ready";
-      uiState = "ready";
-    }
+    reset();
+    mode = "ready";
+    uiState = "ready";
     draw();
     wrapper?.focus({ preventScroll: true });
   }
@@ -1046,21 +1479,47 @@
           <img src={c.src} alt="" class="h-9 w-auto" style={c.flip ? "transform: scaleX(-1)" : ""} />
         </span>
         {c.name}
+        {#if c.hero}<span aria-hidden="true" class="text-[#d2234c]">★</span>{/if}
       </button>
     {/each}
+  </div>
+
+  <div
+    class="skill-card w-full max-w-xl rounded-[1.25rem] border-2 bg-white/80 px-4 py-3 text-left text-sm text-[#352f47] shadow-[0_6px_14px_rgba(53,47,71,0.12)]"
+    style="border-color: {selected.accent};"
+  >
+    <div class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+      <p class="text-base font-bold">
+        {selected.name}
+        <span class="font-normal text-[#4c465f]">· {selected.role}</span>
+        {#if selected.hero}
+          <span class="ml-1 rounded-full bg-[#d2234c] px-2 py-0.5 align-middle text-xs font-bold text-white">main hero</span>
+        {/if}
+      </p>
+      <p class="text-xs font-bold tracking-wide text-[#4c465f]" aria-label="Power {selected.power} out of 5">
+        power <span class="text-[#e0a526]">{"★".repeat(selected.power)}</span><span class="text-[#c9c4d6]">{"★".repeat(5 - selected.power)}</span>
+      </p>
+    </div>
+    <p class="mt-2">
+      <span class="font-bold">Passive · {selected.passive.name}</span> — {selected.passive.text}
+    </p>
+    <p class="mt-1">
+      <span class="font-bold">Special · {selected.special.name}</span>
+      <span class="text-[#4c465f]">({selected.special.cost} stars)</span> — {selected.special.text}
+    </p>
   </div>
 
   <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
   <div
     bind:this={wrapper}
-    class="game-frame w-full overflow-hidden rounded-[1.25rem] border-4 border-white bg-[#d7e6ff] shadow-[0_10px_24px_rgba(53,47,71,0.22)]"
+    class="game-frame w-full overflow-hidden rounded-[1.25rem] border-4 border-white bg-[#120f33] shadow-[0_10px_24px_rgba(53,47,71,0.22)]"
     tabindex="0"
     role="application"
-    aria-label="Crosby's Cosmic Dash game. Press space or up arrow to jump, down arrow to duck, P to pause."
+    aria-label="Crosby's Cosmic Dash game. Press space or up arrow to jump, down arrow to duck, X for your special move, P to pause."
     aria-describedby="cosmic-dash-help"
     onkeydown={handleKeyDown}
     onkeyup={handleKeyUp}
-    onblur={pause}
+    onfocusout={handleFocusOut}
   >
     <canvas
       bind:this={canvas}
@@ -1072,10 +1531,30 @@
       onpointercancel={handlePointerUp}
       oncontextmenu={(e) => e.preventDefault()}
     ></canvas>
+    <div class="flex items-center justify-between gap-3 bg-[#241d4a] px-3 py-2">
+      <span class="text-xs font-bold text-[#fff6e3]/80">
+        {#if uiActive}
+          {selected.special.name}!
+        {:else}
+          stars {Math.min(uiCharge, selected.special.cost)} / {selected.special.cost}
+        {/if}
+      </span>
+      <button
+        type="button"
+        tabindex="-1"
+        class="special-btn rounded-full px-4 py-1.5 text-sm font-bold lowercase text-[#352f47] disabled:opacity-40"
+        style="background-color: {selected.accent};"
+        disabled={uiState !== "running" || uiActive || uiCharge < selected.special.cost}
+        onpointerdown={handleSpecialPointerDown}
+      >
+        ★ {selected.special.name}
+      </button>
+    </div>
   </div>
 
   <p id="cosmic-dash-help" class="text-sm text-[#4c465f]">
-    Space / ↑ to jump (hold for higher) · ↓ to duck · on phones, tap to jump and swipe down to duck
+    Space / ↑ to jump (hold for higher) · ↓ to duck · X for your special move · on phones, tap to jump, swipe down to duck,
+    and use the ★ button
   </p>
   <p class="sr-only" aria-live="polite">{announcement}</p>
 </div>
@@ -1093,5 +1572,18 @@
   /* the site-wide hover zoom on button images would jostle the portraits */
   .character-pick :global(img:hover) {
     transform: none;
+  }
+
+  .special-btn:not(:disabled) {
+    animation: special-ready 1s ease-in-out infinite alternate;
+  }
+
+  @keyframes special-ready {
+    from {
+      box-shadow: 0 0 0 0 rgba(243, 211, 111, 0.7);
+    }
+    to {
+      box-shadow: 0 0 0 6px rgba(243, 211, 111, 0);
+    }
   }
 </style>
