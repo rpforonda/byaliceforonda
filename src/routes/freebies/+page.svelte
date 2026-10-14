@@ -70,7 +70,8 @@
       crosby's cosmic dash
     </h2>
     <p class="mx-auto mt-2 mb-6 max-w-xl text-base text-[#4c465f]">
-      Pick a friend, hop over moon rocks and starberry bushes, dodge the comets, and catch falling stars!
+      Blast off with Crosby and friends! Hop over moon rocks and space crystals, dodge shooting comets, and collect
+      stars to power up each friend's special move.
     </p>
     <CosmicDash />
   </div>
