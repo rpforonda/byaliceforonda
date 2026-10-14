@@ -385,7 +385,7 @@
             class="w-[85%] h-auto object-contain"
             loading="lazy"
           />
-          <BuyButtons class="mb-10 sm:mb-12 lg:mb-0" />
+          <BuyButtons class="mb-14 sm:mb-12 lg:mb-0" />
         </div>
       </div>
     </div>

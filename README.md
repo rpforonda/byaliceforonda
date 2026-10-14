@@ -91,8 +91,8 @@ placeholder.
 - **Characters:** Carla, Crosby, and Tank — featured on the home page.
 - **Book purchases:** `src/lib/BuyButtons.svelte` (used on `/book` and the home page) shows a
   "buy now" button for the Shopify store (`catchupwithalice.myshopify.com`) and a
-  "buy on amazon" button (`amazon.com/dp/B0HFTDNCKW`), both opening in a new tab. The URLs
-  live in `src/lib/seo.js`; the Amazon link is also in the book's JSON-LD `sameAs`.
+  "buy on amazon · paperback" button (`amazon.com/dp/B0HFTDNCKW`), both opening in a new tab. The URLs
+  live in `src/lib/seo.js`; the book's JSON-LD lists the Amazon listing as its paperback edition (`workExample`).
 - **Newsletter:** "Join Crosby's Crew" — a MailerLite embedded form shown in a popup
   modal on the home page (`assets.mailerlite.com`, form id `QQryIS`).
 - **Freebies:** three printable coloring-page PDFs (Crosby, Tank, Carla) served from `static/`
