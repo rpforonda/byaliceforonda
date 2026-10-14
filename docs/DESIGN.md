@@ -58,7 +58,8 @@ approachable feel (`font-black`, `lowercase`, slight letter-spacing e.g. `tracki
 
 Fonts are loaded from **Google Fonts** in `app.html`. The document currently requests a large
 set of display families (Chewy, DynaPuff, Great Vibes, Grandstander, and others) plus Russo
-One, but the rendered site primarily uses **Nunito** and **Poppins**. Three unused helper
+One, but the rendered site primarily uses **Nunito** and **Poppins**. The character names on
+the home page ask for `Inter`, which is never loaded, so they fall back to the system sans. Three unused helper
 classes (`.font-grandstander`, `.yusei-magic-regular`, `.freckle-face-regular`) remain in
 `app.css`.
 
@@ -99,7 +100,7 @@ classes (`.font-grandstander`, `.yusei-magic-regular`, `.freckle-face-regular`) 
 | **Mobile menu**      | Toggled on click; closes on outside click or `Escape` (returns focus to the button); `aria-expanded` / `aria-controls` wired up. |
 | **Buttons / CTAs**   | Rounded, `rose-600` fill, white text, `rose-700` hover; used for menu and shop CTAs. |
 | **Character cards**  | Carla, Crosby, Tank in the `blue-900` characters section, each with art + a short bio. |
-| **Newsletter popup** | "Join Crosby's Crew" modal on the home page — backdrop, close button, and a MailerLite `<iframe>` (fixed `src`); auto-opens once per visit, closable. |
+| **Newsletter popup** | "Join Crosby's Crew" modal on the home page — backdrop, close button, and a MailerLite `<iframe>` (fixed `src`); auto-opens after 5s or at 75% scroll, once per home-page load (dismissal isn't remembered across visits); closable. |
 | **Buy buttons**      | Open `catchupwithalice.myshopify.com` in a new tab with `rel="noopener noreferrer"`. |
 | **Freebie tiles**    | Coloring-page thumbnails linking to printable PDFs in a new tab.         |
 | **Image panels**     | About page composes bio content as full-width illustrated images.        |
@@ -168,7 +169,8 @@ Baked in throughout:
 - **ARIA** — labeled nav toggle, social links, close buttons, and the newsletter iframe.
 - **Reduced motion** — honored globally (see §5).
 - **Images** — all carry `alt` text; `img { max-width:100%; height:auto; display:block }`
-  keeps them responsive. The non-editable body hides the text caret while preserving it on
+  keeps them responsive, and the `width`/`height` that `<enhanced:img>` emits reserve space
+  before they load. The non-editable body hides the text caret while preserving it on
   real form fields.
 
 ---
@@ -177,9 +179,10 @@ Baked in throughout:
 
 - **Art style:** soft, rounded, storybook character illustrations (Crosby, Tank, Carla) and
   decorative "blob" shapes; pastel sky-blue is the connective background throughout.
-- **Assets:** stored in `static/` (PNG/WebP/JPEG) and referenced via `resolve("/name.png")`;
-  printable freebies are PDFs. Several source images are large — see the optimization notes
-  below.
+- **Assets:** source images live in `src/lib/assets/` and are rendered with `<enhanced:img>`,
+  which serves AVIF/WebP at the displayed size. See [Images in the README](../README.md#images)
+  for the sizing conventions. Printable freebies are PDFs in `static/`. The favicon is a 32px
+  PNG plus a 180px `apple-touch-icon` cut from the round author logo.
 - **Voice:** friendly, lowercase, kid-oriented ("join crosby's crew", "shop coming soon"),
   warm and encouraging in character bios.
 
@@ -191,15 +194,13 @@ Documented so they aren't mistaken for intent:
 
 1. **Dead color tokens** — `tailwind.config.js` isn't consumed by Tailwind v4; move tokens to
    `@theme` in `app.css` or remove the file.
-2. **Font bloat** — ~16 Google Font families requested, ~2 used; self-host Nunito + Poppins.
+2. **Font bloat** — 15 Google Font families requested, 2 used (plus `Inter`, referenced but
+   never loaded); self-host Nunito + Poppins.
 3. **Unused CSS classes** — `.font-grandstander`, `.yusei-magic-regular`,
    `.freckle-face-regular` can be removed.
 4. **No CSP** — add a `<meta http-equiv="Content-Security-Policy">` in `app.html` (GitHub
    Pages can't set the header) allowing self, Google Fonts, and `assets.mailerlite.com`.
-5. **Image weight / LCP** — hero and coloring-page images are large and some are lazy-loaded;
-   build-time optimization (`@sveltejs/enhanced-img`, right-sized thumbnails, eager LCP image
-   with `fetchpriority="high"`) would cut page weight substantially.
-6. **Social meta** — `og:image` resolves to `undefined` (commented-out `site.image`); add an
+5. **Social meta** — `og:image` resolves to `undefined` (commented-out `site.image`); add an
    absolute 1200×630 image, per-page descriptions, and a canonical link.
-7. **Game & reduced motion** — Cosmic Dash's canvas loop ignores `prefers-reduced-motion`;
+6. **Game & reduced motion** — Cosmic Dash's canvas loop ignores `prefers-reduced-motion`;
    consider a reduced-motion or "pause animations" affordance for motion-sensitive players.
