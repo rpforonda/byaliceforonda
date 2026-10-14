@@ -514,55 +514,6 @@
   </div>
 </section>
 
-<!-- About the Author section - commented out
-<section class="relative w-full overflow-hidden bg-[#d7e6ff] flex items-center justify-center" style="min-height: calc(100vh - 200px);">
-  <div class="relative z-10 mx-auto max-w-6xl px-6 py-20 sm:py-24 w-full">
-    <div
-      class="grid items-center gap-10 lg:grid-cols-[1fr_minmax(220px,320px)] lg:gap-16"
-    >
-      <div>
-        <p class="text-2xl font-['Great_Vibes',_cursive] text-[#d2234c]">
-          About the Author
-        </p>
-        <h2
-          class="mt-2 text-3xl font-semibold tracking-tight text-[#1b1b1d] sm:text-4xl"
-        >
-          Alice Foronda
-        </h2>
-        <p class="mt-5 text-base leading-relaxed text-gray-700">
-          Based in a cozy studio overflowing with picture books, Alice writes
-          stories that spark conversations around courage, empathy, and
-          belonging. When she is not drafting whimsical adventures, you can find
-          her exploring forest trails, crafting, or sharing read-aloud moments
-          with her family.
-        </p>
-        <p class="mt-4 text-base leading-relaxed text-gray-700">
-          Her debut book, "Crosby's Cosmic Adventure," grew from a desire to
-          help kids feel brave enough to shine exactly as they are. She believes
-          that storytelling is a bridge between hearts.
-        </p>
-        <a
-          class="mt-8 inline-flex items-center rounded-full bg-[#d2234c] px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-lg transition hover:bg-[#d2234c]-dark"
-          href={resolve("/about")}
-        >
-          Learn More
-        </a>
-      </div>
-      <div class="relative mx-auto flex max-w-sm items-center justify-center">
-        <div
-          class="relative h-64 w-64 overflow-hidden rounded-full border-[12px] border-[#ffd28d] shadow-xl"
-        >
-          <img
-            alt="Author portrait"
-            src={authorImage}
-            class="h-full w-full object-cover"
-          />
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
--->
 
 <style>
   .green-blob-mask {

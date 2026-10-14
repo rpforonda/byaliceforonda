@@ -12,10 +12,10 @@ built, so it can be reproduced and extended consistently.
 ## 1. Color
 
 Colors are applied as **inline hex values and Tailwind utilities** directly in the markup
-(e.g. `bg-[#d7e6ff]`, `text-[#352f47]`, `rose-600`). A token palette also exists in
-`tailwind.config.js`, but **Tailwind v4 (via `@tailwindcss/vite`) does not read that config
-file** unless referenced with `@config`, so those tokens are currently aspirational
-reference, not live utilities. Treat the values below as the source of truth.
+(e.g. `bg-[#d7e6ff]`, `text-[#352f47]`, `rose-600`). There are no theme tokens yet: a
+former `tailwind.config.js` palette was never read by Tailwind v4 (via `@tailwindcss/vite`)
+and has been removed; its values are kept below as reference. Treat the values below as the
+source of truth.
 
 ### Core palette (in use)
 
@@ -31,7 +31,7 @@ reference, not live utilities. Treat the values below as the source of truth.
 | **Footer base**             | `stone-800` | Wordmark + social strip background                  |
 | **Surface white**           | `#ffffff`   | Header bar, menu panel, cards                       |
 
-### Brand reference tokens (`tailwind.config.js`, not currently wired up)
+### Brand reference tokens (not wired up)
 
 Kept as the intended broader palette should the project move tokens into an `@theme` block:
 
@@ -42,7 +42,7 @@ Kept as the intended broader palette should the project move tokens into an `@th
 - **bg** — pink-light `#ffe0ec` · pink-soft `#ffe8f0` · blue-soft `#e6f0ff`
 
 > **Recommendation:** promote the in-use values into an `@theme` block in `app.css` so color
-> is defined once and referenced as utilities, and retire the dead config file. Until then,
+> is defined once and referenced as utilities. Until then,
 > new work should reuse the hex values in the *Core palette* table rather than invent shades.
 
 ---
@@ -59,9 +59,7 @@ approachable feel (`font-black`, `lowercase`, slight letter-spacing e.g. `tracki
 Fonts are loaded from **Google Fonts** in `app.html`. The document currently requests a large
 set of display families (Chewy, DynaPuff, Great Vibes, Grandstander, and others) plus Russo
 One, but the rendered site primarily uses **Nunito** and **Poppins**. The character names on
-the home page ask for `Inter`, which is never loaded, so they fall back to the system sans. Three unused helper
-classes (`.font-grandstander`, `.yusei-magic-regular`, `.freckle-face-regular`) remain in
-`app.css`.
+the home page ask for `Inter`, which is never loaded, so they fall back to the system sans.
 
 > **Recommendation:** self-host just Nunito + Poppins (e.g. `@fontsource/*`) and drop the
 > unused families. This removes render-blocking third-party CSS and avoids sending visitor
@@ -192,15 +190,13 @@ Baked in throughout:
 
 Documented so they aren't mistaken for intent:
 
-1. **Dead color tokens** — `tailwind.config.js` isn't consumed by Tailwind v4; move tokens to
-   `@theme` in `app.css` or remove the file.
+1. **No color tokens** — colors are hardcoded hex values; move the core palette into
+   `@theme` in `app.css`.
 2. **Font bloat** — 15 Google Font families requested, 2 used (plus `Inter`, referenced but
    never loaded); self-host Nunito + Poppins.
-3. **Unused CSS classes** — `.font-grandstander`, `.yusei-magic-regular`,
-   `.freckle-face-regular` can be removed.
-4. **No CSP** — add a `<meta http-equiv="Content-Security-Policy">` in `app.html` (GitHub
+3. **No CSP** — add a `<meta http-equiv="Content-Security-Policy">` in `app.html` (GitHub
    Pages can't set the header) allowing self, Google Fonts, and `assets.mailerlite.com`.
-5. **Social meta** — `og:image` resolves to `undefined` (commented-out `site.image`); add an
+4. **Social meta** — `og:image` resolves to `undefined` (commented-out `site.image`); add an
    absolute 1200×630 image, per-page descriptions, and a canonical link.
-6. **Game & reduced motion** — Cosmic Dash's canvas loop ignores `prefers-reduced-motion`;
+5. **Game & reduced motion** — Cosmic Dash's canvas loop ignores `prefers-reduced-motion`;
    consider a reduced-motion or "pause animations" affordance for motion-sensitive players.
