@@ -12,7 +12,7 @@ const config: UserConfig = {
     enhancedImages(),
     sveltekit({
       compilerOptions: { runes: true },
-      adapter: adapter({ pages: 'build', assets: 'build', fallback: 'index.html' }),
+      adapter: adapter({ pages: 'build', assets: 'build', fallback: '404.html' }),
       paths: { base: BASE_PATH },
       prerender: { entries: ['*'] }
     })

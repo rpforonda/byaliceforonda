@@ -56,14 +56,13 @@ approachable feel (`font-black`, `lowercase`, slight letter-spacing e.g. `tracki
 - **Body & UI:** Nunito (400 / 600 / 700)
 - **Secondary:** Poppins 400 (available, used sparingly)
 
-Fonts are loaded from **Google Fonts** in `app.html`. The document currently requests a large
-set of display families (Chewy, DynaPuff, Great Vibes, Grandstander, and others) plus Russo
-One, but the rendered site primarily uses **Nunito** and **Poppins**. The character names on
-the home page ask for `Inter`, which is never loaded, so they fall back to the system sans.
+Fonts are loaded from **Google Fonts** in `app.html`, limited to the two families the site
+uses: Nunito (400/600/700) and Poppins (400). The character names on the home page ask for
+`Inter`, which is never loaded, so they fall back to the system sans.
 
-> **Recommendation:** self-host just Nunito + Poppins (e.g. `@fontsource/*`) and drop the
-> unused families. This removes render-blocking third-party CSS and avoids sending visitor
-> IPs to Google (a GDPR consideration for EU visitors), matching the site's privacy posture.
+> **Recommendation:** self-host Nunito + Poppins (e.g. `@fontsource/*`). This removes the
+> render-blocking third-party CSS and avoids sending visitor IPs to Google (a GDPR
+> consideration for EU visitors), matching the site's privacy posture.
 
 ### Type treatment conventions
 
@@ -192,11 +191,11 @@ Documented so they aren't mistaken for intent:
 
 1. **No color tokens** — colors are hardcoded hex values; move the core palette into
    `@theme` in `app.css`.
-2. **Font bloat** — 15 Google Font families requested, 2 used (plus `Inter`, referenced but
-   never loaded); self-host Nunito + Poppins.
+2. **Third-party fonts** — Nunito + Poppins still come from Google Fonts (plus `Inter`,
+   referenced but never loaded); self-host them.
 3. **No CSP** — add a `<meta http-equiv="Content-Security-Policy">` in `app.html` (GitHub
    Pages can't set the header) allowing self, Google Fonts, and `assets.mailerlite.com`.
-4. **Social meta** — `og:image` resolves to `undefined` (commented-out `site.image`); add an
-   absolute 1200×630 image, per-page descriptions, and a canonical link.
+4. **Text in artwork** — the about letter and book description are images with hidden text
+   transcripts; real HTML text styled to match would be better for SEO and accessibility.
 5. **Game & reduced motion** — Cosmic Dash's canvas loop ignores `prefers-reduced-motion`;
    consider a reduced-motion or "pause animations" affordance for motion-sensitive players.

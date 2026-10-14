@@ -17,16 +17,18 @@ third-party sites (Shopify, MailerLite), so the site itself collects no personal
 | Concern        | Choice                                                            |
 | -------------- | ----------------------------------------------------------------- |
 | Framework      | [SvelteKit 3](https://svelte.dev/docs/kit) with **Svelte 5 runes** |
-| Rendering      | `@sveltejs/adapter-static` — one HTML file per route, rendered client-side |
+| Rendering      | `@sveltejs/adapter-static` — every route prerendered to full HTML at build time, then hydrated |
 | Styling        | [Tailwind CSS v4](https://tailwindcss.com) via `@tailwindcss/vite`|
 | Images         | [`@sveltejs/enhanced-img`](https://svelte.dev/docs/kit/images) — AVIF/WebP + `srcset` at build time |
 | Build          | [Vite 8](https://vite.dev)                                        |
 | Hosting        | GitHub Pages (custom domain via `static/CNAME`)                   |
 | CI/CD          | GitHub Actions (`.github/workflows/deploy.yml`)                   |
 
-`+layout.js` sets `ssr = false`, `csr = true`, `prerender = true`. Because SSR is off, each
-prerendered HTML file is an empty shell (head + scripts) and the page content is rendered by
-JavaScript after load.
+`+layout.js` sets `prerender = true`, `ssr = true`, `csr = true`: each page is rendered to
+complete HTML at build time (content, headings, images, `<title>`, meta tags), then hydrated
+in the browser. There's still no server — `ssr` only means "render at build time" here. Keep
+browser-only code (`window`, `document`, `localStorage`) inside `onMount` / `$effect` /
+event handlers, or the build will fail.
 
 SvelteKit 3 has no `svelte.config.js`: the SvelteKit options (adapter, `paths`, `prerender`,
 compiler options) are passed to the `sveltekit()` plugin in `vite.config.ts`. Imports from
@@ -42,8 +44,8 @@ npm run build      # static build → build/
 npm run preview    # serve the production build locally
 ```
 
-`npm run build` also runs a `postbuild` step that copies `build/index.html` to
-`build/404.html` so client-side routing survives a hard refresh on GitHub Pages.
+The adapter writes an SPA fallback to `build/404.html`, so GitHub Pages serves it for unknown
+paths and the client router takes over.
 
 Requires **Node 22.17 or newer** (SvelteKit 3's minimum); CI builds with Node 24.
 
@@ -60,10 +62,12 @@ SHARP_IGNORE_GLOBAL_LIBVIPS=1 npm ci
 ```
 vite.config.ts          # Vite plugins + SvelteKit options (adapter-static, paths, prerender)
 src/
-  app.html              # document shell; loads Google Fonts, injects SvelteKit head/body
+  app.html              # document shell; loads Nunito + Poppins, injects SvelteKit head/body
   app.css               # Tailwind import + base layer (focus styles, motion, .page-shell)
   lib/
     CosmicDash.svelte   # "Crosby's Cosmic Dash" — canvas endless-runner game
+    Seo.svelte          # per-page <head>: title, description, canonical, Open Graph, JSON-LD
+    seo.js              # site URL, share image, author + book structured data
     assets/             # all images the pages use (processed at build time)
       game/             # Cosmic Dash character sprites
   routes/
@@ -73,8 +77,9 @@ src/
     about/+page.svelte  # author bio (image panels)
     book/+page.svelte   # book info + buy buttons → Shopify
     freebies/+page.svelte  # coloring-page PDFs + Cosmic Dash game
-    shop/+page.svelte   # "coming soon" placeholder (not in nav)
-static/                 # served as-is: coloring-page PDFs, favicons, robots.txt, CNAME, .nojekyll
+    shop/+page.svelte   # "coming soon" placeholder (not in nav, noindex)
+    sitemap.xml/+server.js  # prerendered sitemap of the public pages
+static/                 # served as-is: coloring-page PDFs, favicons, og-image.jpg, robots.txt, CNAME, .nojekyll
 .github/workflows/deploy.yml
 ```
 
@@ -174,6 +179,21 @@ Because the host serves static files only, keep these in mind:
 - **Custom domain** — `static/CNAME` (`catchupwithalice.com`) and `static/.nojekyll` must stay
   in `static/`. Leave `BASE_PATH` empty (custom domain serves from root).
 - **Routing** — `/about` is served from `about.html`; unknown paths fall through to `404.html`.
+
+### SEO
+
+- Every page renders a `<Seo>` component (`src/lib/Seo.svelte`) with its own title,
+  description and canonical URL, plus Open Graph / Twitter tags pointing at
+  `static/og-image.jpg` (1200×630, from the book's starry-night spread). Change site-wide
+  values (URL, share image, author/book details) in `src/lib/seo.js`.
+- Structured data (JSON-LD): `WebSite` + `Person` + `Book` on the home page, `Book` on `/book`,
+  `ProfilePage` on `/about`.
+- `/about` and `/book` keep their text in artwork, so each image has a screen-reader-only
+  transcript (linked with `aria-describedby`) that crawlers can read. Update the transcript
+  if the artwork changes.
+- `sitemap.xml` is generated at build time and referenced from `static/robots.txt`. Add new
+  public pages to the list in `src/routes/sitemap.xml/+server.js`.
+- `/shop` is `noindex` until it has real content.
 
 ## Security & privacy
 

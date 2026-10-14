@@ -1,14 +1,7 @@
 <script>
   import "../app.css";
   import { resolve } from "$app/paths";
-  import { page } from '$app/state';
   import { onNavigate } from "$app/navigation";
-
-  const site = {
-    title: "Alice Foronda - Official Site",
-    desc: "Alice Foronda: about me and book info.",
-    //image: "/og-cover.jpg",
-  };
 
   const navItems = [
     { href: resolve("/"), label: "home" },
@@ -21,16 +14,6 @@
   let menuOpen = $state(false);
   let menuButtonRef = $state(null);
   let menuPanelRef = $state(null);
-
-  // Generate page title based on route
-  const pageTitle = $derived(() => {
-    const path = page.url.pathname;
-    if (path === resolve('about')) return "About - Alice Foronda";
-    if (path === resolve('book')) return "Books - Alice Foronda";
-    if (path === resolve('shop')) return "Shop - Alice Foronda";
-    if (path === resolve('freebies')) return "Freebies - Alice Foronda";
-    return "Alice Foronda - Children's Book Author";
-  });
 
   function toggleMenu() {
     menuOpen = !menuOpen;
@@ -70,16 +53,6 @@
   onclick={handleWindowClick}
   onkeydown={handleKeyDown}
 ></svelte:window>
-
-<svelte:head>
-  <title>{pageTitle()}</title>
-  <meta name="description" content={site.desc} />
-  <meta property="og:title" content={pageTitle()} />
-  <meta property="og:description" content={site.desc} />
-  <meta property="og:type" content="website" />
-  <meta property="og:image" content={site.image} />
-  <meta name="twitter:card" content="summary_large_image" />
-</svelte:head>
 
 <div
   class="min-h-screen bg-[#d7e6ff] text-gray-900 flex flex-col"
