@@ -188,7 +188,7 @@ Because the host serves static files only, keep these in mind:
   description and canonical URL, plus Open Graph / Twitter tags pointing at
   `static/og-image.jpg` (1200×630, from the book's starry-night spread). Change site-wide
   values (URL, share image, author/book details) in `src/lib/seo.js`.
-- Structured data (JSON-LD): `WebSite` + `Person` + `Book` on the home page, `Book` on `/book`,
+- Structured data (JSON-LD): `WebSite` + `Person` + `Book` (with ISBN) on the home page, `Book` on `/book`,
   `ProfilePage` on `/about`.
 - `/about` and `/book` keep their text in artwork, so each image has a screen-reader-only
   transcript (linked with `aria-describedby`) that crawlers can read. Update the transcript
