@@ -32,5 +32,6 @@
     class="inline-flex items-center gap-2 rounded-full border-2 border-[#352f47] bg-white px-7 py-[0.625rem] text-lg font-black uppercase tracking-widest text-[#352f47] shadow-lg transition hover:bg-[#352f47] hover:text-white active:scale-95"
   >
     buy on amazon
+    <span class="rounded-full bg-[#352f47]/10 px-2 py-0.5 text-[0.65rem] tracking-wider normal-case">paperback</span>
   </a>
 </div>
