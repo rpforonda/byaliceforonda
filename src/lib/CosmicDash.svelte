@@ -1,6 +1,8 @@
 <script>
-  import { resolve } from "$app/paths";
   import { onMount } from "svelte";
+  import crosbySprite from "#lib/assets/Crosby.webp";
+  import carlaSprite from "#lib/assets/Carla.webp";
+  import tankSprite from "#lib/assets/Tank.webp";
 
   // Endless runner in the spirit of Chrome's offline dino game, themed after
   // Crosby's Cosmic Adventure. Pick a character, jump the moon rocks and
@@ -10,7 +12,7 @@
     {
       id: "crosby",
       name: "Crosby",
-      src: resolve("/Crosby.webp"),
+      src: crosbySprite,
       aspect: 360 / 325,
       height: 70,
       flip: false,
@@ -21,7 +23,7 @@
     {
       id: "carla",
       name: "Carla",
-      src: resolve("/Carla.webp"),
+      src: carlaSprite,
       aspect: 232 / 329,
       height: 68,
       flip: true,
@@ -32,7 +34,7 @@
     {
       id: "tank",
       name: "Tank",
-      src: resolve("/Tank.webp"),
+      src: tankSprite,
       aspect: 458 / 544,
       height: 76,
       flip: false,
