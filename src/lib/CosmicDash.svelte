@@ -1,6 +1,8 @@
 <script>
-  import { resolve } from "$app/paths";
   import { onMount } from "svelte";
+  import crosbySprite from "#lib/assets/game/crosby.webp";
+  import carlaSprite from "#lib/assets/game/carla.webp";
+  import tankSprite from "#lib/assets/game/tank.webp";
 
   // Endless runner in the spirit of Chrome's offline dino game, set in the
   // starry world of Crosby's Cosmic Adventure. Each friend has a passive perk
@@ -13,7 +15,7 @@
       role: "Gentle dreamer",
       hero: true,
       power: 5,
-      src: resolve("/game/crosby.webp"),
+      src: crosbySprite,
       aspect: 288 / 240,
       height: 72,
       flip: false,
@@ -41,7 +43,7 @@
       name: "Carla",
       role: "Fearless navigator",
       power: 3,
-      src: resolve("/game/carla.webp"),
+      src: carlaSprite,
       aspect: 172 / 240,
       height: 70,
       flip: true,
@@ -69,7 +71,7 @@
       name: "Tank",
       role: "Inventor and tinkerer",
       power: 4,
-      src: resolve("/game/tank.webp"),
+      src: tankSprite,
       aspect: 211 / 240,
       height: 74,
       flip: false,

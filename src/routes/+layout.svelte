@@ -1,7 +1,7 @@
 <script>
   import "../app.css";
   import { resolve } from "$app/paths";
-  import { page } from "$app/stores";
+  import { page } from '$app/state';
   import { onNavigate } from "$app/navigation";
 
   const site = {
@@ -12,15 +12,11 @@
 
   const navItems = [
     { href: resolve("/"), label: "home" },
-    { href: resolve("/about"), label: "about" },
-    { href: resolve("/book"), label: "book" },
-    { href: resolve("/freebies"), label: "freebies" },
+    { href: resolve('about'), label: "about" },
+    { href: resolve('book'), label: "book" },
+    { href: resolve('freebies'), label: "freebies" }
   ];
 
-  const logoWhiteSrc = resolve("/al_wordm_white.png");
-  const logoWhiteWebpSrc = resolve("/al_wordm_white.webp");
-  const headerLogoSrc = resolve("/Crosby.png");
-  const headerLogoWebpSrc = resolve("/Crosby.webp");
   let { children } = $props();
   let menuOpen = $state(false);
   let menuButtonRef = $state(null);
@@ -28,11 +24,11 @@
 
   // Generate page title based on route
   const pageTitle = $derived(() => {
-    const path = $page.url.pathname;
-    if (path === resolve("/about")) return "About - Alice Foronda";
-    if (path === resolve("/book")) return "Books - Alice Foronda";
-    if (path === resolve("/shop")) return "Shop - Alice Foronda";
-    if (path === resolve("/freebies")) return "Freebies - Alice Foronda";
+    const path = page.url.pathname;
+    if (path === resolve('about')) return "About - Alice Foronda";
+    if (path === resolve('book')) return "Books - Alice Foronda";
+    if (path === resolve('shop')) return "Shop - Alice Foronda";
+    if (path === resolve('freebies')) return "Freebies - Alice Foronda";
     return "Alice Foronda - Children's Book Author";
   });
 
@@ -58,6 +54,7 @@
 
   // View Transitions API for page navigation
   onNavigate((navigation) => {
+    if (navigation.shallow && navigation.type === 'goto') return;
     if (!document.startViewTransition) return;
 
     return new Promise((resolve) => {
@@ -69,7 +66,10 @@
   });
 </script>
 
-<svelte:window onclick={handleWindowClick} onkeydown={handleKeyDown} />
+<svelte:window
+  onclick={handleWindowClick}
+  onkeydown={handleKeyDown}
+></svelte:window>
 
 <svelte:head>
   <title>{pageTitle()}</title>
@@ -104,14 +104,12 @@
             class="header-logo-link flex w-fit select-none leading-none"
             aria-label="Go to home"
           >
-            <picture>
-              <source srcset={headerLogoWebpSrc} type="image/webp" />
-              <img
-                src={headerLogoSrc}
-                alt="Crosby"
-                class="block h-12 w-auto md:h-16"
-              />
-            </picture>
+            <enhanced:img
+              src="#lib/assets/Crosby.png"
+              alt="Crosby"
+              width="144"
+              class="block h-12 w-auto md:h-16"
+            ></enhanced:img>
           </a>
         </div>
         <div
@@ -181,14 +179,13 @@
         <span
           class="inline-flex items-center justify-center rounded-full bg-[#c4d7f6] p-2"
         >
-          <picture>
-            <source srcset={resolve("/alice_logopink.webp")} type="image/webp" />
-            <img
-              src={resolve("/alice_logopink.jpg")}
-              alt="Alice Foronda logo featuring the author"
-              class="h-20 w-20 rounded-full object-cover"
-            />
-          </picture>
+          <enhanced:img
+            src="#lib/assets/alice_logopink.jpg"
+            alt="Alice Foronda logo featuring the author"
+            width="160"
+            class="h-20 w-20 rounded-full object-cover"
+            loading="lazy"
+          ></enhanced:img>
         </span>
       </div>
     </div>
@@ -196,14 +193,13 @@
       class="relative border-t border-pink-200 bg-stone-800 text-white"
     >
       <div class="flex justify-center pt-3 pb-4">
-        <picture>
-          <source srcset={logoWhiteWebpSrc} type="image/webp" />
-          <img
-            src={logoWhiteSrc}
-            alt="Alice Foronda wordmark"
-            class="h-6 w-auto md:h-8"
-          />
-        </picture>
+        <enhanced:img
+          src="#lib/assets/al_wordm_white.png"
+          alt="Alice Foronda wordmark"
+          width="320"
+          class="h-6 w-auto md:h-8"
+          loading="lazy"
+        ></enhanced:img>
       </div>
       <div
         class="page-shell flex flex-col items-center gap-3 pb-6 text-pink-200"
@@ -216,11 +212,13 @@
             aria-label="Visit Alice Foronda on Instagram"
             class="flex h-10 w-10 items-center justify-center"
           >
-            <img
-              src={resolve("/whiteig.png")}
+            <enhanced:img
+              src="#lib/assets/whiteig.png"
               alt="Instagram"
+              width="80"
               class="h-10 w-10 cursor-pointer object-contain"
-            />
+              loading="lazy"
+            ></enhanced:img>
           </a>
           <a
             href="https://www.tiktok.com/@catchupwithalice"
@@ -229,17 +227,17 @@
             aria-label="Visit Alice Foronda on TikTok"
             class="flex h-10 w-10 items-center justify-center"
           >
-            <img
-              src={resolve("/tiktok-round-icon-png-removebg-preview.png")}
+            <enhanced:img
+              src="#lib/assets/tiktok.png"
               alt="TikTok"
+              width="130"
               class="h-10 w-10 cursor-pointer object-cover"
-            />
+              loading="lazy"
+            ></enhanced:img>
           </a>
         </div>
-        <span
-          >&copy; {new Date().getFullYear()} Alice Foronda. All rights reserved.
-          No personal data collected. Purchases happen on retailer sites.</span
-        >
+
+        <span>© {new Date().getFullYear()} Alice Foronda. All rights reserved. No personal data collected. Purchases happen on retailer sites.</span>
       </div>
     </div>
   </footer>
@@ -250,10 +248,5 @@
     user-select: none;
     -webkit-user-select: none;
     caret-color: transparent;
-  }
-
-  .header-logo-link picture,
-  .header-logo-link img {
-    display: block;
   }
 </style>

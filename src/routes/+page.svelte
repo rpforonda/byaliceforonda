@@ -1,17 +1,6 @@
-﻿<script>
-  import { resolve } from "$app/paths";
+<script>
   import { onMount } from "svelte";
 
-  const crosbyFrameImage = resolve("/Crosbyframe.png");
-  const greenBlobImage = resolve("/greenblob.png");
-  const heroPopupImage = resolve("/cosmic.jpeg");
-  const meetCharactersImage = resolve("/mtc.png");
-  const joinCrosbyImage = resolve("/joincrosby.png");
-  const creamBlobImage = resolve("/creamblob.png");
-  const crosbyCoverHomeImage = resolve("/crosbycoverhome.png");
-  const crosbyGreenImage = resolve("/crosbygreen.png");
-  const carlaPinkImage = resolve("/carlapink.png");
-  const tankYellowImage = resolve("/tankyellow.png");
   const mailerLiteFormId = "QQryIS";
   const mailerLitePopupUrl = `https://assets.mailerlite.com/jsonp/2261437/forms/${mailerLiteFormId}/content`;
   const characterStars = [
@@ -112,8 +101,6 @@
         { label: "Needs", value: "Encouragement and warm hugs" },
         { label: "Superpower", value: "Soft bravery that grows" },
       ],
-      image: resolve("/Crosby.png"),
-      imageWebp: resolve("/Crosby.png"),
       accent: "#b8cee8",
     },
     {
@@ -127,8 +114,6 @@
         { label: "Needs", value: "Quiet time to refuel her heart" },
         { label: "Superpower", value: "Leading with empathy" },
       ],
-      image: resolve("/Carla.png"),
-      imageWebp: resolve("/Carla.webp"),
       accent: "#ef6f3c",
     },
     {
@@ -142,8 +127,6 @@
         { label: "Needs", value: "Time to think and tinker" },
         { label: "Superpower", value: "Turning ideas into reality" },
       ],
-      image: resolve("/Tank.png"),
-      imageWebp: resolve("/Tank.webp"),
       accent: "#afab23",
     },
   ];
@@ -281,11 +264,12 @@
   <div class="page-shell relative z-10 transition-all duration-700 ease-out" style={showWelcome ? 'padding-top: 4rem; padding-bottom: 2.5rem;' : 'padding-top: 1.5rem; padding-bottom: 1.5rem;'}>
     <div class="flex flex-col lg:flex-row items-start justify-start gap-8 lg:gap-8 transition-all duration-700 ease-out">
       <div class="w-full max-w-[21rem] lg:max-w-[26rem] shrink-0 mx-auto lg:mx-0 self-center lg:self-auto">
-        <img
-          src={crosbyFrameImage}
+        <enhanced:img
+          src="#lib/assets/Crosbyframe.png?w=502"
+          sizes="502px"
           alt="Crosby frame artwork"
           class="w-full h-auto object-contain"
-          loading="lazy"
+          fetchpriority="high"
         />
       </div>
       <!-- Welcome Section -->
@@ -295,11 +279,11 @@
           ? 'opacity: 1; transform: scale(1) translateX(0); max-height: 62.5rem; pointer-events: auto;'
           : 'opacity: 0; transform: scale(0.9) translateX(-1.25rem); max-height: 0; pointer-events: none; overflow: hidden;'}
       >
-        <img
-          src={heroPopupImage}
+        <enhanced:img
+          src="#lib/assets/cosmic.jpeg"
           alt="Crosby's Cosmic Adventure"
+          width="1280"
           class="hero-popup-image"
-          loading="lazy"
         />
       </div>
     </div>
@@ -318,18 +302,20 @@
 
 <section class="relative w-full overflow-hidden bg-[#d7e6ff] pt-6 pb-8 sm:pt-3 sm:pb-10">
   <div class="page-shell green-blob-mask">
-    <img
-      src={greenBlobImage}
+    <enhanced:img
+      src="#lib/assets/greenblob.png"
       alt=""
       aria-hidden="true"
+      sizes="(min-width: 1280px) 1100px, 100vw"
       class="green-blob-bg"
       loading="lazy"
     />
     <div class="green-blob-content">
       <div class="green-blob-col">
         <div class="mt-2 flex justify-center sm:mt-4 lg:mt-6">
-          <img
-            src={joinCrosbyImage}
+          <enhanced:img
+            src="#lib/assets/joincrosby.png?w=463"
+            sizes="463px"
             alt="Join Crosby"
             class="w-full max-w-lg h-auto object-contain lg:max-w-xl"
             loading="lazy"
@@ -337,12 +323,10 @@
         </div>
         <div class="mt-3 flex justify-center">
           <div class="relative w-full max-w-md lg:max-w-[30rem]">
-            <img
-              src={creamBlobImage}
+            <enhanced:img
+              src="#lib/assets/creamblob.png?w=591"
+              sizes="591px"
               alt="Cream blob"
-              width="591"
-              height="422"
-              sizes="(max-width: 768px) 86vw, 560px"
               class="w-full h-auto object-contain"
               decoding="async"
               loading="lazy"
@@ -367,8 +351,9 @@
       </div>
       <div class="green-blob-col green-blob-col-right">
         <div class="flex flex-col items-center gap-4">
-          <img
-            src={crosbyCoverHomeImage}
+          <enhanced:img
+            src="#lib/assets/crosbycoverhome.png?w=464"
+            sizes="464px"
             alt="Crosby Cover"
             class="w-[85%] h-auto object-contain"
             loading="lazy"
@@ -455,11 +440,9 @@
   </div>
   <div class="page-shell relative z-10 py-16 sm:py-20">
     <div class="-mt-4 mb-10 flex justify-center sm:-mt-6">
-      <img
-        src={meetCharactersImage}
+      <enhanced:img
+        src="#lib/assets/mtc.png"
         alt="Meet the Characters"
-        width="1252"
-        height="199"
         sizes="(max-width: 768px) 92vw, 980px"
         class="w-full max-w-5xl h-auto object-contain"
         decoding="async"
@@ -471,22 +454,25 @@
         <article class="flex h-full flex-col rounded-3xl bg-white/10 p-6 backdrop-blur-sm shadow-[0_15px_40px_rgba(0,0,0,0.2)]">
           <div class="flex flex-col h-full">
             {#if index === 0}
-              <img
-                src={crosbyGreenImage}
+              <enhanced:img
+                src="#lib/assets/crosbygreen.png?w=481"
+                sizes="481px"
                 alt="Crosby the Crocodile"
                 class="mx-auto w-full max-w-xs h-auto object-contain mb-6"
                 loading="lazy"
               />
             {:else if index === 1}
-              <img
-                src={carlaPinkImage}
+              <enhanced:img
+                src="#lib/assets/carlapink.png?w=488"
+                sizes="488px"
                 alt="Carla the Capybara"
                 class="mx-auto w-full max-w-xs h-auto object-contain mb-6"
                 loading="lazy"
               />
             {:else if index === 2}
-              <img
-                src={tankYellowImage}
+              <enhanced:img
+                src="#lib/assets/tankyellow.png?w=485"
+                sizes="485px"
                 alt="Tank the Turtle"
                 class="mx-auto w-full max-w-xs h-auto object-contain mb-6"
                 loading="lazy"
