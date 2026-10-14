@@ -103,6 +103,29 @@ classes (`.font-grandstander`, `.yusei-magic-regular`, `.freckle-face-regular`) 
 | **Buy buttons**      | Open `catchupwithalice.myshopify.com` in a new tab with `rel="noopener noreferrer"`. |
 | **Freebie tiles**    | Coloring-page thumbnails linking to printable PDFs in a new tab.         |
 | **Image panels**     | About page composes bio content as full-width illustrated images.        |
+| **Cosmic Dash game** | Canvas endless-runner on the freebies page with a character picker (see §4a). |
+
+### 4a. Crosby's Cosmic Dash (game)
+
+A `<canvas>` endless-runner (`src/lib/CosmicDash.svelte`) themed to the book's characters —
+the brand's most interactive surface. It is designed to feel like a storybook toy rather than
+an arcade game.
+
+- **Framing:** sits in a rounded, white-bordered "game-frame" over the sky-blue `#d7e6ff`
+  background with a soft drop shadow — the same rounded, pastel language as the rest of the site.
+- **Character picker:** pill buttons for Crosby / Carla / Tank, each tinted with its own accent
+  (Crosby `#8fc27b`, Carla `#ef6f3c`, Tank per-character), the selected pill ringed in that accent;
+  disabled while a run is in progress.
+- **Art direction:** everything is drawn procedurally on the canvas in the site palette — moon
+  rocks, starberry bushes, comets, collectible stars, parallax clouds/doodles, and a slow
+  day↔night tint cycle. Canvas text uses **Nunito** (redrawn once `document.fonts.ready`).
+- **Motion:** continuous `requestAnimationFrame` loop while playing; a short particle "burst"
+  on game-over. Note this canvas animation does **not** currently consult
+  `prefers-reduced-motion` (acceptable because play is user-initiated and pausable, but worth a
+  future toggle).
+- **Focus/affordances:** a 3px `#d2234c` focus-visible outline on the frame matches the
+  site-wide focus treatment; the site's global image-hover zoom is explicitly disabled on the
+  character portraits so they don't jostle.
 
 ---
 
@@ -169,3 +192,5 @@ Documented so they aren't mistaken for intent:
    with `fetchpriority="high"`) would cut page weight substantially.
 6. **Social meta** — `og:image` resolves to `undefined` (commented-out `site.image`); add an
    absolute 1200×630 image, per-page descriptions, and a canonical link.
+7. **Game & reduced motion** — Cosmic Dash's canvas loop ignores `prefers-reduced-motion`;
+   consider a reduced-motion or "pause animations" affordance for motion-sensitive players.

@@ -46,13 +46,15 @@ Requires Node 20 (matching CI). A `.mise.toml` is present if you use [mise](http
 src/
   app.html              # document shell; loads Google Fonts, injects SvelteKit head/body
   app.css               # Tailwind import + base layer (focus styles, motion, .page-shell)
+  lib/
+    CosmicDash.svelte   # "Crosby's Cosmic Dash" — canvas endless-runner game
   routes/
     +layout.svelte      # header, nav, footer, mobile menu, View Transitions
     +layout.js          # prerender / csr / ssr flags
     +page.svelte        # home: hero, book promo, newsletter popup, characters
     about/+page.svelte  # author bio (image panels)
     book/+page.svelte   # book info + buy buttons → Shopify
-    freebies/+page.svelte  # downloadable coloring-page PDFs
+    freebies/+page.svelte  # coloring-page PDFs + Cosmic Dash game
     shop/+page.svelte   # "coming soon" placeholder (not in nav)
 static/                 # images, PDFs, robots.txt, CNAME, .nojekyll
 .github/workflows/deploy.yml
@@ -68,8 +70,24 @@ placeholder.
   (`catchupwithalice.myshopify.com`) in a new tab.
 - **Newsletter:** "Join Crosby's Crew" — a MailerLite embedded form shown in a popup
   modal on the home page (`assets.mailerlite.com`, form id `QQryIS`).
-- **Freebies:** three printable coloring-page PDFs (Crosby, Tank, Carla) served from `static/`.
+- **Freebies:** three printable coloring-page PDFs (Crosby, Tank, Carla) served from `static/`,
+  plus **Crosby's Cosmic Dash**, a browser game (see below).
 - **Social:** Instagram `@byaliceforonda`, TikTok `@catchupwithalice` (footer).
+
+### Crosby's Cosmic Dash
+
+A self-contained `<canvas>` endless-runner (Chrome-dino style) on the freebies page,
+implemented in `src/lib/CosmicDash.svelte`. Pick a character (Crosby, Carla, or Tank), jump
+moon rocks and starberry bushes, duck comets, and catch falling stars for bonus points.
+
+- **Controls:** Space / ↑ / W to jump (hold for a higher jump), ↓ / S to duck, P / Esc to
+  pause. On touch: tap to jump, swipe down to duck.
+- **Tech:** Canvas 2D + `requestAnimationFrame`; DPR-aware sizing via `ResizeObserver`;
+  auto-pauses on tab-hide (`visibilitychange`) and on blur.
+- **Persistence:** high score only, in `localStorage` (`catchupwithalice-cosmic-dash-hi`),
+  guarded by try/catch. No network, no personal data.
+- **Accessibility:** `role="application"` with descriptive label, keyboard-operable, an
+  `aria-live` region announcing game-over, and a visible focus outline.
 
 ## Deployment
 
