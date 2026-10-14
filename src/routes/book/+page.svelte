@@ -41,7 +41,7 @@
 <section class="w-full">
   <div class="page-shell">
     <enhanced:img
-      src="$lib/assets/lionking.jpeg"
+      src="#lib/assets/lionking.jpeg"
       alt="Lion King"
       sizes="(min-width: 1280px) 1100px, 100vw"
       class="w-full h-auto object-contain"
@@ -55,7 +55,7 @@
     <div class="flex w-full flex-col items-center gap-8 lg:flex-row lg:items-center lg:justify-center lg:gap-8">
       <div class="relative w-full max-w-md">
         <enhanced:img
-          src="$lib/assets/darkblob.png?w=472"
+          src="#lib/assets/darkblob.png?w=472"
           sizes="472px"
           alt="Dark blob"
           class="w-full h-auto object-contain"
@@ -63,7 +63,7 @@
           loading="lazy"
         />
         <enhanced:img
-          src="$lib/assets/crosby-cover.png"
+          src="#lib/assets/crosby-cover.png"
           alt="Crosby's Cosmic Adventure cover"
           width="660"
           class="absolute left-1/2 top-1/2 z-10 w-[74%] h-auto -translate-x-1/2 -translate-y-1/2 -rotate-6 object-contain drop-shadow-[0_14px_24px_rgba(0,0,0,0.35)]"
@@ -79,7 +79,7 @@
           style="width: 100%; display: block;"
         >
           <enhanced:img
-            src="$lib/assets/nowavailable.png?w=496"
+            src="#lib/assets/nowavailable.png?w=496"
             sizes="496px"
             alt="Now available - shop now"
             class="w-full h-auto cursor-pointer object-contain"
@@ -107,7 +107,7 @@
     </div>
     <div class="mt-8 flex w-full justify-center md:mt-10">
       <enhanced:img
-        src="$lib/assets/description.png"
+        src="#lib/assets/description.png"
         alt="Description"
         sizes="(max-width: 768px) 92vw, 980px"
         class="w-full max-w-5xl h-auto object-contain"

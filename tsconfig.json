@@ -1,7 +1,13 @@
 {
-  "extends": "./.svelte-kit/tsconfig.json",
+  "extends": "$app/tsconfig",
   "compilerOptions": {
-    "types": ["svelte"],
-    "moduleResolution": "bundler"
-  }
+    "types": [
+      "$app/types",
+      "svelte"
+    ]
+  },
+  "include": [
+    "src",
+    "vite.config.ts"
+  ]
 }
