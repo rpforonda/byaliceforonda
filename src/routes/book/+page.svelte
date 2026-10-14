@@ -1,5 +1,9 @@
 <script>
   import { onMount } from "svelte";
+  import Seo from "#lib/Seo.svelte";
+  import { author, book } from "#lib/seo.js";
+
+  const jsonLd = { "@context": "https://schema.org", "@graph": [book, author] };
 
   const mailerLiteAccountId = "2261437";
   const mailerLiteScriptUrl = "https://assets.mailerlite.com/js/universal.js";
@@ -32,11 +36,20 @@
   });
 </script>
 
+<Seo
+  title="Crosby's Cosmic Adventure | Picture Book by Alice Foronda"
+  description="Crosby the crocodile is nervous about trying something new. With help from Carla and Tank, he discovers how brightly he can shine. A starry picture book for ages 4–8."
+  path="/book"
+  {jsonLd}
+/>
+
+<h1 class="sr-only">Crosby's Cosmic Adventure by Alice Foronda</h1>
+
 <section class="w-full">
   <div class="page-shell">
     <enhanced:img
       src="#lib/assets/lionking.jpeg"
-      alt="Lion King"
+      alt="Crosby, Carla and Tank gazing up at a starry night sky, an illustration from Crosby's Cosmic Adventure"
       sizes="(min-width: 1280px) 1100px, 100vw"
       class="w-full h-auto object-contain"
       fetchpriority="high"
@@ -51,7 +64,8 @@
         <enhanced:img
           src="#lib/assets/darkblob.png?w=472"
           sizes="472px"
-          alt="Dark blob"
+          alt=""
+          aria-hidden="true"
           class="w-full h-auto object-contain"
           decoding="async"
           loading="lazy"
@@ -75,7 +89,7 @@
           <enhanced:img
             src="#lib/assets/nowavailable.png?w=496"
             sizes="496px"
-            alt="Now available - shop now"
+            alt="Now available: buy Crosby's Cosmic Adventure"
             class="w-full h-auto cursor-pointer object-contain"
             decoding="async"
             loading="lazy"
@@ -102,12 +116,32 @@
     <div class="mt-8 flex w-full justify-center md:mt-10">
       <enhanced:img
         src="#lib/assets/description.png"
-        alt="Description"
+        alt="About the book"
+        aria-describedby="book-description"
         sizes="(max-width: 768px) 92vw, 980px"
         class="w-full max-w-5xl h-auto object-contain"
         decoding="async"
         loading="lazy"
       />
+      <!-- The description is artwork; this is its text for screen readers and search engines. -->
+      <div id="book-description" class="sr-only">
+        <h2>About the book</h2>
+        <p>"My tail's too thick. And my claws too long. Don't you think I'll do this all wrong?"</p>
+        <p>
+          Have you ever felt a little nervous about trying something new? Or had a misunderstanding
+          with friends? You're not alone.
+        </p>
+        <p>
+          Crosby the crocodile faces these challenges too. But with a little courage and some help
+          from his friends Carla the capybara and Tank the turtle, Crosby discovers just how
+          brightly he can shine.
+        </p>
+        <p>
+          Perfect for ages 4–8. Join Crosby and his crew on a starry adventure where they discover
+          an obstacle course in space and learn what it means to be a true friend.
+        </p>
+        <p>A heartwarming story about bravery, belonging, and believing in yourself.</p>
+      </div>
     </div>
   </div>
 </section>

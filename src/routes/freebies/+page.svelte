@@ -1,12 +1,18 @@
 <script>
   import { asset } from "$app/paths";
-  import { resolve } from "$app/paths";
   import CosmicDash from "#lib/CosmicDash.svelte";
+  import Seo from "#lib/Seo.svelte";
 
   const crosbyColoringPagePdf = asset('Crosby Coloring Page.pdf');
   const tankColoringPagePdf = asset('Tank Coloring Page.pdf');
   const carlaColoringPagePdf = asset('Carla Coloring Page.pdf');
 </script>
+
+<Seo
+  title="Free Coloring Pages & Game | Crosby's Cosmic Adventure"
+  description="Free printable Crosby, Carla and Tank coloring pages, plus Crosby's Cosmic Dash, a free browser game: hop over moon rocks, dodge comets and collect stars."
+  path="/freebies"
+/>
 
 <section class="page-shell flex min-h-[55vh] flex-col items-center justify-center py-16 text-center">
   <h1 class="text-4xl font-black lowercase tracking-[0.04em] text-[#352f47] md:text-5xl">
@@ -23,7 +29,7 @@
       <enhanced:img
         src="#lib/assets/crosby-coloring-page.png"
         width="152"
-        alt="Crosby coloring page portrait icon"
+        alt="Crosby the crocodile coloring page"
         class="aspect-[1430/1912] w-full h-auto rounded-[0.6rem] object-cover"
         loading="lazy"
         decoding="async"
@@ -39,7 +45,7 @@
       <enhanced:img
         src="#lib/assets/tank-coloring-page.png"
         width="152"
-        alt="Tank coloring page portrait icon"
+        alt="Tank the turtle coloring page"
         class="aspect-[1430/1912] w-full h-auto rounded-[0.6rem] object-cover"
         loading="lazy"
         decoding="async"
@@ -55,7 +61,7 @@
       <enhanced:img
         src="#lib/assets/carla-coloring-page.png"
         width="152"
-        alt="Carla coloring page portrait icon"
+        alt="Carla the capybara coloring page"
         class="aspect-[1430/1912] w-full h-auto rounded-[0.6rem] object-cover"
         loading="lazy"
         decoding="async"

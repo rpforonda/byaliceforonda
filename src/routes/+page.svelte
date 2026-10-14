@@ -1,5 +1,22 @@
 <script>
   import { onMount } from "svelte";
+  import Seo from "#lib/Seo.svelte";
+  import { SITE_URL, SITE_NAME, author, book } from "#lib/seo.js";
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
+        url: `${SITE_URL}/`,
+        name: SITE_NAME,
+        publisher: { "@id": author["@id"] },
+      },
+      author,
+      book,
+    ],
+  };
 
   const mailerLiteFormId = "QQryIS";
   const mailerLitePopupUrl = `https://assets.mailerlite.com/jsonp/2261437/forms/${mailerLiteFormId}/content`;
@@ -258,16 +275,24 @@
 
 </script>
 
+<Seo
+  title="Alice Foronda — Author of Crosby's Cosmic Adventure"
+  description="Crosby's Cosmic Adventure by Alice Foronda: a picture book for ages 4–8 about friendship, bravery and believing in yourself, starring Crosby, Carla and Tank."
+  path="/"
+  {jsonLd}
+/>
+
 <section
   class="relative w-full overflow-hidden bg-[#d7e6ff]"
 >
+  <h1 class="sr-only">Crosby's Cosmic Adventure, a children's picture book by Alice Foronda</h1>
   <div class="page-shell relative z-10 transition-all duration-700 ease-out" style={showWelcome ? 'padding-top: 4rem; padding-bottom: 2.5rem;' : 'padding-top: 1.5rem; padding-bottom: 1.5rem;'}>
     <div class="flex flex-col lg:flex-row items-start justify-start gap-8 lg:gap-8 transition-all duration-700 ease-out">
       <div class="w-full max-w-[21rem] lg:max-w-[26rem] shrink-0 mx-auto lg:mx-0 self-center lg:self-auto">
         <enhanced:img
           src="#lib/assets/Crosbyframe.png?w=502"
           sizes="502px"
-          alt="Crosby frame artwork"
+          alt="Crosby the crocodile with his backpack under a starry night sky"
           class="w-full h-auto object-contain"
           fetchpriority="high"
         />
@@ -312,21 +337,22 @@
     />
     <div class="green-blob-content">
       <div class="green-blob-col">
-        <div class="mt-2 flex justify-center sm:mt-4 lg:mt-6">
+        <h2 class="mt-2 flex justify-center sm:mt-4 lg:mt-6">
           <enhanced:img
             src="#lib/assets/joincrosby.png?w=463"
             sizes="463px"
-            alt="Join Crosby"
+            alt="Join Crosby and his pals"
             class="w-full max-w-lg h-auto object-contain lg:max-w-xl"
             loading="lazy"
           />
-        </div>
+        </h2>
         <div class="mt-3 flex justify-center">
           <div class="relative w-full max-w-md lg:max-w-[30rem]">
             <enhanced:img
               src="#lib/assets/creamblob.png?w=591"
               sizes="591px"
-              alt="Cream blob"
+              alt=""
+              aria-hidden="true"
               class="w-full h-auto object-contain"
               decoding="async"
               loading="lazy"
@@ -354,7 +380,7 @@
           <enhanced:img
             src="#lib/assets/crosbycoverhome.png?w=464"
             sizes="464px"
-            alt="Crosby Cover"
+            alt="Crosby's Cosmic Adventure book cover"
             class="w-[85%] h-auto object-contain"
             loading="lazy"
           />
@@ -439,16 +465,16 @@
     {/each}
   </div>
   <div class="page-shell relative z-10 py-16 sm:py-20">
-    <div class="-mt-4 mb-10 flex justify-center sm:-mt-6">
+    <h2 class="-mt-4 mb-10 flex justify-center sm:-mt-6">
       <enhanced:img
         src="#lib/assets/mtc.png"
-        alt="Meet the Characters"
+        alt="Meet the characters"
         sizes="(max-width: 768px) 92vw, 980px"
         class="w-full max-w-5xl h-auto object-contain"
         decoding="async"
         loading="lazy"
       />
-    </div>
+    </h2>
     <div class="grid items-stretch gap-8 sm:grid-cols-2 lg:grid-cols-3">
       {#each characters as character, index}
         <article class="flex h-full flex-col rounded-3xl bg-white/10 p-6 backdrop-blur-sm shadow-[0_15px_40px_rgba(0,0,0,0.2)]">
@@ -480,9 +506,9 @@
             {/if}
 
             <div class="flex-1 flex flex-col">
-              <h2 class="text-center text-2xl font-['Inter',_sans-serif] font-semibold tracking-tight">
+              <h3 class="text-center text-2xl font-['Inter',_sans-serif] font-semibold tracking-tight">
                 {character.name}
-              </h2>
+              </h3>
               <p
                 class="mt-1 text-center text-sm font-semibold uppercase tracking-[0.12em]"
                 style={`color:${character.accent}`}
