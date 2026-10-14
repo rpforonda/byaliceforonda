@@ -28,6 +28,7 @@ export const book = {
   "@type": "Book",
   "@id": `${SITE_URL}/book#book`,
   name: "Crosby's Cosmic Adventure",
+  isbn: "9798995168706",
   author: { "@id": author["@id"] },
   illustrator: { "@type": "Person", name: "Ponyo Nguyen" },
   inLanguage: "en",
