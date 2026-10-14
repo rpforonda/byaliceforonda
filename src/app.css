@@ -34,14 +34,28 @@
     --tw-ring-color: #d2234c;
   }
 
-  /* Enhanced hover effects */
   img {
     max-width: 100%;
     height: auto;
     display: block;
+  }
+
+  /* <enhanced:img> wraps each <img> in a <picture>; let the <img> keep its
+     place in flex/grid layouts as if it were unwrapped */
+  picture {
+    display: contents;
+  }
+
+  /* ...and keep its <source> children from becoming flex/grid items (which would add gaps) */
+  picture > source {
+    display: none;
+  }
+
+  /* Enhanced hover effects */
+  a img,
+  button img {
     transition: transform 800ms cubic-bezier(0.165, 0.84, 0.44, 1),
                 box-shadow 800ms cubic-bezier(0.165, 0.84, 0.44, 1);
-    will-change: transform;
   }
 
   a img:hover,

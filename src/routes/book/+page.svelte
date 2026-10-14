@@ -1,12 +1,6 @@
 <script>
-  import { resolve } from "$app/paths";
   import { onMount } from "svelte";
 
-  const lionKingImage = resolve("/lionking.jpeg");
-  const darkBlobImage = resolve("/darkblob.png");
-  const crosbyCoverImage = resolve("/CrosbyCover.PNG");
-  const preorderImage = resolve("/nowavailable.png");
-  const descriptionImage = resolve("/description.png");
   const mailerLiteAccountId = "2261437";
   const mailerLiteFormId = "QQryIS";
   const mailerLiteScriptUrl = "https://assets.mailerlite.com/js/universal.js";
@@ -46,15 +40,12 @@
 
 <section class="w-full">
   <div class="page-shell">
-    <img
-      src={lionKingImage}
+    <enhanced:img
+      src="$lib/assets/lionking.jpeg"
       alt="Lion King"
-      width="2240"
-      height="1053"
-      sizes="100vw"
+      sizes="(min-width: 1280px) 1100px, 100vw"
       class="w-full h-auto object-contain"
-      decoding="async"
-      loading="lazy"
+      fetchpriority="high"
     />
   </div>
 </section>
@@ -63,22 +54,18 @@
   <div class="page-shell pt-14 pb-10 md:pt-20 md:pb-14">
     <div class="flex w-full flex-col items-center gap-8 lg:flex-row lg:items-center lg:justify-center lg:gap-8">
       <div class="relative w-full max-w-md">
-        <img
-          src={darkBlobImage}
+        <enhanced:img
+          src="$lib/assets/darkblob.png?w=472"
+          sizes="472px"
           alt="Dark blob"
-          width="472"
-          height="367"
-          sizes="(max-width: 768px) 100vw, 472px"
           class="w-full h-auto object-contain"
           decoding="async"
           loading="lazy"
         />
-        <img
-          src={crosbyCoverImage}
+        <enhanced:img
+          src="$lib/assets/crosby-cover.png"
           alt="Crosby's Cosmic Adventure cover"
-          width="1080"
-          height="1350"
-          sizes="(max-width: 768px) 68vw, 330px"
+          width="660"
           class="absolute left-1/2 top-1/2 z-10 w-[74%] h-auto -translate-x-1/2 -translate-y-1/2 -rotate-6 object-contain drop-shadow-[0_14px_24px_rgba(0,0,0,0.35)]"
           decoding="async"
           loading="lazy"
@@ -91,12 +78,10 @@
           rel="noopener noreferrer"
           style="width: 100%; display: block;"
         >
-          <img
-            src={preorderImage}
+          <enhanced:img
+            src="$lib/assets/nowavailable.png?w=496"
+            sizes="496px"
             alt="Now available - shop now"
-            width="545"
-            height="459"
-            sizes="(max-width: 768px) 92vw, 560px"
             class="w-full h-auto cursor-pointer object-contain"
             decoding="async"
             loading="lazy"
@@ -121,11 +106,9 @@
       </a>
     </div>
     <div class="mt-8 flex w-full justify-center md:mt-10">
-      <img
-        src={descriptionImage}
+      <enhanced:img
+        src="$lib/assets/description.png"
         alt="Description"
-        width="1054"
-        height="558"
         sizes="(max-width: 768px) 92vw, 980px"
         class="w-full max-w-5xl h-auto object-contain"
         decoding="async"

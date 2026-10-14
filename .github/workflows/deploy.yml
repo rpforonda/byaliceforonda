@@ -16,6 +16,9 @@ jobs:
         with:
           node-version: 20
       - run: npm ci
+        env:
+          # always use sharp's prebuilt binary (needed by @sveltejs/enhanced-img)
+          SHARP_IGNORE_GLOBAL_LIBVIPS: "1"
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
