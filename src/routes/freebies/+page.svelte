@@ -1,7 +1,7 @@
 <script>
   import { asset } from "$app/paths";
   import { resolve } from "$app/paths";
-  import CosmicDash from "$lib/CosmicDash.svelte";
+  import CosmicDash from "#lib/CosmicDash.svelte";
 
   const crosbyColoringPagePdf = asset('Crosby Coloring Page.pdf');
   const tankColoringPagePdf = asset('Tank Coloring Page.pdf');
