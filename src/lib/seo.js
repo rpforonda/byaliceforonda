@@ -11,7 +11,7 @@ export const OG_IMAGE = {
   alt: "Crosby the crocodile, Carla the capybara and Tank the turtle gazing up at a starry night sky",
 };
 
-export const SHOP_URL = "https://catchupwithalice.myshopify.com/";
+// The book is sold on Amazon (paperback). The Shopify store is closed.
 export const AMAZON_URL = "https://www.amazon.com/dp/B0HFTDNCKW";
 
 export const author = {

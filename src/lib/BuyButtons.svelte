@@ -1,7 +1,7 @@
 <script>
-  import { SHOP_URL, AMAZON_URL } from "#lib/seo.js";
+  import { AMAZON_URL } from "#lib/seo.js";
 
-  // Where to buy the book: the Shopify store (primary) and Amazon.
+  // Where to buy the book: Amazon (paperback). The Shopify store is closed.
   let { class: className = "" } = $props();
 
   const starPath =
@@ -16,22 +16,14 @@
 
 <div class="flex flex-wrap items-center justify-center gap-3 {className}">
   <a
-    href={SHOP_URL}
+    href={AMAZON_URL}
     target="_blank"
     rel="noopener noreferrer"
     class="inline-flex items-center gap-2 rounded-full bg-rose-600 px-8 py-3 text-lg font-black uppercase tracking-widest text-white shadow-lg transition hover:bg-rose-700 active:scale-95"
   >
     {@render star()}
-    buy now
-    {@render star()}
-  </a>
-  <a
-    href={AMAZON_URL}
-    target="_blank"
-    rel="noopener noreferrer"
-    class="inline-flex items-center gap-2 rounded-full border-2 border-[#352f47] bg-white px-7 py-[0.625rem] text-lg font-black uppercase tracking-widest text-[#352f47] shadow-lg transition hover:bg-[#352f47] hover:text-white active:scale-95"
-  >
     buy on amazon
-    <span class="rounded-full bg-[#352f47]/10 px-2 py-0.5 text-[0.65rem] tracking-wider normal-case">paperback</span>
+    {@render star()}
+    <span class="rounded-full bg-white/20 px-2 py-0.5 text-[0.65rem] tracking-wider normal-case">paperback</span>
   </a>
 </div>

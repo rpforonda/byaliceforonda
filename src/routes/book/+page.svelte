@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import Seo from "#lib/Seo.svelte";
   import BuyButtons from "#lib/BuyButtons.svelte";
-  import { author, book } from "#lib/seo.js";
+  import { AMAZON_URL, author, book } from "#lib/seo.js";
 
   const jsonLd = { "@context": "https://schema.org", "@graph": [book, author] };
 
@@ -82,7 +82,7 @@
       </div>
       <div class="w-full max-w-lg">
         <a
-          href="https://catchupwithalice.myshopify.com/"
+          href={AMAZON_URL}
           target="_blank"
           rel="noopener noreferrer"
           style="width: 100%; display: block;"

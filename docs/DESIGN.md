@@ -97,7 +97,7 @@ to the system sans.
 | **Buttons / CTAs**   | Rounded, `rose-600` fill, white text, `rose-700` hover; used for menu and shop CTAs. |
 | **Character cards**  | Carla, Crosby, Tank in the `blue-900` characters section, each with art + a short bio. |
 | **Newsletter popup** | "Join Crosby's Crew" modal on the home page — backdrop, close button, and a MailerLite `<iframe>` (fixed `src`); auto-opens after 5s or at 75% scroll, once per home-page load (dismissal isn't remembered across visits); closable. |
-| **Buy buttons**      | Open `catchupwithalice.myshopify.com` in a new tab with `rel="noopener noreferrer"`. |
+| **Buy button**       | Single "buy on amazon" button opening the Amazon listing in a new tab with `rel="noopener noreferrer"` (the Shopify store is closed). |
 | **Freebie tiles**    | Coloring-page thumbnails linking to printable PDFs in a new tab.         |
 | **Image panels**     | About page composes bio content as full-width illustrated images.        |
 | **Cosmic Dash game** | Canvas endless-runner on the freebies page with a character picker (see §4a). |
