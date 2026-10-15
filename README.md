@@ -125,10 +125,13 @@ Teal Galaxy → Rosy Starfield → Golden Comet Belt).
   auto-pauses on tab-hide (`visibilitychange`) and on blur.
 - **Persistence:** high score only, in `localStorage` (`catchupwithalice-cosmic-dash-hi`),
   guarded by try/catch. No network, no personal data.
-- **Share score:** the game-over screen offers a "share my score" button (Web Share API with a
-  clipboard fallback). The share text is built in the browser from the run's numbers only
-  (score, character, game, site URL) — no name, identifier, or server call, so it collects
-  nothing.
+- **Share score:** the game-over screen offers a "share my score" button that generates a
+  1080×1080 score-card **image** (drawn off-screen on a canvas) and shares it plus a caption via
+  the Web Share API — so it posts properly to Instagram/Facebook, which ignore pre-filled text.
+  Fallbacks: text-only share, or (desktop) saving the card image to post manually. The card and
+  text are built entirely in the browser from the run's numbers (score, character, game, site
+  URL) — no name, identifier, or server call, and the canvas stays untainted (same-origin
+  sprites), so it collects nothing.
 - **Accessibility:** `role="application"` with descriptive label, keyboard-operable, an
   `aria-live` region announcing game-over, and a visible focus outline.
 

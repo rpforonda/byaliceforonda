@@ -130,9 +130,13 @@ an arcade game.
   `prefers-reduced-motion` (acceptable because play is user-initiated and pausable, but worth a
   future toggle).
 - **Share score:** the game-over screen shows the final score and a rose "share my score"
-  button. It uses the Web Share API (OS share sheet) with a clipboard fallback. The share text
-  is built client-side from the run's own numbers only — score, character, game name, and the
-  site URL — with **no name, identifier, or server call**, so sharing adds no privacy surface.
+  button. It draws a 1080×1080 score-card **image** on an off-screen canvas (space gradient +
+  the chosen character sprite + the score in the cover's gold/maroon, footer URL) and shares
+  the image plus a caption via the Web Share API — an image is what Instagram/Facebook actually
+  post, since they ignore pre-filled text. Fallbacks: text-only share, or saving the card on
+  desktop. The card and text are built entirely client-side from the run's own numbers — **no
+  name, identifier, or server call**, same-origin sprites so the canvas isn't tainted — so
+  sharing adds no privacy surface.
 - **Focus/affordances:** a 3px `#d2234c` focus-visible outline on the frame matches the
   site-wide focus treatment; the site's global image-hover zoom is explicitly disabled on the
   character portraits so they don't jostle.

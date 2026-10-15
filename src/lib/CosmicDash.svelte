@@ -450,14 +450,111 @@
     rafId = requestAnimationFrame(tail);
   }
 
-  // Share the score. Privacy-safe by design: the text is built in the browser
-  // from the run's own numbers (no name, device, or identifier), nothing is sent
-  // to any server, and it only runs when the player taps the button. We hand the
-  // text to the OS share sheet (Web Share API) or copy it to the clipboard.
+  // Share the score. Privacy-safe by design: the text and the score-card image are
+  // built in the browser from the run's own numbers (no name, device, or identifier),
+  // nothing is sent to any server, and it only runs when the player taps the button.
+  // We hand them to the OS share sheet (Web Share API). The image is what actually
+  // posts to Instagram/Facebook, which don't accept pre-filled text.
   function shareText() {
     const pts = Math.floor(lastScore).toLocaleString();
     const best = lastIsBest ? " (new best!)" : "";
     return `🚀 I scored ${pts} as ${selected.name} in Crosby's Cosmic Dash!${best}\nPlay at https://catchupwithalice.com/freebies`;
+  }
+
+  // Draw a 1080×1080 share card on an off-screen canvas and return it as a PNG File.
+  // All inputs are local (game numbers + same-origin sprites), so the canvas is never
+  // tainted and nothing leaves the device.
+  function buildScoreCard() {
+    return new Promise((resolve, reject) => {
+      const S = 1080;
+      const cv = document.createElement("canvas");
+      cv.width = S;
+      cv.height = S;
+      const g = cv.getContext("2d");
+      if (!g) return reject(new Error("no 2d context"));
+
+      // deep-space background
+      const grad = g.createLinearGradient(0, 0, 0, S);
+      grad.addColorStop(0, C.skyTop);
+      grad.addColorStop(0.55, C.skyMid);
+      grad.addColorStop(1, C.skyLow);
+      g.fillStyle = grad;
+      g.fillRect(0, 0, S, S);
+
+      // scattered stars
+      for (let i = 0; i < 80; i++) {
+        g.globalAlpha = 0.35 + Math.random() * 0.6;
+        g.fillStyle = "#fff6e3";
+        g.beginPath();
+        g.arc(Math.random() * S, Math.random() * S * 0.85, Math.random() * 2.4 + 0.6, 0, Math.PI * 2);
+        g.fill();
+      }
+      g.globalAlpha = 1;
+      g.textAlign = "center";
+
+      // title
+      g.font = "700 54px Nunito, sans-serif";
+      g.fillStyle = C.text;
+      g.fillText("CROSBY'S COSMIC DASH", S / 2, 135);
+
+      const finish = () => {
+        const pts = Math.floor(lastScore).toLocaleString();
+        // big score with maroon drop shadow in the cover palette
+        g.font = "700 190px Nunito, sans-serif";
+        g.fillStyle = C.titleShadow;
+        g.fillText(pts, S / 2 + 7, 727);
+        g.fillStyle = C.title;
+        g.fillText(pts, S / 2, 720);
+
+        g.font = "700 46px Nunito, sans-serif";
+        g.fillStyle = C.text;
+        g.fillText(`points as ${selected.name}`, S / 2, 795);
+
+        if (lastIsBest) {
+          g.font = "700 40px Nunito, sans-serif";
+          g.fillStyle = C.gold;
+          g.fillText("★ NEW BEST! ★", S / 2, 862);
+        }
+
+        g.font = "700 42px Nunito, sans-serif";
+        g.fillStyle = "rgba(255,246,227,0.85)";
+        g.fillText("catchupwithalice.com", S / 2, S - 72);
+
+        cv.toBlob((blob) => {
+          if (!blob) return reject(new Error("toBlob failed"));
+          resolve(new File([blob], "cosmic-dash-score.png", { type: "image/png" }));
+        }, "image/png");
+      };
+
+      // character sprite (reuse the already-loaded, same-origin game image)
+      const img = images[selectedId];
+      if (img?.complete && img.naturalWidth) {
+        const h = 330;
+        const w = (img.naturalWidth / img.naturalHeight) * h;
+        const top = 175;
+        g.save();
+        if (selected.flip) {
+          g.translate(S / 2 + w / 2, top);
+          g.scale(-1, 1);
+          g.drawImage(img, 0, 0, w, h);
+        } else {
+          g.drawImage(img, S / 2 - w / 2, top, w, h);
+        }
+        g.restore();
+      }
+      finish();
+    });
+  }
+
+  function downloadFile(file) {
+    const url = URL.createObjectURL(file);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = file.name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
   async function shareScore() {
@@ -468,9 +565,24 @@
       shareMsg = msg;
       shareTimer = setTimeout(() => (shareMsg = ""), 2600);
     };
+
+    let file = null;
     try {
-      if (navigator.share) {
+      await document.fonts?.ready; // so the card text uses Nunito, not a fallback
+      file = await buildScoreCard();
+    } catch {
+      file = null; // fall back to text-only sharing
+    }
+
+    try {
+      if (file && navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ files: [file], text });
+      } else if (navigator.share) {
         await navigator.share({ text });
+      } else if (file) {
+        // desktop browsers without Web Share: save the card to post manually
+        downloadFile(file);
+        flash("Saved your score card — post it on Instagram or Facebook!");
       } else if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(text);
         flash("Copied — paste it anywhere!");
@@ -481,8 +593,13 @@
       // AbortError = the player dismissed the share sheet; nothing to report.
       if (err && err.name === "AbortError") return;
       try {
-        await navigator.clipboard.writeText(text);
-        flash("Copied — paste it anywhere!");
+        if (file) {
+          downloadFile(file);
+          flash("Saved your score card — post it on Instagram or Facebook!");
+        } else {
+          await navigator.clipboard.writeText(text);
+          flash("Copied — paste it anywhere!");
+        }
       } catch {
         flash("Couldn't share — long-press to copy your score.");
       }
