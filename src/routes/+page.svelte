@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import Seo from "#lib/Seo.svelte";
   import BuyButtons from "#lib/BuyButtons.svelte";
-  import { SITE_URL, SITE_NAME, author, book } from "#lib/seo.js";
+  import { SITE_URL, SITE_NAME, AMAZON_URL, author, book } from "#lib/seo.js";
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -315,12 +315,12 @@
     </div>
     <div class="mt-6 flex w-full justify-center">
       <a
-        href="https://catchupwithalice.myshopify.com/"
+        href={AMAZON_URL}
         target="_blank"
         rel="noopener noreferrer"
         class="inline-flex items-center gap-2 rounded-xl border-2 border-[#352f47] px-8 py-3 text-sm font-black uppercase tracking-widest text-[#352f47] transition hover:bg-[#352f47] hover:text-white active:scale-95"
       >
-        shop now
+        buy on amazon
       </a>
     </div>
   </div>

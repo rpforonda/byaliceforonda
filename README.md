@@ -7,7 +7,7 @@ fully static marketing site built with SvelteKit and deployed to GitHub Pages at
 There is no backend: no server code, no database, no API, no runtime request handling. Every
 route gets its own HTML file at build time, and everything else (page content, menus,
 animations, the newsletter popup) is rendered in the browser. Purchases and sign-ups happen on
-third-party sites (Shopify, MailerLite), so the site itself collects no personal data.
+third-party sites (Amazon, MailerLite), so the site itself collects no personal data.
 
 > Looking for the visual language — colors, type, components, motion? See
 > [`docs/DESIGN.md`](docs/DESIGN.md).
@@ -75,7 +75,7 @@ src/
     +layout.js          # prerender / csr / ssr flags
     +page.svelte        # home: hero, book promo, newsletter popup, characters
     about/+page.svelte  # author bio (image panels)
-    book/+page.svelte   # book info + buy buttons → Shopify
+    book/+page.svelte   # book info + buy button → Amazon
     freebies/+page.svelte  # coloring-page PDFs + Cosmic Dash game
     shop/+page.svelte   # "coming soon" placeholder (not in nav, noindex)
     sitemap.xml/+server.js  # prerendered sitemap of the public pages
@@ -90,9 +90,10 @@ placeholder.
 
 - **Characters:** Carla, Crosby, and Tank — featured on the home page.
 - **Book purchases:** `src/lib/BuyButtons.svelte` (used on `/book` and the home page) shows a
-  "buy now" button for the Shopify store (`catchupwithalice.myshopify.com`) and a
-  "buy on amazon · paperback" button (`amazon.com/dp/B0HFTDNCKW`), both opening in a new tab. The URLs
-  live in `src/lib/seo.js`; the book's JSON-LD lists the Amazon listing as its paperback edition (`workExample`).
+  single "buy on amazon · paperback" button (`amazon.com/dp/B0HFTDNCKW`) opening in a new tab.
+  The URL lives in `src/lib/seo.js` as `AMAZON_URL`; the book's JSON-LD lists the Amazon listing
+  as its paperback edition (`workExample`). (The Shopify store is closed, so Amazon is the sole
+  retailer.)
 - **Newsletter:** "Join Crosby's Crew" — a MailerLite embedded form shown in a popup
   modal on the home page (`assets.mailerlite.com`, form id `QQryIS`).
 - **Freebies:** three printable coloring-page PDFs (Crosby, Tank, Carla) served from `static/`
