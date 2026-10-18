@@ -3,6 +3,7 @@
   import Seo from "#lib/Seo.svelte";
   import BuyButtons from "#lib/BuyButtons.svelte";
   import { SITE_URL, SITE_NAME, AMAZON_URL, author, book } from "#lib/seo.js";
+  import greenBlobUrl from "#lib/assets/greenblob.png?w=1200&format=webp";
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -327,7 +328,10 @@
 </section>
 
 <section class="relative w-full overflow-hidden bg-[#d7e6ff] pt-6 pb-8 sm:pt-3 sm:pb-10">
-  <div class="page-shell green-blob-mask">
+  <div
+    class="page-shell green-blob-mask"
+    style="--green-blob-url: url({greenBlobUrl})"
+  >
     <enhanced:img
       src="#lib/assets/greenblob.png"
       alt=""
@@ -584,6 +588,32 @@
     margin: 0 auto;
   }
 
+  /* Phone/tablet: the content is taller than the blob's aspect ratio, so
+     object-fit: cover blows the scalloped edges up into tall transparent bands
+     that the heading and buy button fall into. Draw the blob as a 9-slice
+     border-image instead so the scalloped edges stay a fixed size and only
+     the solid middle stretches. */
+  @media (max-width: 1023px) {
+    .green-blob-mask::before {
+      content: "";
+      grid-area: 1 / 1;
+      z-index: 0;
+      border-style: solid;
+      border-color: transparent;
+      border-width: 3rem 1.5rem 2.5rem;
+      border-image: var(--green-blob-url) 16.5% 5.2% 13.5% fill / 3rem 1.5rem
+        2.5rem stretch;
+    }
+
+    .green-blob-bg {
+      display: none;
+    }
+
+    .green-blob-content {
+      padding: 3.25rem 0.75rem 2rem;
+    }
+  }
+
 
   .welcome-content {
     will-change: opacity, transform, max-height;
@@ -679,6 +709,12 @@
 
     .green-blob-col-right img {
       width: 85%;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .green-blob-content {
+      padding: 3.5rem 1.75rem 3rem;
     }
   }
 
