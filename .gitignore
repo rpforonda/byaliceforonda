@@ -8,3 +8,6 @@ vite.config.ts.timestamp-*
 # Claude Code session worktrees
 .claude/
 *.log
+# Rust game engine (cosmic-dash/): cargo output and the generated wasm package
+cosmic-dash/target
+cosmic-dash/pkg

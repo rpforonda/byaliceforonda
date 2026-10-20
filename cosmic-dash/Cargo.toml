@@ -1,0 +1,27 @@
+[package]
+name = "cosmic-dash"
+version = "0.1.0"
+edition = "2024"
+publish = false
+description = "Crosby's Cosmic Dash: the game engine (simulation + canvas drawing), compiled to WebAssembly"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+# Must match the wasm-bindgen CLI version exactly (see the `wasm` script in package.json).
+wasm-bindgen = "=0.2.129"
+js-sys = "0.3"
+web-sys = { version = "0.3", features = [
+  "CanvasGradient",
+  "CanvasRenderingContext2d",
+  "HtmlImageElement",
+  "TextMetrics",
+] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

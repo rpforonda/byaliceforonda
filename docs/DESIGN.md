@@ -104,18 +104,29 @@ to the system sans.
 
 ### 4a. Crosby's Cosmic Dash (game)
 
-A `<canvas>` endless-runner (`src/lib/CosmicDash.svelte`) themed to the book's characters —
+A `<canvas>` endless-runner (engine and in-game palette in `cosmic-dash/src/`, UI in `src/lib/CosmicDash.svelte`) themed to the book's characters —
 the brand's most interactive surface. It is designed to feel like a storybook toy rather than
 an arcade game.
 
 - **Framing:** sits in a rounded, white-bordered "game-frame" over the sky-blue `#d7e6ff`
   background with a soft drop shadow — the same rounded, pastel language as the rest of the site.
-- **Character picker:** pill buttons for Crosby / Carla / Tank, each tinted with its own accent
-  (Crosby `#7dbd55`, Carla `#d68a4c`, Tank `#e8a24a`), the selected pill ringed in that accent;
-  Crosby carries a rose `★` and a "main hero" badge. Disabled while a run is in progress.
-- **Skill card:** under the picker, a white rounded card (bordered in the selected accent) lists
-  the character's role, a 5-star power rating, and their passive + special move. A matching
-  ★ special button sits in a dark `#241d4a` strip under the canvas and pulses gold when charged.
+- **Where it lives:** its own page, `/freebies/cosmic-dash`. `/freebies` promotes it above
+  the coloring pages with a **game card**: the white-bordered rounded frame around a night-sky
+  gradient (`#120f33 → #2b2466 → #4f3a8c`) with a few gold `★` / `✦` sparkles, a small
+  "FREE GAME" kicker in `#ffd28d`, the title in the cover's yellow `#f3d36f` with a maroon
+  `#7c2b28` offset shadow, a one-line pitch, a rose `#d2234c` "play now ▶" pill, and the three
+  sprites standing on a strip of the lavender moon ground. The whole card is one link.
+- **Everything in the canvas:** there's no picker, skill card or help text around the game.
+  The **intro screen is the character select**, drawn on the canvas over the live scene in a
+  translucent `rgba(18,15,51,0.72)` panel: the yellow/maroon title; three friend cards (sprite
+  on a small glow, name, 5 gold power stars) with the chosen one filled and ringed in its
+  accent (Crosby `#7dbd55`, Carla `#d68a4c`, Tank `#e8a24a`) and the others dimmed; the chosen
+  friend's name in gold with their role (and "main hero" for Crosby); gold "Passive · …" and
+  "Special · … (n ★)" labels with the descriptions wrapped beside them; and the controls in
+  `#ffd28d` along the bottom. Hints use touch wording ("tap a friend…") or key names depending
+  on the last input. The crash screen adds an outlined "◀ choose a friend" pill.
+- **Special button:** a ★ button tinted in the chosen friend's accent sits in a dark `#241d4a`
+  strip under the canvas with the star count, and pulses gold when charged.
 - **Characters:** colored sprites (`src/lib/assets/game/`) made by painting the pencil sketches
   in the book-cover palette with the pencil kept on top (multiply), so they read like the
   book's watercolor art.
@@ -138,8 +149,8 @@ an arcade game.
   name, identifier, or server call**, same-origin sprites so the canvas isn't tainted — so
   sharing adds no privacy surface.
 - **Focus/affordances:** a 3px `#d2234c` focus-visible outline on the frame matches the
-  site-wide focus treatment; the site's global image-hover zoom is explicitly disabled on the
-  character portraits so they don't jostle.
+  site-wide focus treatment; the site's global image-hover zoom is disabled on the promo
+  card's sprites so they don't jostle.
 
 ---
 
@@ -200,8 +211,13 @@ Documented so they aren't mistaken for intent:
    `@theme` in `app.css`.
 2. **No CSP** — add a `<meta http-equiv="Content-Security-Policy">` in `app.html` (GitHub
    Pages can't set the header) allowing self and `assets.mailerlite.com` (fonts are now
-   self-hosted, so no font origin is needed).
+   self-hosted, so no font origin is needed). The game's WebAssembly also needs
+   `'wasm-unsafe-eval'` in `script-src`, or the game won't start.
 3. **Text in artwork** — the about letter and book description are images with hidden text
    transcripts; real HTML text styled to match would be better for SEO and accessibility.
 4. **Game & reduced motion** — Cosmic Dash's canvas loop ignores `prefers-reduced-motion`;
    consider a reduced-motion or "pause animations" affordance for motion-sensitive players.
+5. **Game text is drawn, not HTML** — the intro (character descriptions, controls) is painted on
+   the canvas, so it can't be selected, zoomed as text, or read by screen readers directly. The
+   component compensates with a visually hidden controls description and `aria-live`
+   announcements of each character choice; keep those in sync when the intro text changes.

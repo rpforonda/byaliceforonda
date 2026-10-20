@@ -3,7 +3,7 @@ import { SITE_URL } from "#lib/seo.js";
 export const prerender = true;
 
 // Public, indexable pages. /shop is a "coming soon" placeholder (noindex), so it's left out.
-const pages = ["/", "/about", "/book", "/freebies"];
+const pages = ["/", "/about", "/book", "/freebies", "/freebies/cosmic-dash"];
 
 export function GET() {
   const urls = pages
