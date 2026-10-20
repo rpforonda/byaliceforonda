@@ -4,7 +4,10 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
+    "wasm": "cargo build --release --target wasm32-unknown-unknown --manifest-path cosmic-dash/Cargo.toml && wasm-bindgen --target web --no-typescript --out-dir cosmic-dash/pkg cosmic-dash/target/wasm32-unknown-unknown/release/cosmic_dash.wasm",
+    "predev": "npm run wasm",
     "dev": "vite dev",
+    "prebuild": "npm run wasm",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -21,6 +24,7 @@
     "vite": "^8.0.12"
   },
   "imports": {
-    "#lib/*": "./src/lib/*"
+    "#lib/*": "./src/lib/*",
+    "#cosmic-dash": "./cosmic-dash/pkg/cosmic_dash.js"
   }
 }
