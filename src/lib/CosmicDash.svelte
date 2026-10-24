@@ -468,10 +468,10 @@
     ></canvas>
     {#if loadError}
       <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 p-4 text-center" role="alert">
-        <p class="text-sm font-bold text-[#fff6e3]">
+        <p class="max-w-md text-sm font-bold text-[#fff6e3]">
           {loadError === "nowasm"
-            ? "This game needs WebAssembly, which is turned off in this browser."
-            : "Sorry, the game couldn't load."}
+            ? "This browser has WebAssembly turned off, so the game can't run. Allow it for this site in your browser's security settings, or play on another device."
+            : "The game didn't load. Check your connection, then reload the page."}
         </p>
         {#if loadError === "failed"}
           <!-- stopPropagation: the game's key handler would otherwise swallow Space/Enter -->
@@ -486,7 +486,7 @@
         {/if}
       </div>
     {/if}
-    <div class="flex min-h-12 items-center justify-between gap-3 bg-[#241d4a] px-3 py-2">
+    <div class="flex min-h-12 items-center justify-between gap-3 bg-[#241d4a] px-3 py-2" class:hidden={loadError}>
       {#if friend}
         <span class="text-xs font-bold text-[#fff6e3]/80">
           {#if uiActive}
@@ -512,7 +512,7 @@
   {#if uiState === "over" && friend}
     <div class="flex flex-col items-center gap-2">
       <p class="text-sm font-bold text-[#352f47]">
-        You scored {lastScore.toLocaleString()} as {friend.name}{#if lastIsBest} — new best!{/if}
+        You scored {lastScore.toLocaleString()} as {friend.name}{#if lastIsBest}{" — new best!"}{/if}
       </p>
       <button
         type="button"
@@ -529,14 +529,20 @@
        the chosen friend's moves and the controls there and they show here instead (568px is the
        engine's 560px narrow layout plus the frame's border). Wider screens draw them on the
        canvas, and this stays readable to screen readers only. -->
-  <div class="sr-only w-full space-y-2 px-1 text-sm text-[#352f47] @max-[568px]:not-sr-only @max-[568px]:min-h-44">
+  <div
+    class={[
+      "sr-only mx-auto w-full max-w-xl space-y-2 px-1 text-left text-sm text-[#352f47] @max-[568px]:not-sr-only",
+      !loadError && "@max-[568px]:min-h-44",
+    ]}
+  >
     {#if friend}
       <p>
         <span class="font-bold">{friend.name}</span> · {friend.role.toLowerCase()}{#if friend.hero}&nbsp;· main hero{/if}
       </p>
       <p><span class="font-bold">Passive · {friend.passiveName}:</span> {friend.passiveText}</p>
       <p><span class="font-bold">Special · {friend.specialName} ({friend.specialCost} ★):</span> {friend.specialText}</p>
-      <!-- the help text below already describes the controls to screen readers -->
+      <!-- in-run controls (the canvas shows how to start); the help text below already
+           describes the controls to screen readers -->
       <p class="text-xs text-[#4c465f]" aria-hidden="true">{controls}</p>
     {/if}
   </div>

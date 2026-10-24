@@ -574,10 +574,10 @@ impl Game {
         o
     }
 
-    /// How to play, worded for touch or keys. The intro screen draws it, except on narrow
-    /// screens, where the page shows it as text below the game instead.
+    /// The controls during a run, worded for touch or keys. The intro screen draws them, except
+    /// on narrow screens, where the page shows them as text below the game instead.
     pub fn controls(&self) -> String {
-        self.controls_text().into()
+        self.play_controls().into()
     }
 
     // ----- input (`now` is a performance.now() / rAF timestamp in ms) -----

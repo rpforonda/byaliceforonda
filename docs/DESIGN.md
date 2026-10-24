@@ -125,13 +125,17 @@ an arcade game.
   "Special · … (n ★)" labels with the descriptions wrapped beside them; and the controls in
   `#ffd28d` along the bottom. Hints use touch wording ("tap a friend…") or key names depending
   on the last input. The crash screen adds an outlined "◀ choose a friend" pill.
-- **Narrow screens:** below 560 CSS px the 480-unit world is scaled down too far for
-  paragraphs, so the intro keeps only the title, the friend cards (larger names) and a gold
-  "tap a friend to choose · tap again to start" hint, and the page shows the friend's name,
-  role, passive, special and the controls as `text-sm` `#352f47` text below the game. On wide
-  screens that text is visually hidden, for screen readers.
-- **Load failure:** if the engine can't load, the game area says "Sorry, the game couldn't
-  load." with a rose "reload the page" pill, or that WebAssembly is turned off in this browser.
+- **Narrow screens:** below 560 CSS px the 480-unit world is drawn at about 0.6–0.7× scale,
+  so canvas text there is at least 18 units (about 12px on a 375px phone), shrinking only to
+  fit its box. The intro keeps the title, the friend cards and a two-line gold hint ("tap a
+  friend to choose" / "tap again to start"), and the page shows the friend's name, role,
+  passive, special and the in-run controls as left-aligned `text-sm` `#352f47` text below the
+  game. On wide screens that text is visually hidden, for screen readers. The high score is
+  left off the narrow intro (no room beside the title); the in-run HUD shows it.
+- **Load failure:** if the engine can't load, the game area says "The game didn't load. Check
+  your connection, then reload the page." with a rose "reload the page" pill, or that the
+  browser has WebAssembly turned off and how to play anyway. The strip under the game is
+  hidden then.
 - **Special button:** a ★ button tinted in the chosen friend's accent sits in a dark `#241d4a`
   strip under the canvas with the star count, and pulses gold when charged.
 - **Characters:** colored sprites (`src/lib/assets/game/`) made by painting the pencil sketches
