@@ -552,7 +552,7 @@ impl Game {
         self.sel
     }
 
-    /// The chosen character, for the UI around the canvas: `{ id, name, role, accent, flip,
+    /// The chosen character, for the UI around the canvas: `{ id, name, role, hero, accent, flip,
     /// passiveName, passiveText, specialName, specialCost, specialText }`.
     pub fn character(&self) -> Object {
         let c = self.chr();
@@ -563,6 +563,7 @@ impl Game {
         set("id", c.id.into());
         set("name", c.name.into());
         set("role", c.role.into());
+        set("hero", c.hero.into());
         set("accent", c.accent.into());
         set("flip", c.flip.into());
         set("passiveName", c.passive_name.into());
@@ -571,6 +572,12 @@ impl Game {
         set("specialCost", c.special_cost.into());
         set("specialText", c.special_text.into());
         o
+    }
+
+    /// How to play, worded for touch or keys. The intro screen draws it, except on narrow
+    /// screens, where the page shows it as text below the game instead.
+    pub fn controls(&self) -> String {
+        self.controls_text().into()
     }
 
     // ----- input (`now` is a performance.now() / rAF timestamp in ms) -----
@@ -631,8 +638,10 @@ impl Game {
         self.player.held = false;
     }
 
+    /// Crouching only starts during a run, but letting go always counts, so a key released
+    /// while paused can't leave the player stuck crouched (and unable to jump) after resuming.
     pub fn set_duck(&mut self, on: bool) {
-        if self.mode == Mode::Running {
+        if !on || self.mode == Mode::Running {
             self.player.ducking = on;
         }
     }
@@ -659,6 +668,10 @@ impl Game {
     pub fn pause(&mut self) {
         if self.mode == Mode::Running {
             self.mode = Mode::Paused;
+            // Pausing on focus loss or a hidden tab means the key-ups may never arrive, so
+            // drop held input; a key still held after resuming auto-repeats and re-applies it.
+            self.player.ducking = false;
+            self.player.held = false;
             self.draw();
         }
     }

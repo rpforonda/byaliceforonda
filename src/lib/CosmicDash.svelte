@@ -36,6 +36,8 @@
   let uiCharge = $state(0);
   let uiActive = $state(false);
   let announcement = $state("");
+  let controls = $state(""); // how to play, from the engine (shown below the game on narrow screens)
+  let loadError = $state(""); // "nowasm" or "failed" if the engine couldn't load
   // Results shown on the game-over screen.
   let lastScore = $state(0);
   let lastIsBest = $state(false);
@@ -93,6 +95,13 @@
     if (active && !uiActive) announcement = `${friend.specialName}!`;
     uiActive = active;
     uiCharge = game.charge();
+  }
+
+  // The engine words its hints for touch or keys; keep the page's copy of the controls in step.
+  function setTouch(touch) {
+    if (!game) return;
+    game.set_touch(touch);
+    controls = game.controls();
   }
 
   function loop(now) {
@@ -317,7 +326,7 @@
   const PICK_KEYS = { ArrowLeft: -1, KeyA: -1, ArrowRight: 1, KeyD: 1 };
 
   function handleKeyDown(event) {
-    game?.set_touch(false);
+    setTouch(false);
     if (JUMP_KEYS.includes(event.code)) {
       event.preventDefault();
       if (!event.repeat) pressJump();
@@ -352,7 +361,7 @@
     wrapper?.focus({ preventScroll: true });
     touchStartY = event.clientY;
     if (!game) return;
-    game.set_touch(event.pointerType === "touch");
+    setTouch(event.pointerType === "touch");
     // canvas pixels → world units, so the engine can tell which friend or button was tapped
     const rect = canvas.getBoundingClientRect();
     game.tap(((event.clientX - rect.left) * W) / rect.width, ((event.clientY - rect.top) * H) / rect.height, performance.now());
@@ -399,21 +408,28 @@
     document.addEventListener("visibilitychange", onVisibility);
 
     // Fetch and start the engine (its .wasm is only downloaded on the game's page).
-    import("#cosmic-dash").then(async ({ default: init, Game }) => {
-      await init();
-      if (destroyed) return;
-      game = new Game();
-      game.set_hi_score(loadHiScore());
-      game.set_touch(matchMedia("(pointer: coarse)").matches);
-      for (const [id, img] of Object.entries(images)) {
-        if (img.complete) game.set_sprite(id, img);
-        else img.onload = () => game?.set_sprite(id, img);
-      }
-      resize();
-      sync();
-      // Redraw once web fonts are ready so canvas text uses Nunito.
-      document.fonts?.ready.then(() => game?.draw());
-    });
+    import("#cosmic-dash")
+      .then(async ({ default: init, Game }) => {
+        await init();
+        if (destroyed) return;
+        game = new Game();
+        game.set_hi_score(loadHiScore());
+        setTouch(matchMedia("(pointer: coarse)").matches);
+        for (const [id, img] of Object.entries(images)) {
+          if (img.complete) game.set_sprite(id, img);
+          else img.onload = () => game?.set_sprite(id, img);
+        }
+        resize();
+        sync();
+        // Redraw once web fonts are ready so canvas text uses Nunito.
+        document.fonts?.ready.then(() => game?.draw());
+      })
+      .catch((err) => {
+        // WebAssembly turned off, a dropped connection, or an old file gone after a redeploy
+        if (destroyed || game) return;
+        console.error("Cosmic Dash failed to load", err);
+        loadError = typeof WebAssembly === "undefined" ? "nowasm" : "failed";
+      });
 
     return () => {
       destroyed = true;
@@ -427,11 +443,11 @@
   });
 </script>
 
-<div class="flex w-full flex-col items-center gap-4">
+<div class="@container flex w-full flex-col items-center gap-4">
   <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
   <div
     bind:this={wrapper}
-    class="game-frame w-full overflow-hidden rounded-[1.25rem] border-4 border-white bg-[#120f33] shadow-[0_10px_24px_rgba(53,47,71,0.22)]"
+    class="game-frame relative w-full overflow-hidden rounded-[1.25rem] border-4 border-white bg-[#120f33] shadow-[0_10px_24px_rgba(53,47,71,0.22)]"
     tabindex="0"
     role="application"
     aria-label="Crosby's Cosmic Dash game"
@@ -450,6 +466,26 @@
       onpointercancel={handlePointerUp}
       oncontextmenu={(e) => e.preventDefault()}
     ></canvas>
+    {#if loadError}
+      <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 p-4 text-center" role="alert">
+        <p class="text-sm font-bold text-[#fff6e3]">
+          {loadError === "nowasm"
+            ? "This game needs WebAssembly, which is turned off in this browser."
+            : "Sorry, the game couldn't load."}
+        </p>
+        {#if loadError === "failed"}
+          <!-- stopPropagation: the game's key handler would otherwise swallow Space/Enter -->
+          <button
+            type="button"
+            class="share-btn rounded-full px-5 py-2 text-sm font-bold lowercase text-white"
+            onclick={() => location.reload()}
+            onkeydown={(e) => e.stopPropagation()}
+          >
+            reload the page
+          </button>
+        {/if}
+      </div>
+    {/if}
     <div class="flex min-h-12 items-center justify-between gap-3 bg-[#241d4a] px-3 py-2">
       {#if friend}
         <span class="text-xs font-bold text-[#fff6e3]/80">
@@ -488,6 +524,22 @@
       <p class="min-h-[1.1rem] text-xs text-[#4c465f]" aria-live="polite">{shareMsg}</p>
     </div>
   {/if}
+
+  <!-- Scaled down to a phone's width, the canvas is too small for paragraphs, so the engine skips
+       the chosen friend's moves and the controls there and they show here instead (568px is the
+       engine's 560px narrow layout plus the frame's border). Wider screens draw them on the
+       canvas, and this stays readable to screen readers only. -->
+  <div class="sr-only w-full space-y-2 px-1 text-sm text-[#352f47] @max-[568px]:not-sr-only @max-[568px]:min-h-44">
+    {#if friend}
+      <p>
+        <span class="font-bold">{friend.name}</span> · {friend.role.toLowerCase()}{#if friend.hero}&nbsp;· main hero{/if}
+      </p>
+      <p><span class="font-bold">Passive · {friend.passiveName}:</span> {friend.passiveText}</p>
+      <p><span class="font-bold">Special · {friend.specialName} ({friend.specialCost} ★):</span> {friend.specialText}</p>
+      <!-- the help text below already describes the controls to screen readers -->
+      <p class="text-xs text-[#4c465f]" aria-hidden="true">{controls}</p>
+    {/if}
+  </div>
 
   <p id="cosmic-dash-help" class="sr-only">
     Choose Crosby, Carla or Tank with the left and right arrow keys, then press space to start. Up arrow or space to jump,

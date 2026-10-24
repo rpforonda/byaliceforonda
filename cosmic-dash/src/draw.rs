@@ -725,6 +725,15 @@ impl Game {
         Rect { x: cx - cw / 2.0, y: 50.0, w: cw, h: 96.0 }
     }
 
+    /// How to play, worded for touch or keys.
+    pub(crate) fn controls_text(&self) -> &'static str {
+        if self.touch {
+            "tap a friend to choose, tap again to start · tap to jump (hold for higher) · swipe down to duck · ★ button for your special"
+        } else {
+            "← → choose a friend · space to start · ↑ jump (hold for higher) · ↓ duck · X special · P pause"
+        }
+    }
+
     fn draw_intro(&self, ctx: &Ctx) -> Res {
         let w = self.w;
         let narrow = w < 600.0;
@@ -735,7 +744,7 @@ impl Game {
 
         Self::title_text(ctx, "CROSBY'S COSMIC DASH", w / 2.0, 38.0, if narrow { 22.0 } else { 28.0 })?;
         if self.hi_score > 0.0 {
-            ctx.set_font(&font(11.0));
+            ctx.set_font(&font(if narrow { 14.0 } else { 11.0 }));
             ctx.set_text_align("right");
             ctx.set_global_alpha(0.7);
             ctx.set_fill_style_str(C::TEXT);
@@ -745,6 +754,22 @@ impl Game {
 
         for (i, c) in CHARACTERS.iter().enumerate() {
             self.draw_chip(ctx, i, c)?;
+        }
+
+        // Scaled down to a phone's width, paragraphs here would be too small to read, so the
+        // page shows the friend's moves and the controls as text below the game instead.
+        if narrow {
+            let hint = if self.touch { "tap a friend to choose · tap again to start" } else { "← → choose a friend · space to start" };
+            ctx.set_font(&font(17.0));
+            let lines = wrap(ctx, hint, w - 48.0, w - 48.0)?;
+            ctx.set_text_align("center");
+            ctx.set_fill_style_str(C::GOLD);
+            let mut y = 196.0;
+            for line in &lines {
+                ctx.fill_text(line, w / 2.0, y)?;
+                y += 22.0;
+            }
+            return Self::body_text(ctx, "moves and controls are below the game ↓", w / 2.0, y + 8.0, 15.0, 0.75);
         }
 
         // the chosen friend's story and moves
@@ -762,13 +787,8 @@ impl Game {
         Self::labeled_paragraph(ctx, &special, c.special_text, left, y, block_w, size)?;
 
         // controls, anchored to the bottom of the panel
-        let controls = if self.touch {
-            "tap a friend to choose, tap again to start · tap to jump (hold for higher) · swipe down to duck · ★ button for your special"
-        } else {
-            "← → choose a friend · space to start · ↑ jump (hold for higher) · ↓ duck · X special · P pause"
-        };
         ctx.set_font(&font(11.0));
-        let lines = wrap(ctx, controls, w - 48.0, w - 48.0)?;
+        let lines = wrap(ctx, self.controls_text(), w - 48.0, w - 48.0)?;
         ctx.set_text_align("center");
         ctx.set_fill_style_str(C::GOLD);
         let mut y = H - 20.0 - (lines.len() as f64 - 1.0) * 14.0;
@@ -825,7 +845,7 @@ impl Game {
         }
         ctx.set_global_alpha(1.0);
 
-        ctx.set_font(&font(13.0));
+        ctx.set_font(&font(if self.w < 600.0 { 15.0 } else { 13.0 }));
         ctx.set_text_align("center");
         ctx.set_fill_style_str(if chosen { C::TITLE } else { C::TEXT });
         ctx.fill_text(c.name, cx, r.y + 77.0)?;

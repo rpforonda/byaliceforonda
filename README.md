@@ -155,9 +155,9 @@ Teal Galaxy → Rosy Starfield → Golden Comet Belt).
   Canvas 2D, including the intro / character select and the crash screen. Taps are hit-tested
   in the engine (`Game::tap`). The Svelte component owns sprites, keyboard/touch input, the `requestAnimationFrame` loop, `localStorage`,
   aria announcements, and score sharing, and drives the engine through `Game` methods
-  (`press_jump`, `use_special`, `frame`, …). The wasm (~44 KB gzipped) is loaded with a dynamic
+  (`press_jump`, `use_special`, `frame`, …). The wasm (~50 KB gzipped) is loaded with a dynamic
   `import("#cosmic-dash")` in `onMount`, so only the game page downloads it and prerendering
-  never runs it. DPR-aware sizing via `ResizeObserver`; auto-pauses on tab-hide
+  never runs it. If it fails to load, the game area shows a message and a reload button. DPR-aware sizing via `ResizeObserver`; auto-pauses on tab-hide
   (`visibilitychange`) and on blur.
 - **Tuning:** physics and spawn constants, and the `CHARACTERS` table (stats, hitboxes,
   accents, and the role/passive/special text shown on the intro), are at the top of
@@ -173,9 +173,9 @@ Teal Galaxy → Rosy Starfield → Golden Comet Belt).
   URL) — no name, identifier, or server call, and the canvas stays untainted (same-origin
   sprites), so it collects nothing.
 - **Accessibility:** `role="application"` with a visually hidden description of the controls,
-  keyboard-operable (including character select), an `aria-live` region that reads out the
-  chosen friend's role and moves (since they're drawn on the canvas), special moves and
-  game-over, and a visible focus outline.
+  keyboard-operable (including character select), the chosen friend's role and moves as text
+  (shown below the game on narrow screens, visually hidden otherwise), an `aria-live` region
+  that reads out each new choice, special moves and game-over, and a visible focus outline.
 
 ## Images
 
