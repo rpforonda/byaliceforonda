@@ -657,14 +657,24 @@ impl Game {
         ctx.fill_text(text, x, y)
     }
 
-    fn body_text(ctx: &Ctx, text: &str, x: f64, y: f64, size: f64, alpha: f64) -> Res {
+    /// Centered text, shrunk if needed so it fits in `max_w`.
+    fn body_text(ctx: &Ctx, text: &str, x: f64, y: f64, size: f64, alpha: f64, max_w: f64) -> Res {
         ctx.set_font(&font(size));
+        let width = ctx.measure_text(text)?.width();
+        if width > max_w {
+            ctx.set_font(&font((size * max_w / width).floor()));
+        }
         ctx.set_text_align("center");
         ctx.set_global_alpha(alpha);
         ctx.set_fill_style_str(C::TEXT);
         ctx.fill_text(text, x, y)?;
         ctx.set_global_alpha(1.0);
         Ok(())
+    }
+
+    /// Phones draw the world at about 0.6–0.7× scale, so their layout uses a larger size.
+    fn text_size(&self, wide: f64, narrow: f64) -> f64 {
+        if self.w < 600.0 { narrow } else { wide }
     }
 
     fn draw_overlay(&self, ctx: &Ctx) -> Res {
@@ -683,9 +693,9 @@ impl Game {
             Mode::Over => {
                 Self::title_text(ctx, "OH NO!", cx, 90.0, 34.0)?;
                 let msg = format!("{} bumped into {}", self.chr().name, self.bumped_into);
-                Self::body_text(ctx, &msg, cx, 120.0, 15.0, 1.0)?;
+                Self::body_text(ctx, &msg, cx, 120.0, self.text_size(15.0, 18.0), 1.0, pw - 24.0)?;
                 let again = if self.touch { "tap to try again" } else { "space or click to try again" };
-                Self::body_text(ctx, again, cx, 146.0, 13.0, 0.75)?;
+                Self::body_text(ctx, again, cx, 146.0, self.text_size(13.0, 18.0), 0.75, pw - 24.0)?;
                 let b = self.friends_button();
                 ctx.set_fill_style_str("rgba(255,246,227,0.14)");
                 round_rect(ctx, b.x, b.y, b.w, b.h, b.h / 2.0)?;
@@ -694,11 +704,12 @@ impl Game {
                 ctx.set_line_width(1.0);
                 ctx.stroke();
                 let label = if self.touch { "◀ choose a friend" } else { "◀ choose a friend (← →)" };
-                Self::body_text(ctx, label, b.x + b.w / 2.0, b.y + 18.0, 13.0, 1.0)?;
+                let size = self.text_size(13.0, 18.0);
+                Self::body_text(ctx, label, b.x + b.w / 2.0, b.y + b.h / 2.0 + size * 0.35, size, 1.0, b.w - 16.0)?;
             }
             Mode::Paused => {
                 Self::title_text(ctx, "PAUSED", cx, 94.0, 30.0)?;
-                Self::body_text(ctx, "tap or press space to keep going", cx, 124.0, 14.0, 1.0)?;
+                Self::body_text(ctx, "tap or press space to keep going", cx, 124.0, self.text_size(14.0, 18.0), 1.0, pw - 24.0)?;
             }
             Mode::Ready | Mode::Running => {}
         }
@@ -713,8 +724,14 @@ impl Game {
 
     /// The crash screen's "choose a friend" button (also used to hit-test taps).
     pub(crate) fn friends_button(&self) -> Rect {
-        let w = if self.touch { 170.0 } else { 210.0 };
-        Rect { x: self.overlay_center() - w / 2.0, y: 164.0, w, h: 28.0 }
+        let narrow = self.w < 600.0;
+        let w = match (self.touch, narrow) {
+            (true, false) => 170.0,
+            (false, false) => 210.0,
+            (true, true) => 200.0,
+            (false, true) => 250.0,
+        };
+        Rect { x: self.overlay_center() - w / 2.0, y: 164.0, w, h: if narrow { 32.0 } else { 28.0 } }
     }
 
     /// Where friend `i`'s card sits on the intro screen (also used to hit-test taps).
@@ -723,6 +740,20 @@ impl Game {
         let (gap, cw) = if narrow { (124.0, 112.0) } else { (150.0, 128.0) };
         let cx = self.w / 2.0 + (i as f64 - 1.0) * gap;
         Rect { x: cx - cw / 2.0, y: 50.0, w: cw, h: 96.0 }
+    }
+
+    /// How to pick a friend and start, as two short phrases, worded for touch or keys.
+    fn choose_hint(&self) -> [&'static str; 2] {
+        if self.touch { ["tap a friend to choose", "tap again to start"] } else { ["← → choose a friend", "space to start"] }
+    }
+
+    /// The controls during a run, worded for touch or keys.
+    pub(crate) fn play_controls(&self) -> &'static str {
+        if self.touch {
+            "tap to jump (hold for higher) · swipe down to duck · ★ button for your special"
+        } else {
+            "↑ jump (hold for higher) · ↓ duck · X special · P pause"
+        }
     }
 
     fn draw_intro(&self, ctx: &Ctx) -> Res {
@@ -734,7 +765,8 @@ impl Game {
         ctx.set_text_baseline("alphabetic");
 
         Self::title_text(ctx, "CROSBY'S COSMIC DASH", w / 2.0, 38.0, if narrow { 22.0 } else { 28.0 })?;
-        if self.hi_score > 0.0 {
+        // (no room beside the title on phones; the in-run HUD shows it)
+        if self.hi_score > 0.0 && !narrow {
             ctx.set_font(&font(11.0));
             ctx.set_text_align("right");
             ctx.set_global_alpha(0.7);
@@ -745,6 +777,18 @@ impl Game {
 
         for (i, c) in CHARACTERS.iter().enumerate() {
             self.draw_chip(ctx, i, c)?;
+        }
+
+        // Scaled down to a phone's width, paragraphs here would be too small to read, so the
+        // page shows the friend's moves and the controls as text below the game instead.
+        if narrow {
+            ctx.set_font(&font(20.0));
+            ctx.set_text_align("center");
+            ctx.set_fill_style_str(C::GOLD);
+            let [choose, start] = self.choose_hint();
+            ctx.fill_text(choose, w / 2.0, 180.0)?;
+            ctx.fill_text(start, w / 2.0, 205.0)?;
+            return Self::body_text(ctx, "moves and controls are below the game ↓", w / 2.0, 240.0, 18.0, 0.75, w - 48.0);
         }
 
         // the chosen friend's story and moves
@@ -762,13 +806,10 @@ impl Game {
         Self::labeled_paragraph(ctx, &special, c.special_text, left, y, block_w, size)?;
 
         // controls, anchored to the bottom of the panel
-        let controls = if self.touch {
-            "tap a friend to choose, tap again to start · tap to jump (hold for higher) · swipe down to duck · ★ button for your special"
-        } else {
-            "← → choose a friend · space to start · ↑ jump (hold for higher) · ↓ duck · X special · P pause"
-        };
         ctx.set_font(&font(11.0));
-        let lines = wrap(ctx, controls, w - 48.0, w - 48.0)?;
+        let [choose, start] = self.choose_hint();
+        let controls = format!("{choose} · {start} · {}", self.play_controls());
+        let lines = wrap(ctx, &controls, w - 48.0, w - 48.0)?;
         ctx.set_text_align("center");
         ctx.set_fill_style_str(C::GOLD);
         let mut y = H - 20.0 - (lines.len() as f64 - 1.0) * 14.0;
@@ -825,15 +866,16 @@ impl Game {
         }
         ctx.set_global_alpha(1.0);
 
-        ctx.set_font(&font(13.0));
+        let narrow = self.w < 600.0;
+        ctx.set_font(&font(if narrow { 18.0 } else { 13.0 }));
         ctx.set_text_align("center");
         ctx.set_fill_style_str(if chosen { C::TITLE } else { C::TEXT });
-        ctx.fill_text(c.name, cx, r.y + 77.0)?;
+        ctx.fill_text(c.name, cx, r.y + if narrow { 78.0 } else { 77.0 })?;
 
         // power rating, out of 5
         for k in 0..5 {
             let sx = cx + (k as f64 - 2.0) * 10.0;
-            star_path(ctx, sx, r.y + 87.0, 4.0, 0.0);
+            star_path(ctx, sx, r.y + if narrow { 89.0 } else { 87.0 }, 4.0, 0.0);
             if k < c.power {
                 ctx.set_fill_style_str(C::GOLD);
                 ctx.fill();

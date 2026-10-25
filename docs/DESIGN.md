@@ -116,7 +116,7 @@ an arcade game.
   "FREE GAME" kicker in `#ffd28d`, the title in the cover's yellow `#f3d36f` with a maroon
   `#7c2b28` offset shadow, a one-line pitch, a rose `#d2234c` "play now ▶" pill, and the three
   sprites standing on a strip of the lavender moon ground. The whole card is one link.
-- **Everything in the canvas:** there's no picker, skill card or help text around the game.
+- **Everything in the canvas (wide screens):** there's no picker or skill card around the game.
   The **intro screen is the character select**, drawn on the canvas over the live scene in a
   translucent `rgba(18,15,51,0.72)` panel: the yellow/maroon title; three friend cards (sprite
   on a small glow, name, 5 gold power stars) with the chosen one filled and ringed in its
@@ -125,6 +125,17 @@ an arcade game.
   "Special · … (n ★)" labels with the descriptions wrapped beside them; and the controls in
   `#ffd28d` along the bottom. Hints use touch wording ("tap a friend…") or key names depending
   on the last input. The crash screen adds an outlined "◀ choose a friend" pill.
+- **Narrow screens:** below 560 CSS px the 480-unit world is drawn at about 0.6–0.7× scale,
+  so canvas text there is at least 18 units (about 12px on a 375px phone), shrinking only to
+  fit its box. The intro keeps the title, the friend cards and a two-line gold hint ("tap a
+  friend to choose" / "tap again to start"), and the page shows the friend's name, role,
+  passive, special and the in-run controls as left-aligned `text-sm` `#352f47` text below the
+  game. On wide screens that text is visually hidden, for screen readers. The high score is
+  left off the narrow intro (no room beside the title); the in-run HUD shows it.
+- **Load failure:** if the engine can't load, the game area says "The game didn't load. Check
+  your connection, then reload the page." with a rose "reload the page" pill, or that the
+  browser has WebAssembly turned off and how to play anyway. The strip under the game is
+  hidden then.
 - **Special button:** a ★ button tinted in the chosen friend's accent sits in a dark `#241d4a`
   strip under the canvas with the star count, and pulses gold when charged.
 - **Characters:** colored sprites (`src/lib/assets/game/`) made by painting the pencil sketches
@@ -217,7 +228,9 @@ Documented so they aren't mistaken for intent:
    transcripts; real HTML text styled to match would be better for SEO and accessibility.
 4. **Game & reduced motion** — Cosmic Dash's canvas loop ignores `prefers-reduced-motion`;
    consider a reduced-motion or "pause animations" affordance for motion-sensitive players.
-5. **Game text is drawn, not HTML** — the intro (character descriptions, controls) is painted on
-   the canvas, so it can't be selected, zoomed as text, or read by screen readers directly. The
-   component compensates with a visually hidden controls description and `aria-live`
-   announcements of each character choice; keep those in sync when the intro text changes.
+5. **Game text is drawn, not HTML** — on wide screens the intro (character descriptions,
+   controls) is painted on the canvas, so it can't be selected or zoomed as text. The component
+   also renders the chosen friend's details as visually hidden text (visible on narrow screens),
+   taking the controls wording from the engine (`Game::controls`), plus `aria-live`
+   announcements of each character choice. The visually hidden help paragraph is still written
+   separately; keep it in sync when the controls change.
