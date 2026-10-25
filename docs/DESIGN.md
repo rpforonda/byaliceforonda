@@ -138,6 +138,13 @@ an arcade game.
   hidden then.
 - **Special button:** a ★ button tinted in the chosen friend's accent sits in a dark `#241d4a`
   strip under the canvas with the star count, and pulses gold when charged.
+- **Size and full screen:** the game is up to 1024px wide (never narrower than the 768px text
+  column, never taller than the window below the header); phones keep the page margins. A
+  round outlined corner-arrows button left of the special button (and the F key) makes the
+  frame full screen: the canvas is as big as fits above the strip, letterboxed on `#120f33`,
+  and Android phones turn sideways into the wide layout. Leaving full screen pauses a run and
+  scrolls the game back into view. The button is hidden where element full screen isn't
+  available (iPhone Safari).
 - **Characters:** colored sprites (`src/lib/assets/game/`) made by painting the pencil sketches
   in the book-cover palette with the pencil kept on top (multiply), so they read like the
   book's watercolor art.

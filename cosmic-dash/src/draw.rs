@@ -752,7 +752,7 @@ impl Game {
         if self.touch {
             "tap to jump (hold for higher) · swipe down to duck · ★ button for your special"
         } else {
-            "↑ jump (hold for higher) · ↓ duck · X special · P pause"
+            "↑ jump (hold for higher) · ↓ duck · X special · P pause · F full screen"
         }
     }
 
