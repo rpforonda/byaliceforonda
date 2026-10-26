@@ -190,8 +190,6 @@ Motion is deliberate and soft, always gated for accessibility.
 
 - **Page transitions:** View Transitions API (`onNavigate` + `document.startViewTransition`)
   cross-fades routes over 0.5s.
-- **Scroll reveal:** elements with `.scroll-reveal` fade/slide in via an `IntersectionObserver`
-  that adds `.animate-in`; the characters section slides in from the right.
 - **Decorative:** animated "falling stars" in the characters section, driven by per-star CSS
   custom properties (`--size`, `--rotate`, randomized duration/delay).
 - **Hover:** images scale to `1.05` and links/buttons ease color/transform changes, using a
