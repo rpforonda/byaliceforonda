@@ -314,7 +314,7 @@
       </li>
       <li class="hoksi-card p-5">
         <span class="hoksi-step" aria-hidden="true">2</span>
-        <h3 class="mt-3 text-lg font-black lowercase">agree the details</h3>
+        <h3 class="mt-3 text-lg font-black lowercase">agree on the details</h3>
         <p class="mt-1">
           Hoksi Haus replies by email about the design, price and availability. Your order is
           confirmed then; sending the form doesn't reserve a date.
