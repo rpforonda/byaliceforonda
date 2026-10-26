@@ -130,10 +130,16 @@ reached from the card on `/freebies` and links back to it. `/privacy` is linked 
     side) and list it in `src/lib/hoksi/gallery.js` with a title and alt text. A listed photo
     with no matching file fails the build. Until the first photo is listed, the page shows a
     "coming soon" note.
-  - The gallery ("recent work") is a scroll-snap filmstrip carousel. The photos sit side by
-    side at one height, each at its own width, and the list order is the order across. It
-    scrolls natively (swipe, trackpad, keyboard focus), and a few lines of script run the arrow
-    buttons, which jump without animating and grey out at the ends.
+  - The gallery ("recent work") is an endless filmstrip carousel. The photos sit side by side
+    at one height, each at its own width, and drift slowly to the left (30 px/s), looping
+    forever.
+    - It loops by rendering the photos three times in a row. The strip jumps by one set's width
+      whenever it passes the middle set, landing on identical photos.
+    - It pauses while the mouse is over it, while a photo has keyboard focus or is open full
+      size, for 3 s after a touch or after closing a photo, and with its pause button.
+      Visitors who ask for reduced motion start paused.
+    - It's still a native scroll strip, so swiping and the arrow buttons work too. The arrows
+      jump a screenful without animating.
   - Tapping a photo opens it full size in a popover, with no JavaScript. The full-size image is
     lazy, so it only downloads when opened.
   - The page's sections are stacked sheets. Each is at least a screen tall and sticks under

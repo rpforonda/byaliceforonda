@@ -21,21 +21,91 @@
     return { ...banner, image, ratio: image.img.w / image.img.h, id: `banner-${banner.file.replace(/\.[^.]+$/, "")}` };
   });
 
-  // The carousel scrolls natively (swipe, trackpad, keyboard). The arrow buttons jump about a
-  // screenful each way, straight there with no scrolling animation, and grey out at the ends.
-  let track = $state(null);
-  let atStart = $state(true);
-  let atEnd = $state(false);
+  // ---------- Endless carousel ----------
+  // The photos are rendered three times in a row, and the strip is kept within the middle set:
+  // whenever it passes either end of that set it jumps by one set's width, onto identical photos,
+  // so the jump can't be seen. The outer sets are hidden from screen readers and the keyboard;
+  // tapping one of their photos opens the same full-size view.
+  //
+  // It drifts left on its own and pauses while the mouse is over it, while a photo has keyboard
+  // focus, while a full-size photo is open, for a few seconds after a touch or after closing a
+  // photo, and when the pause button is pressed. Visitors who ask for reduced motion start
+  // paused. It's still a native scroll strip, so swiping and the arrow buttons work as before.
+  const sets = [0, 1, 2]; // 1 is the real one
+  const SPEED = 30; // pixels per second, about a photo every 10 seconds
+  const HOLD_MS = 3000;
 
-  // a few pixels of slack: snapping the first or last photo to the center can stop just short
-  function updateEnds() {
-    if (!track) return;
-    atStart = track.scrollLeft < 10;
-    atEnd = track.scrollLeft + track.clientWidth > track.scrollWidth - 10;
+  let track = $state(null);
+  let playing = $state(true);
+  let setWidth = 0;
+  let position = 0; // the strip's scroll position, kept as a fraction between frames
+  let hovering = false;
+  let focused = false;
+  let viewing = false;
+  let holding = false;
+  let holdTimer;
+  let settleTimer;
+
+  function wrap(x) {
+    if (x < setWidth) return x + setWidth;
+    if (x >= 2 * setWidth) return x - setWidth;
+    return x;
   }
 
+  function moveTo(x) {
+    position = wrap(x);
+    track.scrollLeft = position;
+  }
+
+  // set's width from the first photo of one set to the first of the next, keeping the strip at
+  // the same point in the set when the photos change size (a resize changes their height)
+  function measure() {
+    const slides = track.children;
+    const fraction = setWidth ? (position - setWidth) / setWidth : 0;
+    // fractional, unlike offsetLeft, so the wrap lands exactly on the same spot
+    setWidth = slides[banners.length].getBoundingClientRect().left - slides[0].getBoundingClientRect().left;
+    moveTo(setWidth * (1 + fraction));
+  }
+
+  // the arrow buttons jump about a screenful, straight there with no scrolling animation
   function step(direction) {
-    track.scrollBy({ left: direction * track.clientWidth * 0.8, behavior: "instant" });
+    moveTo(position + direction * track.clientWidth * 0.8);
+  }
+
+  // scrolled by hand (swipe, trackpad, wheel): follow it, and wrap once it settles
+  function handleScroll() {
+    if (Math.abs(track.scrollLeft - position) < 2) return; // the drift's own move
+    position = track.scrollLeft;
+    clearTimeout(settleTimer);
+    settleTimer = setTimeout(() => moveTo(track.scrollLeft), 150);
+  }
+
+  function holdBriefly() {
+    holding = true;
+    clearTimeout(holdTimer);
+    holdTimer = setTimeout(() => (holding = false), HOLD_MS);
+  }
+
+  function handlePointer(event) {
+    if (event.pointerType === "mouse") {
+      if (event.type === "pointerenter") hovering = true;
+      if (event.type === "pointerleave") hovering = false;
+    } else if (event.type === "pointerdown") {
+      holding = true;
+      clearTimeout(holdTimer);
+    } else if (event.type === "pointerup" || event.type === "pointercancel") {
+      holdBriefly();
+    }
+  }
+
+  // only keyboard focus: a photo clicked with the mouse keeps focus after the mouse has gone
+  function handleFocus(event) {
+    focused = event.type === "focusin" && event.target.matches(":focus-visible");
+  }
+
+  function photoToggled(event) {
+    viewing = event.newState === "open";
+    if (!viewing) holdBriefly();
   }
 
   // Stacked sections stick under the header (see the CSS). One taller than the screen would
@@ -51,15 +121,30 @@
         const overflow = Math.max(0, section.offsetHeight - (window.innerHeight - header));
         section.style.setProperty("--overflow", `${overflow}px`);
       }
-      updateEnds();
+      if (track) measure();
     };
     const observer = new ResizeObserver(fit);
     for (const section of sections) observer.observe(section);
     window.addEventListener("resize", fit);
     fit();
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) playing = false;
+    let frame;
+    let last;
+    const drift = (now) => {
+      const moving = playing && !hovering && !focused && !viewing && !holding && setWidth > 0;
+      if (moving && last !== undefined) moveTo(position + (SPEED * (now - last)) / 1000);
+      last = now;
+      frame = requestAnimationFrame(drift);
+    };
+    if (track) frame = requestAnimationFrame(drift);
+
     return () => {
       observer.disconnect();
       window.removeEventListener("resize", fit);
+      cancelAnimationFrame(frame);
+      clearTimeout(holdTimer);
+      clearTimeout(settleTimer);
     };
   });
 </script>
@@ -89,57 +174,93 @@
         recent work
       </h2>
       {#if banners.length}
-        <!-- A filmstrip carousel: the photos sit side by side at one height, each at its own
-             width, and snap into place as it scrolls. Tapping one opens it full size in a
-             popover, with no JavaScript. -->
-        <div class="relative mt-6" role="region" aria-roledescription="carousel" aria-labelledby="gallery-heading">
-          <ul bind:this={track} onscroll={updateEnds} class="carousel-track">
-            {#each banners as banner, i (banner.file)}
-              <li class="carousel-slide" aria-roledescription="slide" aria-label="{i + 1} of {banners.length}">
-                <button
-                  type="button"
-                  popovertarget={banner.id}
-                  class="banner-thumb hoksi-card block cursor-zoom-in overflow-hidden"
-                  aria-label="View {banner.title} full size"
-                >
-                  <enhanced:img
-                    src={banner.image}
-                    alt={banner.alt}
-                    sizes="(max-width: 640px) 85vw, {Math.round(440 * banner.ratio)}px"
-                    class="carousel-image"
-                    style="--ratio: {banner.ratio}"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </button>
-
-                <!-- Closed popovers aren't rendered, so the lazy full-size photo only downloads
-                     when it's opened. Esc, a click outside or the close button shuts it. -->
-                <div id={banner.id} popover class="lightbox" role="dialog" aria-label={banner.title}>
-                  <enhanced:img
-                    src={banner.image}
-                    alt={banner.alt}
-                    sizes="94vw"
-                    class="lightbox-image"
-                    style="--ratio: {banner.ratio}"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div class="mt-2 flex justify-end">
-                    <button type="button" popovertarget={banner.id} popovertargetaction="hide" class="hoksi-button py-1.5! text-sm!">
-                      close <span aria-hidden="true">✕</span>
+        <!-- An endless filmstrip: the photos sit side by side at one height, each at its own
+             width, and drift slowly to the left (see the script). Tapping one opens it full size
+             in a popover, with no JavaScript. -->
+        <div
+          class="mt-6"
+          role="region"
+          aria-roledescription="carousel"
+          aria-labelledby="gallery-heading"
+          onpointerenter={handlePointer}
+          onpointerleave={handlePointer}
+          onpointerdown={handlePointer}
+          onpointerup={handlePointer}
+          onpointercancel={handlePointer}
+          onfocusin={handleFocus}
+          onfocusout={handleFocus}
+        >
+          <div class="relative">
+            <ul bind:this={track} onscroll={handleScroll} class="carousel-track">
+              {#each sets as set (set)}
+                {#each banners as banner, i (banner.file)}
+                  {@const real = set === 1}
+                  <li
+                    class="carousel-slide"
+                    aria-hidden={real ? undefined : "true"}
+                    aria-roledescription={real ? "slide" : undefined}
+                    aria-label={real ? `${i + 1} of ${banners.length}` : undefined}
+                  >
+                    <button
+                      type="button"
+                      popovertarget={banner.id}
+                      tabindex={real ? undefined : -1}
+                      class="banner-thumb hoksi-card block cursor-zoom-in overflow-hidden"
+                      aria-label="View {banner.title} full size"
+                    >
+                      <enhanced:img
+                        src={banner.image}
+                        alt={banner.alt}
+                        sizes="(max-width: 640px) 85vw, {Math.round(440 * banner.ratio)}px"
+                        class="carousel-image"
+                        style="--ratio: {banner.ratio}"
+                        loading="lazy"
+                        decoding="async"
+                      />
                     </button>
-                  </div>
-                </div>
-              </li>
-            {/each}
-          </ul>
-          <button type="button" class="carousel-button left-1" onclick={() => step(-1)} disabled={atStart} aria-label="Previous photos">
-            <span aria-hidden="true">‹</span>
-          </button>
-          <button type="button" class="carousel-button right-1" onclick={() => step(1)} disabled={atEnd} aria-label="Next photos">
-            <span aria-hidden="true">›</span>
-          </button>
+
+                    {#if real}
+                      <!-- Closed popovers aren't rendered, so the lazy full-size photo only
+                           downloads when it's opened. Esc, a click outside or the close button
+                           shuts it. -->
+                      <div id={banner.id} popover class="lightbox" role="dialog" aria-label={banner.title} ontoggle={photoToggled}>
+                        <enhanced:img
+                          src={banner.image}
+                          alt={banner.alt}
+                          sizes="94vw"
+                          class="lightbox-image"
+                          style="--ratio: {banner.ratio}"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                        <div class="mt-2 flex justify-end">
+                          <button type="button" popovertarget={banner.id} popovertargetaction="hide" class="hoksi-button py-1.5! text-sm!">
+                            close <span aria-hidden="true">✕</span>
+                          </button>
+                        </div>
+                      </div>
+                    {/if}
+                  </li>
+                {/each}
+              {/each}
+            </ul>
+            <button type="button" class="carousel-button left-1" onclick={() => step(-1)} aria-label="Previous photos">
+              <span aria-hidden="true">‹</span>
+            </button>
+            <button type="button" class="carousel-button right-1" onclick={() => step(1)} aria-label="Next photos">
+              <span aria-hidden="true">›</span>
+            </button>
+          </div>
+          <div class="flex justify-center">
+            <button
+              type="button"
+              class="carousel-toggle"
+              onclick={() => (playing = !playing)}
+              aria-label={playing ? "Pause the photos" : "Play the photos"}
+            >
+              <span aria-hidden="true">{playing ? "❚❚" : "▶"}</span>
+            </button>
+          </div>
         </div>
       {:else}
         <p class="hoksi-card mx-auto mt-6 max-w-md px-6 py-8 text-center">
@@ -322,7 +443,6 @@
     gap: 1rem;
     overflow-x: auto;
     overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
     scrollbar-width: none;
     /* room for the cards' shadows, which the scroller would otherwise clip */
     padding: 0.5rem 0.25rem 1.5rem;
@@ -334,7 +454,6 @@
 
   .carousel-slide {
     flex: none;
-    scroll-snap-align: center;
   }
 
   /* One height for every photo, each keeping its own shape (--ratio is width / height), except
@@ -366,13 +485,22 @@
     box-shadow: 0 6px 14px rgba(60, 31, 8, 0.3);
   }
 
-  .carousel-button:hover {
-    background-color: #5a3214;
+  .carousel-toggle {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 9999px;
+    background-color: #3c1f08;
+    color: #fff6e3;
+    font-size: 0.8rem;
+    line-height: 1;
+    box-shadow: 0 4px 10px rgba(60, 31, 8, 0.3);
   }
 
-  .carousel-button:disabled {
-    opacity: 0.35;
-    cursor: default;
+  .carousel-button:hover,
+  .carousel-toggle:hover {
+    background-color: #5a3214;
   }
 
   /* ---------- Full-size view ----------
