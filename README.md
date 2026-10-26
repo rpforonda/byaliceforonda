@@ -294,9 +294,12 @@ Because the host serves static files only, keep these in mind:
   values (URL, share image, author/book details) in `src/lib/seo.js`.
 - Structured data (JSON-LD): `WebSite` + `Person` + `Book` (with ISBN) on the home page, `Book` on `/book`,
   `ProfilePage` on `/about`.
-- `/about` and `/book` keep their text in artwork, so each image has a screen-reader-only
-  transcript (linked with `aria-describedby`) that crawlers can read. Update the transcript
-  if the artwork changes.
+- `/book` keeps its description in artwork, so the image has a screen-reader-only transcript
+  (linked with `aria-describedby`) that crawlers can read. Update the transcript if the
+  artwork changes.
+- `/about`'s hello letter is real text in `src/routes/about/+page.svelte`, styled to look like
+  the original artwork: Lora on cream paper, with "Hello." and the signature in Ms Madi. Both
+  fonts are self-hosted and load only on that page. Edit the wording there directly.
 - `sitemap.xml` is generated at build time and referenced from `static/robots.txt`. Add new
   public pages to the list in `src/routes/sitemap.xml/+server.js`.
 - `/shop` is `noindex` until it has real content.

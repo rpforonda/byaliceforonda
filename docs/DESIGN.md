@@ -71,6 +71,10 @@ approachable feel (`font-black`, `lowercase`, slight letter-spacing e.g. `tracki
 
 - **Body & UI:** Nunito (400 / 600 / 700)
 - **Secondary:** Poppins 400 (available, used sparingly)
+- **About-page letter only:** Lora 400 and 400 italic (body, with the book title in italic)
+  and Ms Madi 400 (the "Hello." and the signature). They're in deep red `#912d2f` on cream
+  paper `#f2f1e9`, matching the original letter artwork. They're self-hosted like the others
+  but imported only on `/about`.
 
 Fonts are **self-hosted via `@fontsource`** — Nunito (400/600/700) and Poppins (400) are
 imported in `+layout.svelte` and bundled from `node_modules` at build time (served as subset
