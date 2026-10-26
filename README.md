@@ -6,8 +6,9 @@ fully static marketing site built with SvelteKit and deployed to GitHub Pages at
 
 There is no backend: no server code, no database, no API, no runtime request handling. Every
 route gets its own HTML file at build time, and everything else (page content, menus,
-animations, the newsletter popup) is rendered in the browser. Purchases and sign-ups happen on
-third-party sites (Amazon, MailerLite), so the site itself collects no personal data.
+animations, the newsletter popup) is rendered in the browser. Purchases, newsletter sign-ups and
+Hoksi Haus banner requests happen on third-party services (Amazon, MailerLite, Google Forms), so
+the site itself collects no personal data. `/privacy` explains each of them to visitors.
 
 > Looking for the visual language — colors, type, components, motion? See
 > [`docs/DESIGN.md`](docs/DESIGN.md).
@@ -83,8 +84,10 @@ src/
     CosmicDash.svelte   # "Crosby's Cosmic Dash" — UI shell around the Rust game engine
     Seo.svelte          # per-page <head>: title, description, canonical, Open Graph, JSON-LD
     seo.js              # site URL, share image, author + book structured data
+    hoksi/              # Hoksi Haus: sizes, prices, form link (data.js), gallery list (gallery.js), MailLink
     assets/             # all images the pages use (processed at build time)
       game/             # Cosmic Dash character sprites
+      hoksi/            # Hoksi Haus logo; gallery/ holds the banner photos
   routes/
     +layout.svelte      # header, nav, footer, mobile menu, View Transitions
     +layout.js          # prerender / csr / ssr flags
@@ -93,15 +96,17 @@ src/
     book/+page.svelte   # book info + buy button → Amazon
     freebies/+page.svelte  # promoted Cosmic Dash card + coloring-page PDFs
     freebies/cosmic-dash/+page.svelte  # the Cosmic Dash game page
+    hoksi-haus/+page.svelte  # Hoksi Haus banner studio: gallery, sizes & prices, how to order
+    privacy/+page.svelte     # privacy notice (linked from the footer)
     shop/+page.svelte   # "coming soon" placeholder (not in nav, noindex)
     sitemap.xml/+server.js  # prerendered sitemap of the public pages
 static/                 # served as-is: coloring-page PDFs, favicons, og-image.jpg, robots.txt, CNAME, .nojekyll
 .github/workflows/deploy.yml
 ```
 
-Nav exposes **home / about / book / freebies**. The game page, `/freebies/cosmic-dash`, is
-reached from the card on `/freebies` and links back to it. `/shop` exists but is an unlinked
-placeholder.
+Nav exposes **home / about / book / freebies / hoksi haus**. The game page, `/freebies/cosmic-dash`, is
+reached from the card on `/freebies` and links back to it. `/privacy` is linked from the footer.
+`/shop` exists but is an unlinked placeholder.
 
 ## Content & integrations
 
@@ -116,6 +121,17 @@ placeholder.
 - **Freebies:** `/freebies` leads with a promoted card for **Crosby's Cosmic Dash**, a browser
   game at `/freebies/cosmic-dash` (see below), followed by three printable coloring-page PDFs
   (Crosby, Tank, Carla) served from `static/` and linked with `asset()`.
+- **Hoksi Haus:** `/hoksi-haus` is the page for Hoksi Haus, a hand-painted party-banner studio.
+  - Sizes, prices, add-ons, turnaround, the order form link and the contact address live in
+    `src/lib/hoksi/data.js`. Keep them in step with the Google Form's options.
+  - Orders go through a Google Form that's **linked, not embedded**, so a visitor's browser only
+    contacts Google if they open it.
+  - To add a gallery photo, put it in `src/lib/assets/hoksi/gallery/` (about 1600px on the long
+    side) and list it in `src/lib/hoksi/gallery.js` with a title and alt text. A listed photo
+    with no matching file fails the build. Until the first photo is listed, the page shows a
+    "coming soon" note.
+  - The contact address is stored in two parts and only put together in the browser
+    (`src/lib/hoksi/MailLink.svelte`), so it never appears whole in the repo or the HTML.
 - **Social:** Instagram `@byaliceforonda`, TikTok `@catchupwithalice` (footer).
 
 ### Crosby's Cosmic Dash
@@ -252,9 +268,12 @@ This is a static site with a narrow attack surface. No user input reaches the DO
 no `fetch`, no reading of URL params), no `{@html}`, and all external links carry
 `rel="noopener noreferrer"`. The only embedded third party is the MailerLite signup iframe,
 whose `src` is hardcoded. No analytics or trackers are bundled, and **fonts are self-hosted**
-(`@fontsource`, bundled at build) rather than fetched from Google — so no visitor data leaves
-for a third party and the site stays cookieless. The sole hardening gap is the absence of a
-Content-Security-Policy `<meta>` tag (GitHub Pages can't set CSP headers).
+(`@fontsource`, bundled at build) rather than fetched from Google — so apart from the home
+page's MailerLite popup, no visitor data leaves for a third party and the site stays
+cookieless. The Hoksi Haus order form is a link to Google Forms, not an embed. `/privacy`
+describes every data flow (GitHub Pages' IP logging, the game's best score in `localStorage`,
+the newsletter popup, the order form); update it whenever one changes. The sole hardening gap
+is the absence of a Content-Security-Policy `<meta>` tag (GitHub Pages can't set CSP headers).
 
 ## License
 

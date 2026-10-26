@@ -13,7 +13,8 @@
     { href: resolve("/"), label: "home" },
     { href: resolve('about'), label: "about" },
     { href: resolve('book'), label: "book" },
-    { href: resolve('freebies'), label: "freebies" }
+    { href: resolve('freebies'), label: "freebies" },
+    { href: resolve('hoksi-haus'), label: "hoksi haus" }
   ];
 
   let { children } = $props();
@@ -216,7 +217,10 @@
           </a>
         </div>
 
-        <span>© {new Date().getFullYear()} Alice Foronda. All rights reserved. No personal data collected. Purchases happen on retailer sites.</span>
+        <span>
+          © {new Date().getFullYear()} Alice Foronda. All rights reserved. This site sets no cookies and uses no analytics.
+          <a href={resolve('privacy')} class="font-semibold underline underline-offset-2 hover:text-white">Privacy</a>
+        </span>
       </div>
     </div>
   </footer>
