@@ -130,6 +130,23 @@ reached from the card on `/freebies` and links back to it. `/privacy` is linked 
     side) and list it in `src/lib/hoksi/gallery.js` with a title and alt text. A listed photo
     with no matching file fails the build. Until the first photo is listed, the page shows a
     "coming soon" note.
+  - The gallery ("recent work") is a scroll-snap filmstrip carousel. The photos sit side by
+    side at one height, each at its own width, and the list order is the order across. It
+    scrolls natively (swipe, trackpad, keyboard focus), and a few lines of script run the arrow
+    buttons, which jump without animating and grey out at the ends.
+  - Tapping a photo opens it full size in a popover, with no JavaScript. The full-size image is
+    lazy, so it only downloads when opened.
+  - The page's sections are stacked sheets. Each is at least a screen tall and sticks under
+    the header (`position: sticky`) while the next slides up over it, with no animation. A
+    small script measures any sheet taller than the screen and makes it stick higher by the
+    difference, so it scrolls fully into view first. The page switches `<main>` to
+    `overflow-x: clip`, because `hidden` would make sticky stick inside `<main>` instead of the
+    page.
+  - Strip location data from photos before adding them (phone photos carry GPS). For example,
+    `magick in.heic -auto-orient -resize '1600x1600>' +profile '!icc,*' out.jpg` keeps only the
+    color profile.
+  - In `npm run dev`, enhanced-img encodes each image size on request (about 5 s for a large
+    AVIF), so judge gallery speed with `npm run build && npm run preview`.
   - The contact address is stored in two parts and only put together in the browser
     (`src/lib/hoksi/MailLink.svelte`), so it never appears whole in the repo or the HTML.
 - **Social:** Instagram `@byaliceforonda`, TikTok `@catchupwithalice` (footer).

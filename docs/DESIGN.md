@@ -117,7 +117,8 @@ to the system sans.
 | **Freebie tiles**    | Coloring-page thumbnails linking to printable PDFs in a new tab.         |
 | **Image panels**     | About page composes bio content as full-width illustrated images.        |
 | **Cosmic Dash game** | Canvas endless-runner on the freebies page with a character picker (see §4a). |
-| **Hoksi Haus page**  | Logo, a gallery (uncropped photos in 2–3 columns; a "coming soon" card until there are photos), a sizes & prices card, three numbered "how to order" cards and a brown "request a banner" button that opens the Google Form in a new tab. Uses the Hoksi Haus palette (§1). |
+| **Hoksi Haus page**  | Four full-width sheets that stack as you scroll (see §5): the logo, a "recent work" filmstrip carousel (photos side by side at one height, brown round arrow buttons that grey out at the ends; a "coming soon" card until there are photos), a sizes & prices card, and three numbered "how to order" cards with a brown "request a banner" button that opens the Google Form in a new tab. Uses the Hoksi Haus palette (§1). |
+| **Full-size photo**  | Tapping a gallery photo opens it in a popover (no script): a cream card with a brown edge over a dimmed page, sized to fit the screen, with a close button under it. Neither the carousel nor this view shows captions; each photo's title is only in its button label and the popover's accessible name. It closes on Esc, a click outside or the button, and focus returns to the photo. It appears and disappears without animation. |
 | **Privacy page**     | Plain-language notice with lowercase section headings and underlined links; the footer's copyright line links to it. |
 
 ### 4a. Crosby's Cosmic Dash (game)
@@ -196,6 +197,7 @@ Motion is deliberate and soft, always gated for accessibility.
 - **Hover:** images scale to `1.05` and links/buttons ease color/transform changes, using a
   slow `cubic-bezier(0.165, 0.84, 0.44, 1)` (600–800ms) for a gentle feel. The wordmark link
   opts out of the hover scale.
+- **Stacked sheets (`/hoksi-haus`):** each section is a full-width sheet that sticks under the header while the next one slides up over it, with a soft shadow along the incoming sheet's top edge. It's plain `position: sticky` with no animation, so it works on every browser, including iPhone and iPad.
 
 **All of the above respects `prefers-reduced-motion: reduce`**, which collapses animation and
 transition durations to ~0 and disables smooth scroll.
