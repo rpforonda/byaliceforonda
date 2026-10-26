@@ -1,7 +1,9 @@
 <script>
   import Seo from "#lib/Seo.svelte";
   import PageBackdrop from "#lib/PageBackdrop.svelte";
-  import authorPhoto from "#lib/assets/charime.jpeg?enhanced&w=1086;720";
+  // 1086px is all there is of this photo, so it's shown at that size at most (see `natural`),
+  // and encoded at a higher quality so the build adds no artifacts of its own
+  import authorPhoto from "#lib/assets/charime.jpeg?enhanced&w=1086;720&quality=85";
   import { SITE_URL, author } from "#lib/seo.js";
   // the letter's typefaces, self-hosted like the rest of the site and only loaded on this page
   import "@fontsource/lora/400.css";
@@ -25,7 +27,7 @@
 
 <h1 class="sr-only">About Alice Foronda</h1>
 
-<PageBackdrop src={authorPhoto} alt="Author Alice Foronda" />
+<PageBackdrop src={authorPhoto} alt="Author Alice Foronda" natural />
 
 <!-- relative, so it paints over the pinned backdrop; over-backdrop (app.css) starts it low so
      the photo shows first -->

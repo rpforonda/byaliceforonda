@@ -200,3 +200,11 @@ main > section:not(:only-of-type) ~ section {
 .over-backdrop {
   padding-top: calc((100svh - var(--header)) * 0.8);
 }
+
+/* ...except after a natural-size PageBackdrop on phones, which sits in the page above the
+   content instead of behind it */
+@media (max-width: 767px) {
+  .page-backdrop.natural + .over-backdrop {
+    padding-top: 0;
+  }
+}

@@ -129,6 +129,10 @@ page's single content section scrolls over it.
 - The section is `relative`, so it paints above the fixed photo.
 - The section has `.over-backdrop` (app.css), which starts it 80% of the way down the first
   screen, so the photo shows on arrival.
+- `/about` passes `natural`, because its photo is only 1086×724 and looks grainy stretched to
+  fill the screen. It's shown at its own size at most, as a framed print centered below the
+  header. On phones it's too small to pin, so it sits in the page above the letter instead.
+  Swap in a larger original when there is one.
 
 ## Content & integrations
 
