@@ -269,6 +269,36 @@ unwrapped.
 Only put files in `static/` when they need a stable, unhashed URL (PDFs, favicons, CNAME).
 GitHub Pages can't redirect, so renaming or removing anything there breaks existing links.
 
+## Modern CSS and fallbacks
+
+The site uses a few newer CSS features (`progress()` and `text-box` are Baseline 2026). Each
+has a fallback, so older browsers keep the previous look:
+
+- **`progress()` for fluid sizes.** The `fluid-text-*` classes in `app.css` grow text smoothly
+  from a 375px phone to the 1100px page width, instead of jumping at a breakpoint.
+  - Each class is named after the Tailwind sizes it replaces, and sits next to them on the
+    element (`fluid-text-4xl-5xl text-4xl md:text-5xl`). Browsers without `progress()` drop the
+    declaration and use those classes.
+  - Spacing that used `clamp()` with viewport units declares the `clamp()` first and a
+    `progress()` line after it that gives the same result between explicit screen widths.
+  - Don't combine `progress()` and `var()` in one declaration. An older browser would accept it
+    because of the `var()`, let it override the fallback, and then fail to compute it. Put
+    those behind `@supports` instead (see the Hoksi Haus carousel photo height).
+- **`text-box` trimming.** `.trim-text` trims a box's text to its cap height and baseline, so
+  it sits optically centered in buttons, pills and badges. It adds the trimmed
+  `(1lh - 1cap) / 2` back as vertical padding, so the element keeps its size.
+  - Set `--pad-y` to the element's own vertical padding, since this padding replaces it
+    (e.g. `py-2 [--pad-y:0.5rem]`).
+  - Use it on block containers: an inline-block button, or a `<span>` inside a flex button.
+    Text that's a loose part of a flex container isn't trimmed.
+  - It's inside `@supports (text-box: …)`, so older browsers keep the untrimmed text and
+    padding.
+- **`lh` units.** Spacing tied to the text is written in `lh`, with an `em` or `rem` value
+  declared first for older browsers. Examples are the letter's one-line gap between paragraphs
+  and the privacy page's paragraph and list spacing.
+
+The minifier keeps both declarations of each pair; check the built CSS if you change this.
+
 ## Deployment
 
 Pushing to `main` triggers `.github/workflows/deploy.yml`, which installs the Rust wasm

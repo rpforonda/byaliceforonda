@@ -88,6 +88,10 @@ to the system sans.
 - Page titles: `text-4xl`/`text-5xl`, `font-black`, `lowercase`, dark purple `#352f47`.
 - Navigation: `lowercase`, `font-semibold`, `tracking-[0.05em]`.
 - Body copy: `text-base`/`text-lg`, muted `#4c465f`, generous max-width.
+- Sizes that pair a mobile and a desktop size (titles 36→48px, section headings 24→30px, body
+  16→18px) grow smoothly between a 375px phone and the 1100px page width
+  (`fluid-text-*` classes, CSS `progress()`). They fall back to the jump at `md` in browsers
+  without it.
 
 ---
 
@@ -114,7 +118,7 @@ to the system sans.
 | -------------------- | ------------------------------------------------------------------------ |
 | **Header + nav**     | Logo links home; desktop shows inline lowercase nav; mobile shows a rose "Menu" button opening a dropdown. |
 | **Mobile menu**      | Toggled on click; closes on outside click or `Escape` (returns focus to the button); `aria-expanded` / `aria-controls` wired up. |
-| **Buttons / CTAs**   | Rounded, `rose-600` fill, white text, `rose-700` hover; used for menu and shop CTAs. |
+| **Buttons / CTAs**   | Rounded, `rose-600` fill, white text, `rose-700` hover; used for menu and shop CTAs. Button and pill labels are trimmed to cap height and baseline (`.trim-text`, where `text-box` is supported), so they sit optically centered at the same size. |
 | **Character cards**  | Carla, Crosby, Tank in the `blue-900` characters section, each with art + a short bio. |
 | **Newsletter popup** | "Join Crosby's Crew" modal on the home page — backdrop, close button, and a MailerLite `<iframe>` (fixed `src`); auto-opens after 5s or at 75% scroll, once per home-page load (dismissal isn't remembered across visits); closable. |
 | **Buy button**       | Single "buy on amazon" button opening the Amazon listing in a new tab with `rel="noopener noreferrer"` (the Shopify store is closed). |

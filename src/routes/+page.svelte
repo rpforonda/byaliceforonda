@@ -275,7 +275,7 @@
         rel="noopener noreferrer"
         class="inline-flex items-center gap-2 rounded-xl border-2 border-[#352f47] px-8 py-3 text-sm font-black uppercase tracking-widest text-[#352f47] transition hover:bg-[#352f47] hover:text-white active:scale-95"
       >
-        buy on amazon
+        <span class="trim-text">buy on amazon</span>
       </a>
     </div>
   </div>
@@ -318,7 +318,7 @@
             />
             <div class="pointer-events-none absolute inset-0 flex items-center justify-center px-6 sm:px-10">
               <p
-                class="poppins-regular max-w-[34ch] text-center text-black text-[clamp(0.8rem,1.25vw,1.05rem)] leading-[1.35]"
+                class="poppins-regular max-w-[34ch] text-center text-black blob-text leading-[1.35]"
               >
                 Join Crosby, Carla the capybara, and Tank the turtle on an
                 adventure of a lifetime!
@@ -506,6 +506,14 @@
     z-index: 0;
   }
 
+  /* The blob's spacing and text grow with the screen. Each clamp() has a progress() line after it
+     that gives the same result between explicit screen widths; browsers without progress() drop
+     that line and keep the clamp(). */
+  .blob-text {
+    font-size: clamp(0.8rem, 1.25vw, 1.05rem);
+    font-size: calc(0.8rem + 0.25rem * progress(100vw, 1024px, 1344px));
+  }
+
   .green-blob-content {
     grid-area: 1 / 1;
     position: relative;
@@ -517,7 +525,9 @@
     justify-items: center;
     text-align: center;
     gap: clamp(10px, 2.2vw, 18px);
+    gap: calc(10px + 8px * progress(100vw, 455px, 818px));
     padding: clamp(8px, 2.2vw, 16px) 0 0;
+    padding: calc(8px + 8px * progress(100vw, 364px, 727px)) 0 0;
   }
 
   .green-blob-col {
@@ -652,7 +662,9 @@
     .green-blob-content {
       grid-template-columns: 1fr 1fr;
       gap: clamp(8px, 1vw, 16px);
+      gap: calc(8px + 8px * progress(100vw, 800px, 1600px));
       padding: clamp(12px, 3vw, 36px);
+      padding: calc(12px + 24px * progress(100vw, 400px, 1200px));
     }
 
     .green-blob-col-right img {

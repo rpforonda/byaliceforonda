@@ -136,7 +136,7 @@
               aria-label="Toggle navigation menu"
               bind:this={menuButtonRef}
             >
-              Menu
+              <span class="trim-text">Menu</span>
             </button>
             {#if menuOpen}
               <div

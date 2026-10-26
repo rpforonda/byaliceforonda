@@ -17,7 +17,7 @@
   >
     ← all freebies
   </a>
-  <h1 class="mt-4 text-4xl font-black lowercase tracking-[0.04em] text-[#352f47] md:text-5xl">
+  <h1 class="fluid-text-4xl-5xl mt-4 text-4xl font-black lowercase tracking-[0.04em] text-[#352f47] md:text-5xl">
     crosby's cosmic dash
   </h1>
   <p class="mx-auto mt-2 mb-6 max-w-xl text-base text-[#4c465f]">

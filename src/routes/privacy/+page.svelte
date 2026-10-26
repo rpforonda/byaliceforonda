@@ -12,7 +12,7 @@
 
 <section class="page-shell py-12 md:py-16">
   <div class="privacy mx-auto max-w-2xl text-[#4c465f]">
-    <h1 class="text-center text-4xl font-black lowercase tracking-[0.04em] text-[#352f47] md:text-5xl">
+    <h1 class="fluid-text-4xl-5xl text-center text-4xl font-black lowercase tracking-[0.04em] text-[#352f47] md:text-5xl">
       privacy
     </h1>
     <p class="mt-2 text-center text-sm">Last updated October 26, 2026</p>
@@ -94,8 +94,11 @@
 </section>
 
 <style>
+  /* Spacing in lh (a line of the element's own text) follows the line height; each rem value
+     before it is the fallback for browsers without lh. */
   .privacy h2 {
     margin-top: 2.25rem;
+    margin-top: 1lh;
     font-size: 1.5rem;
     font-weight: 900;
     letter-spacing: 0.04em;
@@ -106,6 +109,7 @@
   .privacy p,
   .privacy ul {
     margin-top: 0.75rem;
+    margin-top: 0.5lh;
     line-height: 1.65;
   }
 
@@ -116,6 +120,7 @@
 
   .privacy li + li {
     margin-top: 0.5rem;
+    margin-top: 0.3lh;
   }
 
   .privacy strong {

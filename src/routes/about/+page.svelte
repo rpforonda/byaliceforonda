@@ -96,8 +96,17 @@
     }
   }
 
+  /* The text grows smoothly from 1.0625rem on a phone (375px) to 1.125rem at 1100px. Browsers
+     without progress() drop this and keep the two sizes above. */
+  .letter {
+    font-size: calc(1.0625rem + 0.0625rem * progress(100vw, 375px, 1100px));
+  }
+
+  /* one blank line between paragraphs, like the original letter (1.55em is the same at this
+     line height, for browsers without lh) */
   .letter p + p {
-    margin-top: 1.4em;
+    margin-top: 1.55em;
+    margin-top: 1lh;
   }
 
   .letter-script {

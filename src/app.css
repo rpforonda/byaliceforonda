@@ -208,3 +208,46 @@ main > section:not(:only-of-type) ~ section {
     padding-top: 0;
   }
 }
+
+/* ---------- Fluid type ----------
+   Sizes that used to jump at a breakpoint grow smoothly with the screen instead, from a phone
+   (375px wide) to the widest page (1100px). progress() turns the screen width into a 0–1 value,
+   clamped at both ends. Each class is named after the Tailwind sizes it replaces and sits next to
+   them on the element: browsers without progress() drop the declaration and keep those classes. */
+.fluid-text-sm-base {
+  font-size: calc(0.875rem + 0.125rem * progress(100vw, 375px, 1100px));
+}
+
+.fluid-text-base-lg {
+  font-size: calc(1rem + 0.125rem * progress(100vw, 375px, 1100px));
+}
+
+.fluid-text-lg-xl {
+  font-size: calc(1.125rem + 0.125rem * progress(100vw, 375px, 1100px));
+}
+
+.fluid-text-2xl-3xl {
+  font-size: calc(1.5rem + 0.375rem * progress(100vw, 375px, 1100px));
+}
+
+.fluid-text-3xl-4xl {
+  font-size: calc(1.875rem + 0.375rem * progress(100vw, 375px, 1100px));
+}
+
+.fluid-text-4xl-5xl {
+  font-size: calc(2.25rem + 0.75rem * progress(100vw, 375px, 1100px));
+}
+
+/* ---------- Trimmed text ----------
+   text-box trims a box's text down to its capital letters and baseline, so it can be centered
+   exactly in buttons, pills and badges. The trimmed space, (1lh - 1cap) / 2 above and below, goes
+   back into the vertical padding, so the element keeps its size. Set --pad-y to any vertical
+   padding the element already has: this padding-block replaces it. Use it on block containers
+   (inline-block buttons, or a span inside a flex button), not on loose inline text. Browsers
+   without text-box keep the untrimmed text and the element's own padding. */
+@supports (text-box: trim-both cap alphabetic) {
+  .trim-text {
+    text-box: trim-both cap alphabetic;
+    padding-block: calc(var(--pad-y, 0px) + (1lh - 1cap) / 2);
+  }
+}

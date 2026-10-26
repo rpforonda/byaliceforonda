@@ -145,7 +145,7 @@
     <h1>
       <img src={logo} alt="Hoksi Haus" width="268" height="220" class="h-auto w-48 md:w-60" fetchpriority="high" />
     </h1>
-    <p class="mt-6 max-w-xl text-lg font-semibold md:text-xl">
+    <p class="fluid-text-lg-xl mt-6 max-w-xl text-lg font-semibold md:text-xl">
       Custom hand-painted banners for birthdays, holidays, graduations and every kind of celebration.
     </p>
     <a href="#how-to-order" class="hoksi-button mt-6">how to order</a>
@@ -154,7 +154,7 @@
 
 <section aria-labelledby="gallery-heading" class="text-[#3c1f08]">
   <div class="page-shell py-8">
-    <h2 id="gallery-heading" class="text-center text-2xl font-black lowercase tracking-[0.04em] md:text-3xl">
+    <h2 id="gallery-heading" class="fluid-text-2xl-3xl text-center text-2xl font-black lowercase tracking-[0.04em] md:text-3xl">
       recent work
     </h2>
     {#if banners.length}
@@ -218,7 +218,7 @@
                         decoding="async"
                       />
                       <div class="mt-2 flex justify-end">
-                        <button type="button" popovertarget={banner.id} popovertargetaction="hide" class="hoksi-button py-1.5! text-sm!">
+                        <button type="button" popovertarget={banner.id} popovertargetaction="hide" class="hoksi-button compact">
                           close <span aria-hidden="true">✕</span>
                         </button>
                       </div>
@@ -229,10 +229,10 @@
             {/each}
           </ul>
           <button type="button" class="carousel-button left-1" onclick={() => step(-1)} aria-label="Previous photos">
-            <span aria-hidden="true">‹</span>
+            <span class="trim-text" aria-hidden="true">‹</span>
           </button>
           <button type="button" class="carousel-button right-1" onclick={() => step(1)} aria-label="Next photos">
-            <span aria-hidden="true">›</span>
+            <span class="trim-text" aria-hidden="true">›</span>
           </button>
         </div>
         <div class="flex justify-center">
@@ -242,7 +242,7 @@
             onclick={() => (playing = !playing)}
             aria-label={playing ? "Pause the photos" : "Play the photos"}
           >
-            <span aria-hidden="true">{playing ? "❚❚" : "▶"}</span>
+            <span class="trim-text" aria-hidden="true">{playing ? "❚❚" : "▶"}</span>
           </button>
         </div>
       </div>
@@ -256,7 +256,7 @@
 
 <section aria-labelledby="prices-heading" class="text-[#3c1f08]">
   <div class="page-shell py-8">
-    <h2 id="prices-heading" class="text-center text-2xl font-black lowercase tracking-[0.04em] md:text-3xl">
+    <h2 id="prices-heading" class="fluid-text-2xl-3xl text-center text-2xl font-black lowercase tracking-[0.04em] md:text-3xl">
       sizes &amp; prices
     </h2>
     <div class="hoksi-card mx-auto mt-6 max-w-lg p-5 md:p-6">
@@ -303,17 +303,17 @@
   class="scroll-mt-6 text-[#3c1f08] md:scroll-mt-[156px]"
 >
   <div class="page-shell pt-8 pb-16 md:pb-20">
-    <h2 id="order-heading" class="text-center text-2xl font-black lowercase tracking-[0.04em] md:text-3xl">
+    <h2 id="order-heading" class="fluid-text-2xl-3xl text-center text-2xl font-black lowercase tracking-[0.04em] md:text-3xl">
       how to order
     </h2>
     <ol class="mx-auto mt-6 grid max-w-4xl gap-4 md:grid-cols-3">
       <li class="hoksi-card p-5">
-        <span class="hoksi-step" aria-hidden="true">1</span>
+        <span class="hoksi-step" aria-hidden="true"><span class="trim-text">1</span></span>
         <h3 class="mt-3 text-lg font-black lowercase">send a request</h3>
         <p class="mt-1">Fill in the order form with the date you need it, the size and your design ideas.</p>
       </li>
       <li class="hoksi-card p-5">
-        <span class="hoksi-step" aria-hidden="true">2</span>
+        <span class="hoksi-step" aria-hidden="true"><span class="trim-text">2</span></span>
         <h3 class="mt-3 text-lg font-black lowercase">agree on the details</h3>
         <p class="mt-1">
           Hoksi Haus replies by email about the design, price and availability. Your order is
@@ -321,7 +321,7 @@
         </p>
       </li>
       <li class="hoksi-card p-5">
-        <span class="hoksi-step" aria-hidden="true">3</span>
+        <span class="hoksi-step" aria-hidden="true"><span class="trim-text">3</span></span>
         <h3 class="mt-3 text-lg font-black lowercase">it's painted for you</h3>
         <p class="mt-1">Your banner is painted by hand, with a standard turnaround of {TURNAROUND_DAYS} days.</p>
       </li>
@@ -350,18 +350,33 @@
   }
 
   .hoksi-button {
+    --pad-y: 0.625rem;
     display: inline-block;
     border-radius: 9999px;
     background-color: #3c1f08;
-    padding: 0.625rem 1.5rem;
+    padding: var(--pad-y) 1.5rem;
     font-weight: 700;
     text-transform: lowercase;
     color: #fff6e3;
     box-shadow: 0 6px 14px rgba(60, 31, 8, 0.3);
   }
 
+  .hoksi-button.compact {
+    --pad-y: 0.375rem;
+    padding-inline: 1rem;
+    font-size: 0.875rem;
+  }
+
   .hoksi-button:hover {
     background-color: #5a3214;
+  }
+
+  /* the same trim as .trim-text (app.css), here because this padding would win over it */
+  @supports (text-box: trim-both cap alphabetic) {
+    .hoksi-button {
+      text-box: trim-both cap alphabetic;
+      padding-block: calc(var(--pad-y) + (1lh - 1cap) / 2);
+    }
   }
 
   .hoksi-step {
@@ -403,6 +418,16 @@
     display: block;
     height: min(clamp(260px, 48vh, 440px), calc(85vw / var(--ratio)));
     width: auto;
+  }
+
+  /* The same height with progress(): 260px on screens up to 542px tall, growing to 440px at 917px.
+     It's behind @supports, not just declared second: with a var() in it, an older browser would
+     let it override the clamp() line above and only then find it can't compute it, leaving the
+     photo with no height set at all. */
+  @supports (height: calc(progress(1px, 0px, 2px) * 1px)) {
+    .carousel-track :global(.carousel-image) {
+      height: min(calc(260px + 180px * progress(100vh, 542px, 917px)), calc(85vw / var(--ratio)));
+    }
   }
 
   /* the card clips its corners, so keep the photo button's focus ring inside it */
