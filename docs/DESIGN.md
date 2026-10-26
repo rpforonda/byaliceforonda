@@ -115,7 +115,7 @@ to the system sans.
 | **Newsletter popup** | "Join Crosby's Crew" modal on the home page — backdrop, close button, and a MailerLite `<iframe>` (fixed `src`); auto-opens after 5s or at 75% scroll, once per home-page load (dismissal isn't remembered across visits); closable. |
 | **Buy button**       | Single "buy on amazon" button opening the Amazon listing in a new tab with `rel="noopener noreferrer"` (the Shopify store is closed). |
 | **Freebie tiles**    | Coloring-page thumbnails linking to printable PDFs in a new tab.         |
-| **Image panels**     | About page composes bio content as full-width illustrated images.        |
+| **Page backdrop**    | `/about` and `/book`: the page's photo (Alice; the night-sky illustration) fills the screen below the header and stays put. The content starts 80% of the way down the first screen, so the photo shows on arrival, then scrolls up over it. No tint. |
 | **Cosmic Dash game** | Canvas endless-runner on the freebies page with a character picker (see §4a). |
 | **Hoksi Haus page**  | Four full-width sheets that stack as you scroll (see §5): the logo, an endless "recent work" filmstrip (photos side by side at one height drifting slowly left, brown round arrow buttons at its sides and a small pause/play button below; a "coming soon" card until there are photos), a sizes & prices card, and three numbered "how to order" cards with a brown "request a banner" button that opens the Google Form in a new tab. Uses the Hoksi Haus palette (§1). |
 | **Full-size photo**  | Tapping a gallery photo opens it in a popover (no script): a cream card with a brown edge over a dimmed page, sized to fit the screen, with a close button under it. Neither the carousel nor this view shows captions; each photo's title is only in its button label and the popover's accessible name. It closes on Esc, a click outside or the button, and focus returns to the photo. It appears and disappears without animation. |
@@ -196,7 +196,7 @@ Motion is deliberate and soft, always gated for accessibility.
   slow `cubic-bezier(0.165, 0.84, 0.44, 1)` (600–800ms) for a gentle feel. The wordmark link
   opts out of the hover scale.
 - **Carousel drift (`/hoksi-haus`):** the "recent work" photos drift left at 30 px/s and loop forever. They pause on mouse hover, keyboard focus, touch (resuming 3 s later), an open photo and the pause button, and start paused for visitors who ask for reduced motion.
-- **Stacked sheets (home, about, book, hoksi haus):** on pages with more than one top-level section, each section is a full-width sheet that sticks under the header while the next one slides up over it, with a soft shadow along the incoming sheet's top edge. It's plain `position: sticky` with no animation, so it works in every browser, including iPhone and iPad. Single-section pages are unchanged.
+- **Stacked sheets (home, hoksi haus):** on pages with more than one top-level section, each section is a full-width sheet that sticks under the header while the next one slides up over it, with a soft shadow along the incoming sheet's top edge. It's plain `position: sticky` with no animation, so it works in every browser, including iPhone and iPad. Single-section pages are unchanged.
 
 **All of the above respects `prefers-reduced-motion: reduce`**, which collapses animation and
 transition durations to ~0 and disables smooth scroll.

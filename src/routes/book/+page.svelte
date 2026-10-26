@@ -1,6 +1,8 @@
 <script>
   import Seo from "#lib/Seo.svelte";
   import BuyButtons from "#lib/BuyButtons.svelte";
+  import PageBackdrop from "#lib/PageBackdrop.svelte";
+  import illustration from "#lib/assets/lionking.jpeg?enhanced&w=2240;1600;1080;720";
   import { AMAZON_URL, author, book } from "#lib/seo.js";
 
   const jsonLd = { "@context": "https://schema.org", "@graph": [book, author] };
@@ -15,19 +17,14 @@
 
 <h1 class="sr-only">Crosby's Cosmic Adventure by Alice Foronda</h1>
 
-<section class="w-full">
-  <div class="page-shell">
-    <enhanced:img
-      src="#lib/assets/lionking.jpeg"
-      alt="Crosby, Carla and Tank gazing up at a starry night sky, an illustration from Crosby's Cosmic Adventure"
-      sizes="(min-width: 1280px) 1100px, 100vw"
-      class="w-full h-auto object-contain"
-      fetchpriority="high"
-    />
-  </div>
-</section>
+<PageBackdrop
+  src={illustration}
+  alt="Crosby, Carla and Tank gazing up at a starry night sky, an illustration from Crosby's Cosmic Adventure"
+/>
 
-<section class="w-full min-h-screen">
+<!-- relative, so it paints over the pinned backdrop; over-backdrop (app.css) starts it low so
+     the photo shows first -->
+<section class="over-backdrop relative w-full min-h-screen">
   <div class="page-shell pt-14 pb-10 md:pt-20 md:pb-14">
     <div class="flex w-full flex-col items-center gap-8 lg:flex-row lg:items-center lg:justify-center lg:gap-8">
       <div class="relative w-full max-w-md">

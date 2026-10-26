@@ -194,3 +194,9 @@ main > section:not(:only-of-type) ~ section {
     background-color: #d7e6ff;
   }
 }
+
+/* Content that follows a pinned PageBackdrop (about, book) starts near the bottom of the first
+   screen, so the photo shows on arrival; the content then scrolls up over it. */
+.over-backdrop {
+  padding-top: calc((100svh - var(--header)) * 0.8);
+}

@@ -83,6 +83,7 @@ src/
   lib/
     CosmicDash.svelte   # "Crosby's Cosmic Dash" — UI shell around the Rust game engine
     Seo.svelte          # per-page <head>: title, description, canonical, Open Graph, JSON-LD
+    PageBackdrop.svelte # a photo pinned behind a page (/about, /book) while the content scrolls over it
     seo.js              # site URL, share image, author + book structured data
     hoksi/              # Hoksi Haus: sizes, prices, form link (data.js), gallery list (gallery.js), MailLink
     assets/             # all images the pages use (processed at build time)
@@ -92,8 +93,8 @@ src/
     +layout.svelte      # header, nav, footer, mobile menu, View Transitions
     +layout.js          # prerender / csr / ssr flags
     +page.svelte        # home: hero, book promo, newsletter popup, characters
-    about/+page.svelte  # author bio (image panels)
-    book/+page.svelte   # book info + buy button → Amazon
+    about/+page.svelte  # author bio: the hello letter over a pinned photo of Alice
+    book/+page.svelte   # book info + buy button → Amazon, over the pinned night-sky illustration
     freebies/+page.svelte  # promoted Cosmic Dash card + coloring-page PDFs
     freebies/cosmic-dash/+page.svelte  # the Cosmic Dash game page
     hoksi-haus/+page.svelte  # Hoksi Haus banner studio: gallery, sizes & prices, how to order
@@ -108,19 +109,26 @@ Nav exposes **home / about / book / freebies / hoksi haus**. The game page, `/fr
 reached from the card on `/freebies` and links back to it. `/privacy` is linked from the footer.
 `/shop` exists but is an unlinked placeholder.
 
-**Stacked sections:** on any page with more than one top-level `<section>` (home, about, book,
-hoksi haus), each section is a full-width sheet.
+**Stacked sections:** on any page with more than one top-level `<section>` (home, hoksi haus),
+each section is a full-width sheet.
 - Each sheet is at least a screen tall and sticks under the header (`position: sticky`) while
   the next one slides up over it. Nothing animates. The rules live at the end of `app.css`.
 - A small script in `+layout.svelte` measures any section taller than the screen and makes it
   stick higher by the difference, so it scrolls fully into view first.
 - The last section doesn't stick, so the footer follows it normally. Single-section pages
-  (freebies, the game, privacy, shop) are left as they are.
+  (freebies, the game, privacy, shop, about, book) are left as they are.
 - `<main>` uses `overflow-x: clip`, because `hidden` would make the sections stick inside
   `<main>` instead of the page.
 - To take part, a section must sit directly in `<main>`, span the full width (put `page-shell`
   on a child, not the section), and keep its own `style` attribute free, since the script sets
   `--overflow` there.
+
+**Page backdrops:** `/about` and `/book` show their photo as a pinned background
+(`PageBackdrop.svelte`). The photo fills the screen below the header and stays put while the
+page's single content section scrolls over it.
+- The section is `relative`, so it paints above the fixed photo.
+- The section has `.over-backdrop` (app.css), which starts it 80% of the way down the first
+  screen, so the photo shows on arrival.
 
 ## Content & integrations
 

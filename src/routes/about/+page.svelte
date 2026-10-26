@@ -1,5 +1,7 @@
 <script>
   import Seo from "#lib/Seo.svelte";
+  import PageBackdrop from "#lib/PageBackdrop.svelte";
+  import authorPhoto from "#lib/assets/charime.jpeg?enhanced&w=1086;720";
   import { SITE_URL, author } from "#lib/seo.js";
 
   const jsonLd = {
@@ -19,20 +21,11 @@
 
 <h1 class="sr-only">About Alice Foronda</h1>
 
-<!-- the sections are full width so they stack as full sheets (app.css); page-shell is inside -->
-<section class="flex min-h-[35vh] items-center justify-center py-8 sm:min-h-[45vh] sm:py-12 md:min-h-[50vh] md:py-16">
-  <div class="page-shell flex justify-center">
-    <enhanced:img
-      src="#lib/assets/charime.jpeg"
-      alt="Author Alice Foronda"
-      sizes="(min-width: 960px) 896px, 100vw"
-      class="w-full max-w-4xl h-auto object-contain"
-      fetchpriority="high"
-    />
-  </div>
-</section>
+<PageBackdrop src={authorPhoto} alt="Author Alice Foronda" />
 
-<section class="flex min-h-[35vh] items-center justify-center pt-4 pb-8 sm:min-h-[45vh] sm:pt-6 sm:pb-12 md:min-h-[50vh] md:pt-8 md:pb-16">
+<!-- relative, so it paints over the pinned backdrop; over-backdrop (app.css) starts it low so
+     the photo shows first -->
+<section class="over-backdrop relative flex min-h-[35vh] items-center justify-center pt-4 pb-8 sm:min-h-[45vh] sm:pt-6 sm:pb-12 md:min-h-[50vh] md:pt-8 md:pb-16">
   <div class="page-shell flex justify-center">
     <enhanced:img
       src="#lib/assets/lettermetwo.png?w=616"
