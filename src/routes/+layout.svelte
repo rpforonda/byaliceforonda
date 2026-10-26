@@ -13,7 +13,8 @@
     { href: resolve("/"), label: "home" },
     { href: resolve('about'), label: "about" },
     { href: resolve('book'), label: "book" },
-    { href: resolve('freebies'), label: "freebies" }
+    { href: resolve('freebies'), label: "freebies" },
+    { href: resolve('hoksi-haus'), label: "hoksi haus" }
   ];
 
   let { children } = $props();
@@ -40,6 +41,37 @@
       menuButtonRef?.focus();
     }
   }
+
+  // Stacked sections (app.css): a section taller than the screen would have its bottom covered
+  // before anyone saw it, so it gets --overflow, how much taller it is, and sticks that much
+  // higher. Measured again when a section or the window resizes, and when the page changes.
+  let mainRef = $state(null);
+
+  $effect(() => {
+    if (!mainRef) return;
+    const sections = () => mainRef.querySelectorAll(":scope > section");
+    const fit = () => {
+      const header = parseFloat(getComputedStyle(mainRef).getPropertyValue("--header")) || 0;
+      for (const section of sections()) {
+        const overflow = Math.max(0, section.offsetHeight - (window.innerHeight - header));
+        section.style.setProperty("--overflow", `${overflow}px`);
+      }
+    };
+    const resizes = new ResizeObserver(fit);
+    const observe = () => {
+      resizes.disconnect();
+      for (const section of sections()) resizes.observe(section);
+    };
+    const pageChanges = new MutationObserver(observe);
+    pageChanges.observe(mainRef, { childList: true });
+    window.addEventListener("resize", fit);
+    observe();
+    return () => {
+      resizes.disconnect();
+      pageChanges.disconnect();
+      window.removeEventListener("resize", fit);
+    };
+  });
 
   // View Transitions API for page navigation
   onNavigate((navigation) => {
@@ -104,7 +136,7 @@
               aria-label="Toggle navigation menu"
               bind:this={menuButtonRef}
             >
-              Menu
+              <span class="trim-text">Menu</span>
             </button>
             {#if menuOpen}
               <div
@@ -147,7 +179,9 @@
     </div>
   </header>
 
-  <main id="main-content" class="flex-1 overflow-x-hidden pt-0 pb-0 md:pt-36 lg:pt-40">
+  <!-- overflow-x: clip, not hidden: hidden would make <main> a scroll container, and the stacked
+       sections (app.css) would stick inside it instead of the page -->
+  <main bind:this={mainRef} id="main-content" class="flex-1 overflow-x-clip pt-0 pb-0 md:pt-36 lg:pt-40">
     {@render children?.()}
   </main>
 
@@ -216,7 +250,10 @@
           </a>
         </div>
 
-        <span>© {new Date().getFullYear()} Alice Foronda. All rights reserved. No personal data collected. Purchases happen on retailer sites.</span>
+        <span>
+          © {new Date().getFullYear()} Alice Foronda. All rights reserved. This site sets no cookies and uses no analytics.
+          <a href={resolve('privacy')} class="font-semibold underline underline-offset-2 hover:text-white">Privacy</a>
+        </span>
       </div>
     </div>
   </footer>

@@ -6,8 +6,9 @@ fully static marketing site built with SvelteKit and deployed to GitHub Pages at
 
 There is no backend: no server code, no database, no API, no runtime request handling. Every
 route gets its own HTML file at build time, and everything else (page content, menus,
-animations, the newsletter popup) is rendered in the browser. Purchases and sign-ups happen on
-third-party sites (Amazon, MailerLite), so the site itself collects no personal data.
+animations, the newsletter popup) is rendered in the browser. Purchases, newsletter sign-ups and
+Hoksi Haus banner requests happen on third-party services (Amazon, MailerLite, Google Forms), so
+the site itself collects no personal data. `/privacy` explains each of them to visitors.
 
 > Looking for the visual language — colors, type, components, motion? See
 > [`docs/DESIGN.md`](docs/DESIGN.md).
@@ -82,26 +83,56 @@ src/
   lib/
     CosmicDash.svelte   # "Crosby's Cosmic Dash" — UI shell around the Rust game engine
     Seo.svelte          # per-page <head>: title, description, canonical, Open Graph, JSON-LD
+    PageBackdrop.svelte # a photo pinned behind a page (/about, /book) while the content scrolls over it
     seo.js              # site URL, share image, author + book structured data
+    hoksi/              # Hoksi Haus: sizes, prices, form link (data.js), gallery list (gallery.js), MailLink
     assets/             # all images the pages use (processed at build time)
       game/             # Cosmic Dash character sprites
+      hoksi/            # Hoksi Haus logo; gallery/ holds the banner photos
   routes/
     +layout.svelte      # header, nav, footer, mobile menu, View Transitions
     +layout.js          # prerender / csr / ssr flags
     +page.svelte        # home: hero, book promo, newsletter popup, characters
-    about/+page.svelte  # author bio (image panels)
-    book/+page.svelte   # book info + buy button → Amazon
+    about/+page.svelte  # author bio: the hello letter over a pinned photo of Alice
+    book/+page.svelte   # book info + buy button → Amazon, over the pinned night-sky illustration
     freebies/+page.svelte  # promoted Cosmic Dash card + coloring-page PDFs
     freebies/cosmic-dash/+page.svelte  # the Cosmic Dash game page
+    hoksi-haus/+page.svelte  # Hoksi Haus banner studio: gallery, sizes & prices, how to order
+    privacy/+page.svelte     # privacy notice (linked from the footer)
     shop/+page.svelte   # "coming soon" placeholder (not in nav, noindex)
     sitemap.xml/+server.js  # prerendered sitemap of the public pages
 static/                 # served as-is: coloring-page PDFs, favicons, og-image.jpg, robots.txt, CNAME, .nojekyll
 .github/workflows/deploy.yml
 ```
 
-Nav exposes **home / about / book / freebies**. The game page, `/freebies/cosmic-dash`, is
-reached from the card on `/freebies` and links back to it. `/shop` exists but is an unlinked
-placeholder.
+Nav exposes **home / about / book / freebies / hoksi haus**. The game page, `/freebies/cosmic-dash`, is
+reached from the card on `/freebies` and links back to it. `/privacy` is linked from the footer.
+`/shop` exists but is an unlinked placeholder.
+
+**Stacked sections:** on any page with more than one top-level `<section>` (home, hoksi haus),
+each section is a full-width sheet.
+- Each sheet is at least a screen tall and sticks under the header (`position: sticky`) while
+  the next one slides up over it. Nothing animates. The rules live at the end of `app.css`.
+- A small script in `+layout.svelte` measures any section taller than the screen and makes it
+  stick higher by the difference, so it scrolls fully into view first.
+- The last section doesn't stick, so the footer follows it normally. Single-section pages
+  (freebies, the game, privacy, shop, about, book) are left as they are.
+- `<main>` uses `overflow-x: clip`, because `hidden` would make the sections stick inside
+  `<main>` instead of the page.
+- To take part, a section must sit directly in `<main>`, span the full width (put `page-shell`
+  on a child, not the section), and keep its own `style` attribute free, since the script sets
+  `--overflow` there.
+
+**Page backdrops:** `/about` and `/book` show their photo as a pinned background
+(`PageBackdrop.svelte`). The photo fills the screen below the header and stays put while the
+page's single content section scrolls over it.
+- The section is `relative`, so it paints above the fixed photo.
+- The section has `.over-backdrop` (app.css), which starts it 80% of the way down the first
+  screen, so the photo shows on arrival.
+- `/about` passes `natural`, because its photo is only 1086×724 and looks grainy stretched to
+  fill the screen. It's shown at its own size at most, as a framed print centered below the
+  header. On phones it's too small to pin, so it sits in the page above the letter instead.
+  Swap in a larger original when there is one.
 
 ## Content & integrations
 
@@ -116,6 +147,34 @@ placeholder.
 - **Freebies:** `/freebies` leads with a promoted card for **Crosby's Cosmic Dash**, a browser
   game at `/freebies/cosmic-dash` (see below), followed by three printable coloring-page PDFs
   (Crosby, Tank, Carla) served from `static/` and linked with `asset()`.
+- **Hoksi Haus:** `/hoksi-haus` is the page for Hoksi Haus, a hand-painted party-banner studio.
+  - Sizes, prices, add-ons, turnaround, the order form link and the contact address live in
+    `src/lib/hoksi/data.js`. Keep them in step with the Google Form's options.
+  - Orders go through a Google Form that's **linked, not embedded**, so a visitor's browser only
+    contacts Google if they open it.
+  - To add a gallery photo, put it in `src/lib/assets/hoksi/gallery/` (about 1600px on the long
+    side) and list it in `src/lib/hoksi/gallery.js` with a title and alt text. A listed photo
+    with no matching file fails the build. Until the first photo is listed, the page shows a
+    "coming soon" note.
+  - The gallery ("recent work") is an endless filmstrip carousel. The photos sit side by side
+    at one height, each at its own width, and drift slowly to the left (30 px/s), looping
+    forever.
+    - It loops by rendering the photos three times in a row. The strip jumps by one set's width
+      whenever it passes the middle set, landing on identical photos.
+    - It pauses while the mouse is over it, while a photo has keyboard focus or is open full
+      size, for 3 s after a touch or after closing a photo, and with its pause button.
+      Visitors who ask for reduced motion start paused.
+    - It's still a native scroll strip, so swiping and the arrow buttons work too. The arrows
+      jump a screenful without animating.
+  - Tapping a photo opens it full size in a popover, with no JavaScript. The full-size image is
+    lazy, so it only downloads when opened.
+  - Strip location data from photos before adding them (phone photos carry GPS). For example,
+    `magick in.heic -auto-orient -resize '1600x1600>' +profile '!icc,*' out.jpg` keeps only the
+    color profile.
+  - In `npm run dev`, enhanced-img encodes each image size on request (about 5 s for a large
+    AVIF), so judge gallery speed with `npm run build && npm run preview`.
+  - The contact address is stored in two parts and only put together in the browser
+    (`src/lib/hoksi/MailLink.svelte`), so it never appears whole in the repo or the HTML.
 - **Social:** Instagram `@byaliceforonda`, TikTok `@catchupwithalice` (footer).
 
 ### Crosby's Cosmic Dash
@@ -213,6 +272,36 @@ unwrapped.
 Only put files in `static/` when they need a stable, unhashed URL (PDFs, favicons, CNAME).
 GitHub Pages can't redirect, so renaming or removing anything there breaks existing links.
 
+## Modern CSS and fallbacks
+
+The site uses a few newer CSS features (`progress()` and `text-box` are Baseline 2026). Each
+has a fallback, so older browsers keep the previous look:
+
+- **`progress()` for fluid sizes.** The `fluid-text-*` classes in `app.css` grow text smoothly
+  from a 375px phone to the 1100px page width, instead of jumping at a breakpoint.
+  - Each class is named after the Tailwind sizes it replaces, and sits next to them on the
+    element (`fluid-text-4xl-5xl text-4xl md:text-5xl`). Browsers without `progress()` drop the
+    declaration and use those classes.
+  - Spacing that used `clamp()` with viewport units declares the `clamp()` first and a
+    `progress()` line after it that gives the same result between explicit screen widths.
+  - Don't combine `progress()` and `var()` in one declaration. An older browser would accept it
+    because of the `var()`, let it override the fallback, and then fail to compute it. Put
+    those behind `@supports` instead (see the Hoksi Haus carousel photo height).
+- **`text-box` trimming.** `.trim-text` trims a box's text to its cap height and baseline, so
+  it sits optically centered in buttons, pills and badges. It adds the trimmed
+  `(1lh - 1cap) / 2` back as vertical padding, so the element keeps its size.
+  - Set `--pad-y` to the element's own vertical padding, since this padding replaces it
+    (e.g. `py-2 [--pad-y:0.5rem]`).
+  - Use it on block containers: an inline-block button, or a `<span>` inside a flex button.
+    Text that's a loose part of a flex container isn't trimmed.
+  - It's inside `@supports (text-box: …)`, so older browsers keep the untrimmed text and
+    padding.
+- **`lh` units.** Spacing tied to the text is written in `lh`, with an `em` or `rem` value
+  declared first for older browsers. Examples are the letter's one-line gap between paragraphs
+  and the privacy page's paragraph and list spacing.
+
+The minifier keeps both declarations of each pair; check the built CSS if you change this.
+
 ## Deployment
 
 Pushing to `main` triggers `.github/workflows/deploy.yml`, which installs the Rust wasm
@@ -242,9 +331,12 @@ Because the host serves static files only, keep these in mind:
   values (URL, share image, author/book details) in `src/lib/seo.js`.
 - Structured data (JSON-LD): `WebSite` + `Person` + `Book` (with ISBN) on the home page, `Book` on `/book`,
   `ProfilePage` on `/about`.
-- `/about` and `/book` keep their text in artwork, so each image has a screen-reader-only
-  transcript (linked with `aria-describedby`) that crawlers can read. Update the transcript
-  if the artwork changes.
+- `/book` keeps its description in artwork, so the image has a screen-reader-only transcript
+  (linked with `aria-describedby`) that crawlers can read. Update the transcript if the
+  artwork changes.
+- `/about`'s hello letter is real text in `src/routes/about/+page.svelte`, styled to look like
+  the original artwork: Lora on cream paper, with "Hello." and the signature in Ms Madi. Both
+  fonts are self-hosted and load only on that page. Edit the wording there directly.
 - `sitemap.xml` is generated at build time and referenced from `static/robots.txt`. Add new
   public pages to the list in `src/routes/sitemap.xml/+server.js`.
 - `/shop` is `noindex` until it has real content.
@@ -255,9 +347,12 @@ This is a static site with a narrow attack surface. No user input reaches the DO
 no `fetch`, no reading of URL params), no `{@html}`, and all external links carry
 `rel="noopener noreferrer"`. The only embedded third party is the MailerLite signup iframe,
 whose `src` is hardcoded. No analytics or trackers are bundled, and **fonts are self-hosted**
-(`@fontsource`, bundled at build) rather than fetched from Google — so no visitor data leaves
-for a third party and the site stays cookieless. The sole hardening gap is the absence of a
-Content-Security-Policy `<meta>` tag (GitHub Pages can't set CSP headers).
+(`@fontsource`, bundled at build) rather than fetched from Google — so apart from the home
+page's MailerLite popup, no visitor data leaves for a third party and the site stays
+cookieless. The Hoksi Haus order form is a link to Google Forms, not an embed. `/privacy`
+describes every data flow (GitHub Pages' IP logging, the game's best score in `localStorage`,
+the newsletter popup, the order form); update it whenever one changes. The sole hardening gap
+is the absence of a Content-Security-Policy `<meta>` tag (GitHub Pages can't set CSP headers).
 
 ## License
 

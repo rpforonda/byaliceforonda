@@ -151,3 +151,103 @@
     width: min(100% - 4rem, 68.75rem);
   }
 }
+
+/* ---------- Stacked sections ----------
+   On pages with more than one top-level section, each section is a full-width sheet at least a
+   screen tall that sticks under the header while the next one slides up over it, like paper laid
+   on a pile. Nothing animates: it's plain sticky positioning, so it works in every browser.
+   --header is how much of the screen the fixed header covers (none on phones, where it scrolls
+   away). +layout.svelte sets --overflow on sections taller than the screen, so they stick that
+   much higher and scroll fully into view first. The last section doesn't stick, so the footer
+   follows it normally, and pages with a single section are left as they are.
+   These rules are unlayered so they win over utilities like `relative` and `min-h-screen` on the
+   sections; the background is in the base layer, so a section's own bg-* class wins over it. */
+main {
+  --header: 0px;
+}
+
+@media (min-width: 768px) {
+  main {
+    --header: 156px;
+  }
+}
+
+main > section:not(:only-of-type) {
+  /* positioned like the sticky ones, so the last section still paints over the pile */
+  position: relative;
+  min-height: calc(100svh - var(--header));
+  align-content: center;
+}
+
+main > section:not(:only-of-type):not(:last-of-type) {
+  position: sticky;
+  top: calc(var(--header) - var(--overflow, 0px));
+}
+
+/* a soft shadow along each sheet's top edge, cast onto the sheet it covers */
+main > section:not(:only-of-type) ~ section {
+  box-shadow: 0 -12px 28px rgba(53, 47, 71, 0.14);
+}
+
+@layer base {
+  main > section:not(:only-of-type) {
+    background-color: #d7e6ff;
+  }
+}
+
+/* Content that follows a pinned PageBackdrop (about, book) starts near the bottom of the first
+   screen, so the photo shows on arrival; the content then scrolls up over it. */
+.over-backdrop {
+  padding-top: calc((100svh - var(--header)) * 0.8);
+}
+
+/* ...except after a natural-size PageBackdrop on phones, which sits in the page above the
+   content instead of behind it */
+@media (max-width: 767px) {
+  .page-backdrop.natural + .over-backdrop {
+    padding-top: 0;
+  }
+}
+
+/* ---------- Fluid type ----------
+   Sizes that used to jump at a breakpoint grow smoothly with the screen instead, from a phone
+   (375px wide) to the widest page (1100px). progress() turns the screen width into a 0–1 value,
+   clamped at both ends. Each class is named after the Tailwind sizes it replaces and sits next to
+   them on the element: browsers without progress() drop the declaration and keep those classes. */
+.fluid-text-sm-base {
+  font-size: calc(0.875rem + 0.125rem * progress(100vw, 375px, 1100px));
+}
+
+.fluid-text-base-lg {
+  font-size: calc(1rem + 0.125rem * progress(100vw, 375px, 1100px));
+}
+
+.fluid-text-lg-xl {
+  font-size: calc(1.125rem + 0.125rem * progress(100vw, 375px, 1100px));
+}
+
+.fluid-text-2xl-3xl {
+  font-size: calc(1.5rem + 0.375rem * progress(100vw, 375px, 1100px));
+}
+
+.fluid-text-3xl-4xl {
+  font-size: calc(1.875rem + 0.375rem * progress(100vw, 375px, 1100px));
+}
+
+.fluid-text-4xl-5xl {
+  font-size: calc(2.25rem + 0.75rem * progress(100vw, 375px, 1100px));
+}
+
+/* ---------- Trimmed text ----------
+   text-box trims a box's text down to its capital letters and baseline, so it can be centered
+   exactly in buttons, pills and badges. The trimmed space, (1lh - 1cap) / 2 above and below, goes
+   back into the vertical padding, so the element keeps its size. Set --pad-y to any vertical
+   padding the element already has: this padding-block replaces it. Use it on block containers
+   (inline-block buttons, or a span inside a flex button), not on loose inline text. Browsers
+   without text-box keep the untrimmed text and the element's own padding. */
+@supports (text-box: trim-both cap alphabetic) {
+  .trim-text {
+    text-box: trim-both cap alphabetic;
+    padding-block: calc(var(--pad-y, 0px) + (1lh - 1cap) / 2);
+  }
+}

@@ -150,8 +150,6 @@
     },
   ];
 
-  // Track scroll state for welcome and logo visibility
-  let showWelcome = $state(true);
   let isMailerLiteOpen = $state(false);
   let mailerLiteFrameSrc = $state("");
   let mailerLiteAutoOpened = false;
@@ -195,19 +193,7 @@
     };
   });
 
-  // Handle scroll to hide welcome and logo
-  $effect(() => {
-    if (typeof window === 'undefined') return;
-
-    const handleScroll = () => {
-      showWelcome = window.scrollY <= 50;
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  });
-
-  // Scroll-triggered animations - repeatable on every scroll
+  // Newsletter popup: sizes its frame, and opens it after 5 s or at 75% scroll
   onMount(() => {
     updateMailerLiteFrameSrc();
 
@@ -240,35 +226,8 @@
     window.addEventListener("scroll", handlePopupScroll, { passive: true });
     window.addEventListener("keydown", handlePopupKeyDown);
 
-    // Small delay to ensure layout is complete
-    let observer;
-    const revealTimer = window.setTimeout(() => {
-      observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('animate-in');
-            } else {
-              entry.target.classList.remove('animate-in');
-            }
-          });
-        },
-        {
-          threshold: 0.05,
-          rootMargin: '0% 0% -12% 0%',
-        }
-      );
-
-      const elements = document.querySelectorAll('.scroll-reveal');
-      elements.forEach((el) => {
-        observer.observe(el);
-      });
-    }, 150);
-
     return () => {
       window.clearTimeout(autoPopupTimeout);
-      window.clearTimeout(revealTimer);
-      observer?.disconnect();
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("scroll", handlePopupScroll);
       window.removeEventListener("keydown", handlePopupKeyDown);
@@ -288,8 +247,8 @@
   class="relative w-full overflow-hidden bg-[#d7e6ff]"
 >
   <h1 class="sr-only">Crosby's Cosmic Adventure, a children's picture book by Alice Foronda</h1>
-  <div class="page-shell relative z-10 transition-all duration-700 ease-out" style={showWelcome ? 'padding-top: 4rem; padding-bottom: 2.5rem;' : 'padding-top: 1.5rem; padding-bottom: 1.5rem;'}>
-    <div class="flex flex-col lg:flex-row items-start justify-start gap-8 lg:gap-8 transition-all duration-700 ease-out">
+  <div class="page-shell relative z-10 pt-16 pb-10">
+    <div class="flex flex-col lg:flex-row items-start justify-start gap-8 lg:gap-8">
       <div class="w-full max-w-[21rem] lg:max-w-[26rem] shrink-0 mx-auto lg:mx-0 self-center lg:self-auto">
         <enhanced:img
           src="#lib/assets/Crosbyframe.png?w=502"
@@ -300,12 +259,7 @@
         />
       </div>
       <!-- Welcome Section -->
-      <div
-        class="welcome-content max-w-xl transition-all duration-700 ease-out origin-left"
-        style={showWelcome
-          ? 'opacity: 1; transform: scale(1) translateX(0); max-height: 62.5rem; pointer-events: auto;'
-          : 'opacity: 0; transform: scale(0.9) translateX(-1.25rem); max-height: 0; pointer-events: none; overflow: hidden;'}
-      >
+      <div class="max-w-xl">
         <enhanced:img
           src="#lib/assets/cosmic.jpeg"
           alt="Crosby's Cosmic Adventure"
@@ -321,7 +275,7 @@
         rel="noopener noreferrer"
         class="inline-flex items-center gap-2 rounded-xl border-2 border-[#352f47] px-8 py-3 text-sm font-black uppercase tracking-widest text-[#352f47] transition hover:bg-[#352f47] hover:text-white active:scale-95"
       >
-        buy on amazon
+        <span class="trim-text">buy on amazon</span>
       </a>
     </div>
   </div>
@@ -364,7 +318,7 @@
             />
             <div class="pointer-events-none absolute inset-0 flex items-center justify-center px-6 sm:px-10">
               <p
-                class="poppins-regular max-w-[34ch] text-center text-black text-[clamp(0.8rem,1.25vw,1.05rem)] leading-[1.35]"
+                class="poppins-regular max-w-[34ch] text-center text-black blob-text leading-[1.35]"
               >
                 Join Crosby, Carla the capybara, and Tank the turtle on an
                 adventure of a lifetime!
@@ -434,7 +388,7 @@
 {/if}
 
 <section
-  class="characters-section relative w-full overflow-hidden bg-blue-900 text-white scroll-reveal"
+  class="characters-section relative w-full overflow-hidden bg-blue-900 text-white"
 >
   <div class="pointer-events-none absolute inset-0 opacity-80">
     {#each characterStars as star}
@@ -552,6 +506,14 @@
     z-index: 0;
   }
 
+  /* The blob's spacing and text grow with the screen. Each clamp() has a progress() line after it
+     that gives the same result between explicit screen widths; browsers without progress() drop
+     that line and keep the clamp(). */
+  .blob-text {
+    font-size: clamp(0.8rem, 1.25vw, 1.05rem);
+    font-size: calc(0.8rem + 0.25rem * progress(100vw, 1024px, 1344px));
+  }
+
   .green-blob-content {
     grid-area: 1 / 1;
     position: relative;
@@ -563,7 +525,9 @@
     justify-items: center;
     text-align: center;
     gap: clamp(10px, 2.2vw, 18px);
+    gap: calc(10px + 8px * progress(100vw, 455px, 818px));
     padding: clamp(8px, 2.2vw, 16px) 0 0;
+    padding: calc(8px + 8px * progress(100vw, 364px, 727px)) 0 0;
   }
 
   .green-blob-col {
@@ -614,12 +578,6 @@
     }
   }
 
-
-  .welcome-content {
-    will-change: opacity, transform, max-height;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    overflow: hidden;
-  }
 
   .hero-popup-image {
     width: min(100%, 40rem);
@@ -704,7 +662,9 @@
     .green-blob-content {
       grid-template-columns: 1fr 1fr;
       gap: clamp(8px, 1vw, 16px);
+      gap: calc(8px + 8px * progress(100vw, 800px, 1600px));
       padding: clamp(12px, 3vw, 36px);
+      padding: calc(12px + 24px * progress(100vw, 400px, 1200px));
     }
 
     .green-blob-col-right img {
@@ -785,36 +745,6 @@
       top: 105%;
       transform: rotate(calc(var(--rotate, 0deg) + 60deg));
       opacity: 0;
-    }
-  }
-
-  /* Scroll-triggered animations - slide in from left */
-  .scroll-reveal {
-    opacity: 0;
-    transform: translateX(-5rem);
-    transition: opacity 800ms cubic-bezier(0.165, 0.84, 0.44, 1),
-                transform 800ms cubic-bezier(0.165, 0.84, 0.44, 1);
-  }
-
-  .scroll-reveal:global(.animate-in) {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  /* Character section slides from right */
-  .characters-section.scroll-reveal {
-    transform: translateX(5rem);
-  }
-
-  .characters-section.scroll-reveal:global(.animate-in) {
-    transform: translateX(0);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .scroll-reveal {
-      opacity: 1;
-      transform: none;
-      transition: none;
     }
   }
 </style>

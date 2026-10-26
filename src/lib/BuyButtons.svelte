@@ -22,8 +22,8 @@
     class="inline-flex items-center gap-2 rounded-full bg-rose-600 px-8 py-3 text-lg font-black uppercase tracking-widest text-white shadow-lg transition hover:bg-rose-700 active:scale-95"
   >
     {@render star()}
-    buy on amazon
+    <span class="trim-text">buy on amazon</span>
     {@render star()}
-    <span class="rounded-full bg-white/20 px-2 py-0.5 text-[0.65rem] tracking-wider normal-case">paperback</span>
+    <span class="trim-text rounded-full bg-white/20 px-2 py-0.5 text-[0.65rem] tracking-wider normal-case [--pad-y:0.125rem]">paperback</span>
   </a>
 </div>

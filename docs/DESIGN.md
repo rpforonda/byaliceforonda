@@ -45,6 +45,22 @@ Kept as the intended broader palette should the project move tokens into an `@th
 > is defined once and referenced as utilities. Until then,
 > new work should reuse the hex values in the *Core palette* table rather than invent shades.
 
+### Hoksi Haus palette (`/hoksi-haus`)
+
+The banner studio's page keeps the site shell (header, nav, footer, sky background) and uses
+the studio's own colors inside it:
+
+| Role             | Value     | Where                                          |
+| ---------------- | --------- | ---------------------------------------------- |
+| **Hoksi brown**  | `#3c1f08` | Logo, text, buttons, card borders, step badges |
+| **Hoksi cream**  | `#fff6e3` | Cards, button text                             |
+| **Button hover** | `#5a3214` | Hover fill for the brown buttons               |
+
+Brown text is 14.0:1 on cream and 12.0:1 on the sky blue, and cream text on the brown buttons
+is 14.0:1 (10.3:1 on hover). Cream on the sky blue is only 1.17:1, so cream cards always get a
+2px brown border and a soft brown shadow (`.hoksi-card`) to show their edges. The logo is
+brown only, so it needs a light background.
+
 ---
 
 ## 2. Typography
@@ -55,6 +71,10 @@ approachable feel (`font-black`, `lowercase`, slight letter-spacing e.g. `tracki
 
 - **Body & UI:** Nunito (400 / 600 / 700)
 - **Secondary:** Poppins 400 (available, used sparingly)
+- **About-page letter only:** Lora 400 and 400 italic (body, with the book title in italic)
+  and Ms Madi 400 (the "Hello." and the signature). They're in deep red `#912d2f` on cream
+  paper `#f2f1e9`, matching the original letter artwork. They're self-hosted like the others
+  but imported only on `/about`.
 
 Fonts are **self-hosted via `@fontsource`** — Nunito (400/600/700) and Poppins (400) are
 imported in `+layout.svelte` and bundled from `node_modules` at build time (served as subset
@@ -68,6 +88,10 @@ to the system sans.
 - Page titles: `text-4xl`/`text-5xl`, `font-black`, `lowercase`, dark purple `#352f47`.
 - Navigation: `lowercase`, `font-semibold`, `tracking-[0.05em]`.
 - Body copy: `text-base`/`text-lg`, muted `#4c465f`, generous max-width.
+- Sizes that pair a mobile and a desktop size (titles 36→48px, section headings 24→30px, body
+  16→18px) grow smoothly between a 375px phone and the 1100px page width
+  (`fluid-text-*` classes, CSS `progress()`). They fall back to the jump at `md` in browsers
+  without it.
 
 ---
 
@@ -94,13 +118,16 @@ to the system sans.
 | -------------------- | ------------------------------------------------------------------------ |
 | **Header + nav**     | Logo links home; desktop shows inline lowercase nav; mobile shows a rose "Menu" button opening a dropdown. |
 | **Mobile menu**      | Toggled on click; closes on outside click or `Escape` (returns focus to the button); `aria-expanded` / `aria-controls` wired up. |
-| **Buttons / CTAs**   | Rounded, `rose-600` fill, white text, `rose-700` hover; used for menu and shop CTAs. |
+| **Buttons / CTAs**   | Rounded, `rose-600` fill, white text, `rose-700` hover; used for menu and shop CTAs. Button and pill labels are trimmed to cap height and baseline (`.trim-text`, where `text-box` is supported), so they sit optically centered at the same size. |
 | **Character cards**  | Carla, Crosby, Tank in the `blue-900` characters section, each with art + a short bio. |
 | **Newsletter popup** | "Join Crosby's Crew" modal on the home page — backdrop, close button, and a MailerLite `<iframe>` (fixed `src`); auto-opens after 5s or at 75% scroll, once per home-page load (dismissal isn't remembered across visits); closable. |
 | **Buy button**       | Single "buy on amazon" button opening the Amazon listing in a new tab with `rel="noopener noreferrer"` (the Shopify store is closed). |
 | **Freebie tiles**    | Coloring-page thumbnails linking to printable PDFs in a new tab.         |
-| **Image panels**     | About page composes bio content as full-width illustrated images.        |
+| **Page backdrop**    | `/book`: the night-sky illustration fills the screen below the header and stays put; the content starts 80% of the way down the first screen, then scrolls up over it. `/about`: Alice's photo is too small to fill the screen sharply, so it's a framed print (rounded corners, soft shadow) at its own size at most, pinned and centered on the light blue. On phones it sits in the page above the letter. No tint. |
 | **Cosmic Dash game** | Canvas endless-runner on the freebies page with a character picker (see §4a). |
+| **Hoksi Haus page**  | Four full-width sheets that stack as you scroll (see §5): the logo, an endless "recent work" filmstrip (photos side by side at one height drifting slowly left, brown round arrow buttons at its sides and a small pause/play button below; a "coming soon" card until there are photos), a sizes & prices card, and three numbered "how to order" cards with a brown "request a banner" button that opens the Google Form in a new tab. Uses the Hoksi Haus palette (§1). |
+| **Full-size photo**  | Tapping a gallery photo opens it in a popover (no script): a cream card with a brown edge over a dimmed page, sized to fit the screen, with a close button under it. Neither the carousel nor this view shows captions; each photo's title is only in its button label and the popover's accessible name. It closes on Esc, a click outside or the button, and focus returns to the photo. It appears and disappears without animation. |
+| **Privacy page**     | Plain-language notice with lowercase section headings and underlined links; the footer's copyright line links to it. |
 
 ### 4a. Crosby's Cosmic Dash (game)
 
@@ -178,13 +205,13 @@ Motion is deliberate and soft, always gated for accessibility.
 
 - **Page transitions:** View Transitions API (`onNavigate` + `document.startViewTransition`)
   cross-fades routes over 0.5s.
-- **Scroll reveal:** elements with `.scroll-reveal` fade/slide in via an `IntersectionObserver`
-  that adds `.animate-in`; the characters section slides in from the right.
 - **Decorative:** animated "falling stars" in the characters section, driven by per-star CSS
   custom properties (`--size`, `--rotate`, randomized duration/delay).
 - **Hover:** images scale to `1.05` and links/buttons ease color/transform changes, using a
   slow `cubic-bezier(0.165, 0.84, 0.44, 1)` (600–800ms) for a gentle feel. The wordmark link
   opts out of the hover scale.
+- **Carousel drift (`/hoksi-haus`):** the "recent work" photos drift left at 30 px/s and loop forever. They pause on mouse hover, keyboard focus, touch (resuming 3 s later), an open photo and the pause button, and start paused for visitors who ask for reduced motion.
+- **Stacked sheets (home, hoksi haus):** on pages with more than one top-level section, each section is a full-width sheet that sticks under the header while the next one slides up over it, with a soft shadow along the incoming sheet's top edge. It's plain `position: sticky` with no animation, so it works in every browser, including iPhone and iPad. Single-section pages are unchanged.
 
 **All of the above respects `prefers-reduced-motion: reduce`**, which collapses animation and
 transition durations to ~0 and disables smooth scroll.
