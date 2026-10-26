@@ -31,6 +31,9 @@
 
   let wrapper = $state();
   let canvas = $state();
+  let strip = $state(); // the bar under the canvas (star count, special button)
+  let fullscreenOK = $state(false); // set on mount; iPhone Safari can't make an element full screen
+  let isFullscreen = $state(false);
   let friend = $state(null); // the chosen character, as described by the engine
   let uiState = $state("ready");
   let uiCharge = $state(0);
@@ -307,12 +310,27 @@
     sync();
   }
 
+  async function toggleFullscreen() {
+    if (document.fullscreenElement) return document.exitFullscreen();
+    try {
+      await wrapper.requestFullscreen({ navigationUI: "hide" });
+      // On phones, turn the game sideways: wide enough for the roomier layout (Android only).
+      if (matchMedia("(pointer: coarse)").matches) await screen.orientation?.lock?.("landscape");
+    } catch {
+      // full screen refused, or the screen can't be turned: carry on as we are
+    }
+  }
+
   // ---------- sizing & input ----------
 
   function resize() {
     if (!wrapper || !canvas) return;
-    const cssW = wrapper.clientWidth;
-    W = cssW < 560 ? 480 : 720;
+    const frameW = wrapper.clientWidth;
+    W = frameW < 560 ? 480 : 720;
+    // Full screen: as big as fits above the strip, letterboxed on the night sky.
+    const fs = document.fullscreenElement === wrapper;
+    const cssW = fs ? Math.min(frameW, ((wrapper.clientHeight - (strip?.offsetHeight ?? 0)) * W) / H) : frameW;
+    canvas.style.width = fs ? `${cssW}px` : "";
     const dpr = window.devicePixelRatio || 1;
     canvas.width = Math.round(cssW * dpr);
     canvas.height = Math.round((cssW * dpr * H) / W);
@@ -339,6 +357,9 @@
     } else if (event.code in PICK_KEYS) {
       event.preventDefault();
       pickStep(PICK_KEYS[event.code]);
+    } else if (event.code === "KeyF" && fullscreenOK) {
+      event.preventDefault();
+      if (!event.repeat) toggleFullscreen();
     } else if (event.code === "KeyP" || event.code === "Escape") {
       pause();
     }
@@ -407,6 +428,19 @@
     };
     document.addEventListener("visibilitychange", onVisibility);
 
+    fullscreenOK = document.fullscreenEnabled === true;
+    const onFullscreenChange = () => {
+      isFullscreen = document.fullscreenElement === wrapper;
+      if (!isFullscreen) {
+        screen.orientation?.unlock?.();
+        // the game jumps back to its place on the page, so give the player a moment
+        pause();
+      }
+      resize();
+      if (!isFullscreen) wrapper?.scrollIntoView({ block: "nearest" });
+    };
+    document.addEventListener("fullscreenchange", onFullscreenChange);
+
     // Fetch and start the engine (its .wasm is only downloaded on the game's page).
     import("#cosmic-dash")
       .then(async ({ default: init, Game }) => {
@@ -437,6 +471,7 @@
       clearTimeout(shareTimer);
       ro.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
+      document.removeEventListener("fullscreenchange", onFullscreenChange);
       game?.free();
       game = null;
     };
@@ -486,7 +521,11 @@
         {/if}
       </div>
     {/if}
-    <div class="flex min-h-12 items-center justify-between gap-3 bg-[#241d4a] px-3 py-2" class:hidden={loadError}>
+    <div
+      bind:this={strip}
+      class="flex min-h-12 items-center justify-between gap-3 bg-[#241d4a] px-3 py-2"
+      class:hidden={loadError}
+    >
       {#if friend}
         <span class="text-xs font-bold text-[#fff6e3]/80">
           {#if uiActive}
@@ -495,16 +534,38 @@
             stars {Math.min(uiCharge, friend.specialCost)} / {friend.specialCost}
           {/if}
         </span>
-        <button
-          type="button"
-          tabindex="-1"
-          class="special-btn rounded-full px-4 py-1.5 text-sm font-bold lowercase text-[#352f47] disabled:opacity-40"
-          style="background-color: {friend.accent};"
-          disabled={uiState !== "running" || uiActive || uiCharge < friend.specialCost}
-          onpointerdown={handleSpecialPointerDown}
-        >
-          ★ {friend.specialName}
-        </button>
+        <div class="flex items-center gap-4">
+          {#if fullscreenOK}
+            <!-- tabindex -1 and no focus on press, like the special button: keys go to the game (F toggles this) -->
+            <button
+              type="button"
+              tabindex="-1"
+              class="fs-btn grid h-10 w-10 place-items-center rounded-full text-[#fff6e3]"
+              aria-label={isFullscreen ? "exit full screen" : "full screen"}
+              title={isFullscreen ? "exit full screen (F)" : "full screen (F)"}
+              onpointerdown={(e) => e.preventDefault()}
+              onclick={toggleFullscreen}
+            >
+              <svg viewBox="0 0 20 20" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                {#if isFullscreen}
+                  <path d="M7 3v4H3M13 3v4h4M7 17v-4H3M13 17v-4h4" />
+                {:else}
+                  <path d="M3 7V3h4M17 7V3h-4M3 13v4h4M17 13v4h-4" />
+                {/if}
+              </svg>
+            </button>
+          {/if}
+          <button
+            type="button"
+            tabindex="-1"
+            class="special-btn rounded-full px-4 py-1.5 text-sm font-bold lowercase text-[#352f47] disabled:opacity-40"
+            style="background-color: {friend.accent};"
+            disabled={uiState !== "running" || uiActive || uiCharge < friend.specialCost}
+            onpointerdown={handleSpecialPointerDown}
+          >
+            ★ {friend.specialName}
+          </button>
+        </div>
       {/if}
     </div>
   </div>
@@ -549,7 +610,8 @@
 
   <p id="cosmic-dash-help" class="sr-only">
     Choose Crosby, Carla or Tank with the left and right arrow keys, then press space to start. Up arrow or space to jump,
-    hold for a higher jump. Down arrow to duck. X for your special move, charged by collecting stars. P to pause. On a
+    hold for a higher jump. Down arrow to duck. X for your special move, charged by collecting stars. P to pause. F
+    for full screen. On a
     touch screen, tap a friend to choose and tap again to start, tap to jump, swipe down to duck, and use the star button
     under the game for your special.
   </p>
@@ -560,6 +622,26 @@
   .game-frame:focus-visible {
     outline: 3px solid #d2234c;
     outline-offset: 3px;
+  }
+
+  .game-frame:fullscreen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .game-frame:fullscreen canvas {
+    margin-inline: auto;
+  }
+
+  .fs-btn {
+    border: 1px solid rgba(255, 246, 227, 0.4);
+  }
+
+  .fs-btn:hover {
+    background-color: rgba(255, 246, 227, 0.12);
   }
 
   .special-btn:not(:disabled) {

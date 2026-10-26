@@ -172,6 +172,9 @@ Teal Galaxy → Rosy Starfield → Golden Comet Belt).
   text are built entirely in the browser from the run's numbers (score, character, game, site
   URL) — no name, identifier, or server call, and the canvas stays untainted (same-origin
   sprites), so it collects nothing.
+- **Size and full screen:** the game is up to 1024px wide on large screens and has a
+  full-screen button (and F key) where the browser supports it; Android phones turn sideways
+  in full screen. Leaving full screen pauses the run.
 - **Accessibility:** `role="application"` with a visually hidden description of the controls,
   keyboard-operable (including character select), the chosen friend's role and moves as text
   (shown below the game on narrow screens, visually hidden otherwise), an `aria-live` region

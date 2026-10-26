@@ -24,7 +24,15 @@
     Blast off with Crosby and friends! Pick your friend, then hop over moon rocks and space crystals, dodge shooting
     comets, and collect stars to power up a special move.
   </p>
-  <div class="w-full max-w-3xl">
+  <div class="game-width">
     <CosmicDash />
   </div>
 </section>
+
+<style>
+  /* Up to 1024px wide, but no taller than the window below the fixed header (the canvas is
+     720:280, plus the strip under it), and never narrower than the old 768px column. */
+  .game-width {
+    width: min(100%, max(48rem, min(64rem, (100svh - 16rem) * 18 / 7)));
+  }
+</style>
