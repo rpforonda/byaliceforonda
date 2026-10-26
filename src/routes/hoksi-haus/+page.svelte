@@ -108,25 +108,11 @@
     if (!viewing) holdBriefly();
   }
 
-  // Stacked sections stick under the header (see the CSS). One taller than the screen would
-  // have its bottom covered before anyone saw it, so it gets --overflow: how much taller it is,
-  // and sticks that much higher. It scrolls fully into view first, then holds still.
-  let stack = $state(null);
-
   onMount(() => {
-    const sections = [...stack.children];
-    const fit = () => {
-      const header = parseFloat(getComputedStyle(stack).getPropertyValue("--header")) || 0;
-      for (const section of sections) {
-        const overflow = Math.max(0, section.offsetHeight - (window.innerHeight - header));
-        section.style.setProperty("--overflow", `${overflow}px`);
-      }
-      if (track) measure();
-    };
-    const observer = new ResizeObserver(fit);
-    for (const section of sections) observer.observe(section);
-    window.addEventListener("resize", fit);
-    fit();
+    if (!track) return;
+    // the photos' height follows the window's, so the width of a set does too
+    measure();
+    window.addEventListener("resize", measure);
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) playing = false;
     let frame;
@@ -137,11 +123,10 @@
       last = now;
       frame = requestAnimationFrame(drift);
     };
-    if (track) frame = requestAnimationFrame(drift);
+    frame = requestAnimationFrame(drift);
 
     return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", fit);
+      window.removeEventListener("resize", measure);
       cancelAnimationFrame(frame);
       clearTimeout(holdTimer);
       clearTimeout(settleTimer);
@@ -155,209 +140,206 @@
   path="/hoksi-haus"
 />
 
-<div bind:this={stack} class="hoksi-page text-[#3c1f08]">
-  <section class="hoksi-sheet">
-    <div class="page-shell flex flex-col items-center py-12 text-center md:py-16">
-      <h1>
-        <img src={logo} alt="Hoksi Haus" width="268" height="220" class="h-auto w-48 md:w-60" fetchpriority="high" />
-      </h1>
-      <p class="mt-6 max-w-xl text-lg font-semibold md:text-xl">
-        Custom hand-painted banners for birthdays, holidays, graduations and every kind of celebration.
-      </p>
-      <a href="#how-to-order" class="hoksi-button mt-6">how to order</a>
-    </div>
-  </section>
+<section class="text-[#3c1f08]">
+  <div class="page-shell flex flex-col items-center py-12 text-center md:py-16">
+    <h1>
+      <img src={logo} alt="Hoksi Haus" width="268" height="220" class="h-auto w-48 md:w-60" fetchpriority="high" />
+    </h1>
+    <p class="mt-6 max-w-xl text-lg font-semibold md:text-xl">
+      Custom hand-painted banners for birthdays, holidays, graduations and every kind of celebration.
+    </p>
+    <a href="#how-to-order" class="hoksi-button mt-6">how to order</a>
+  </div>
+</section>
 
-  <section aria-labelledby="gallery-heading" class="hoksi-sheet">
-    <div class="page-shell py-8">
-      <h2 id="gallery-heading" class="text-center text-2xl font-black lowercase tracking-[0.04em] md:text-3xl">
-        recent work
-      </h2>
-      {#if banners.length}
-        <!-- An endless filmstrip: the photos sit side by side at one height, each at its own
-             width, and drift slowly to the left (see the script). Tapping one opens it full size
-             in a popover, with no JavaScript. -->
-        <div
-          class="mt-6"
-          role="region"
-          aria-roledescription="carousel"
-          aria-labelledby="gallery-heading"
-          onpointerenter={handlePointer}
-          onpointerleave={handlePointer}
-          onpointerdown={handlePointer}
-          onpointerup={handlePointer}
-          onpointercancel={handlePointer}
-          onfocusin={handleFocus}
-          onfocusout={handleFocus}
-        >
-          <div class="relative">
-            <ul bind:this={track} onscroll={handleScroll} class="carousel-track">
-              {#each sets as set (set)}
-                {#each banners as banner, i (banner.file)}
-                  {@const real = set === 1}
-                  <li
-                    class="carousel-slide"
-                    aria-hidden={real ? undefined : "true"}
-                    aria-roledescription={real ? "slide" : undefined}
-                    aria-label={real ? `${i + 1} of ${banners.length}` : undefined}
+<section aria-labelledby="gallery-heading" class="text-[#3c1f08]">
+  <div class="page-shell py-8">
+    <h2 id="gallery-heading" class="text-center text-2xl font-black lowercase tracking-[0.04em] md:text-3xl">
+      recent work
+    </h2>
+    {#if banners.length}
+      <!-- An endless filmstrip: the photos sit side by side at one height, each at its own
+           width, and drift slowly to the left (see the script). Tapping one opens it full size
+           in a popover, with no JavaScript. -->
+      <div
+        class="mt-6"
+        role="region"
+        aria-roledescription="carousel"
+        aria-labelledby="gallery-heading"
+        onpointerenter={handlePointer}
+        onpointerleave={handlePointer}
+        onpointerdown={handlePointer}
+        onpointerup={handlePointer}
+        onpointercancel={handlePointer}
+        onfocusin={handleFocus}
+        onfocusout={handleFocus}
+      >
+        <div class="relative">
+          <ul bind:this={track} onscroll={handleScroll} class="carousel-track">
+            {#each sets as set (set)}
+              {#each banners as banner, i (banner.file)}
+                {@const real = set === 1}
+                <li
+                  class="carousel-slide"
+                  aria-hidden={real ? undefined : "true"}
+                  aria-roledescription={real ? "slide" : undefined}
+                  aria-label={real ? `${i + 1} of ${banners.length}` : undefined}
+                >
+                  <button
+                    type="button"
+                    popovertarget={banner.id}
+                    tabindex={real ? undefined : -1}
+                    class="banner-thumb hoksi-card block cursor-zoom-in overflow-hidden"
+                    aria-label="View {banner.title} full size"
                   >
-                    <button
-                      type="button"
-                      popovertarget={banner.id}
-                      tabindex={real ? undefined : -1}
-                      class="banner-thumb hoksi-card block cursor-zoom-in overflow-hidden"
-                      aria-label="View {banner.title} full size"
-                    >
+                    <enhanced:img
+                      src={banner.image}
+                      alt={banner.alt}
+                      sizes="(max-width: 640px) 85vw, {Math.round(440 * banner.ratio)}px"
+                      class="carousel-image"
+                      style="--ratio: {banner.ratio}"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </button>
+
+                  {#if real}
+                    <!-- Closed popovers aren't rendered, so the lazy full-size photo only
+                         downloads when it's opened. Esc, a click outside or the close button
+                         shuts it. -->
+                    <div id={banner.id} popover class="lightbox" role="dialog" aria-label={banner.title} ontoggle={photoToggled}>
                       <enhanced:img
                         src={banner.image}
                         alt={banner.alt}
-                        sizes="(max-width: 640px) 85vw, {Math.round(440 * banner.ratio)}px"
-                        class="carousel-image"
+                        sizes="94vw"
+                        class="lightbox-image"
                         style="--ratio: {banner.ratio}"
                         loading="lazy"
                         decoding="async"
                       />
-                    </button>
-
-                    {#if real}
-                      <!-- Closed popovers aren't rendered, so the lazy full-size photo only
-                           downloads when it's opened. Esc, a click outside or the close button
-                           shuts it. -->
-                      <div id={banner.id} popover class="lightbox" role="dialog" aria-label={banner.title} ontoggle={photoToggled}>
-                        <enhanced:img
-                          src={banner.image}
-                          alt={banner.alt}
-                          sizes="94vw"
-                          class="lightbox-image"
-                          style="--ratio: {banner.ratio}"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                        <div class="mt-2 flex justify-end">
-                          <button type="button" popovertarget={banner.id} popovertargetaction="hide" class="hoksi-button py-1.5! text-sm!">
-                            close <span aria-hidden="true">✕</span>
-                          </button>
-                        </div>
+                      <div class="mt-2 flex justify-end">
+                        <button type="button" popovertarget={banner.id} popovertargetaction="hide" class="hoksi-button py-1.5! text-sm!">
+                          close <span aria-hidden="true">✕</span>
+                        </button>
                       </div>
-                    {/if}
-                  </li>
-                {/each}
+                    </div>
+                  {/if}
+                </li>
               {/each}
-            </ul>
-            <button type="button" class="carousel-button left-1" onclick={() => step(-1)} aria-label="Previous photos">
-              <span aria-hidden="true">‹</span>
-            </button>
-            <button type="button" class="carousel-button right-1" onclick={() => step(1)} aria-label="Next photos">
-              <span aria-hidden="true">›</span>
-            </button>
-          </div>
-          <div class="flex justify-center">
-            <button
-              type="button"
-              class="carousel-toggle"
-              onclick={() => (playing = !playing)}
-              aria-label={playing ? "Pause the photos" : "Play the photos"}
-            >
-              <span aria-hidden="true">{playing ? "❚❚" : "▶"}</span>
-            </button>
-          </div>
-        </div>
-      {:else}
-        <p class="hoksi-card mx-auto mt-6 max-w-md px-6 py-8 text-center">
-          Photos of recent work are coming soon.
-        </p>
-      {/if}
-    </div>
-  </section>
-
-  <section aria-labelledby="prices-heading" class="hoksi-sheet">
-    <div class="page-shell py-8">
-      <h2 id="prices-heading" class="text-center text-2xl font-black lowercase tracking-[0.04em] md:text-3xl">
-        sizes &amp; prices
-      </h2>
-      <div class="hoksi-card mx-auto mt-6 max-w-lg p-5 md:p-6">
-        <table class="w-full text-left">
-          <caption class="sr-only">Banner sizes and prices</caption>
-          <thead>
-            <tr class="border-b-2 border-[#3c1f08]/25 text-xs uppercase tracking-[0.12em]">
-              <th scope="col" class="pb-2">size</th>
-              <th scope="col" class="pb-2">dimensions</th>
-              <th scope="col" class="pb-2 text-right">price</th>
-            </tr>
-          </thead>
-          <tbody>
-            {#each sizes as { size, dimensions, price } (size)}
-              <tr class="border-b border-[#3c1f08]/15 last:border-0">
-                <th scope="row" class="py-2.5 font-black">{size}</th>
-                <td class="py-2.5">{dimensions}</td>
-                <td class="py-2.5 text-right font-bold">€{price}</td>
-              </tr>
             {/each}
-          </tbody>
-        </table>
+          </ul>
+          <button type="button" class="carousel-button left-1" onclick={() => step(-1)} aria-label="Previous photos">
+            <span aria-hidden="true">‹</span>
+          </button>
+          <button type="button" class="carousel-button right-1" onclick={() => step(1)} aria-label="Next photos">
+            <span aria-hidden="true">›</span>
+          </button>
+        </div>
+        <div class="flex justify-center">
+          <button
+            type="button"
+            class="carousel-toggle"
+            onclick={() => (playing = !playing)}
+            aria-label={playing ? "Pause the photos" : "Play the photos"}
+          >
+            <span aria-hidden="true">{playing ? "❚❚" : "▶"}</span>
+          </button>
+        </div>
+      </div>
+    {:else}
+      <p class="hoksi-card mx-auto mt-6 max-w-md px-6 py-8 text-center">
+        Photos of recent work are coming soon.
+      </p>
+    {/if}
+  </div>
+</section>
 
-        <h3 class="mt-6 text-lg font-black lowercase">add-ons</h3>
-        <ul class="mt-2 space-y-2">
-          {#each addOns as { label, price } (label)}
-            <li class="flex justify-between gap-4">
-              <span>{label}</span>
-              <span class="whitespace-nowrap font-bold">{price}</span>
-            </li>
+<section aria-labelledby="prices-heading" class="text-[#3c1f08]">
+  <div class="page-shell py-8">
+    <h2 id="prices-heading" class="text-center text-2xl font-black lowercase tracking-[0.04em] md:text-3xl">
+      sizes &amp; prices
+    </h2>
+    <div class="hoksi-card mx-auto mt-6 max-w-lg p-5 md:p-6">
+      <table class="w-full text-left">
+        <caption class="sr-only">Banner sizes and prices</caption>
+        <thead>
+          <tr class="border-b-2 border-[#3c1f08]/25 text-xs uppercase tracking-[0.12em]">
+            <th scope="col" class="pb-2">size</th>
+            <th scope="col" class="pb-2">dimensions</th>
+            <th scope="col" class="pb-2 text-right">price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {#each sizes as { size, dimensions, price } (size)}
+            <tr class="border-b border-[#3c1f08]/15 last:border-0">
+              <th scope="row" class="py-2.5 font-black">{size}</th>
+              <td class="py-2.5">{dimensions}</td>
+              <td class="py-2.5 text-right font-bold">€{price}</td>
+            </tr>
           {/each}
-        </ul>
+        </tbody>
+      </table>
 
-        <p class="mt-6 border-t-2 border-[#3c1f08]/25 pt-4 font-semibold">
-          Standard turnaround is {TURNAROUND_DAYS} days.
-        </p>
-      </div>
+      <h3 class="mt-6 text-lg font-black lowercase">add-ons</h3>
+      <ul class="mt-2 space-y-2">
+        {#each addOns as { label, price } (label)}
+          <li class="flex justify-between gap-4">
+            <span>{label}</span>
+            <span class="whitespace-nowrap font-bold">{price}</span>
+          </li>
+        {/each}
+      </ul>
+
+      <p class="mt-6 border-t-2 border-[#3c1f08]/25 pt-4 font-semibold">
+        Standard turnaround is {TURNAROUND_DAYS} days.
+      </p>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section
-    id="how-to-order"
-    aria-labelledby="order-heading"
-    class="hoksi-sheet scroll-mt-6 md:scroll-mt-[156px]"
-  >
-    <div class="page-shell pt-8 pb-16 md:pb-20">
-      <h2 id="order-heading" class="text-center text-2xl font-black lowercase tracking-[0.04em] md:text-3xl">
-        how to order
-      </h2>
-      <ol class="mx-auto mt-6 grid max-w-4xl gap-4 md:grid-cols-3">
-        <li class="hoksi-card p-5">
-          <span class="hoksi-step" aria-hidden="true">1</span>
-          <h3 class="mt-3 text-lg font-black lowercase">send a request</h3>
-          <p class="mt-1">Fill in the order form with the date you need it, the size and your design ideas.</p>
-        </li>
-        <li class="hoksi-card p-5">
-          <span class="hoksi-step" aria-hidden="true">2</span>
-          <h3 class="mt-3 text-lg font-black lowercase">agree the details</h3>
-          <p class="mt-1">
-            Hoksi Haus replies by email about the design, price and availability. Your order is
-            confirmed then; sending the form doesn't reserve a date.
-          </p>
-        </li>
-        <li class="hoksi-card p-5">
-          <span class="hoksi-step" aria-hidden="true">3</span>
-          <h3 class="mt-3 text-lg font-black lowercase">it's painted for you</h3>
-          <p class="mt-1">Your banner is painted by hand, with a standard turnaround of {TURNAROUND_DAYS} days.</p>
-        </li>
-      </ol>
-
-      <div class="mt-10 flex flex-col items-center gap-4 text-center">
-        <a href={FORM_URL} target="_blank" rel="noopener noreferrer" class="hoksi-button">
-          request a banner <span aria-hidden="true">↗</span>
-          <span class="sr-only">(opens the Google Form in a new tab)</span>
-        </a>
-        <p class="max-w-md text-sm">
-          Under 13? Please ask a parent or guardian to send the request for you. The order form is
-          a Google Form, and what you send is used only to reply about your banner.
-          <a href={resolve("/privacy")} class="font-semibold underline underline-offset-2">Privacy</a>
+<section
+  id="how-to-order"
+  aria-labelledby="order-heading"
+  class="scroll-mt-6 text-[#3c1f08] md:scroll-mt-[156px]"
+>
+  <div class="page-shell pt-8 pb-16 md:pb-20">
+    <h2 id="order-heading" class="text-center text-2xl font-black lowercase tracking-[0.04em] md:text-3xl">
+      how to order
+    </h2>
+    <ol class="mx-auto mt-6 grid max-w-4xl gap-4 md:grid-cols-3">
+      <li class="hoksi-card p-5">
+        <span class="hoksi-step" aria-hidden="true">1</span>
+        <h3 class="mt-3 text-lg font-black lowercase">send a request</h3>
+        <p class="mt-1">Fill in the order form with the date you need it, the size and your design ideas.</p>
+      </li>
+      <li class="hoksi-card p-5">
+        <span class="hoksi-step" aria-hidden="true">2</span>
+        <h3 class="mt-3 text-lg font-black lowercase">agree the details</h3>
+        <p class="mt-1">
+          Hoksi Haus replies by email about the design, price and availability. Your order is
+          confirmed then; sending the form doesn't reserve a date.
         </p>
-      </div>
-    </div>
-  </section>
-</div>
+      </li>
+      <li class="hoksi-card p-5">
+        <span class="hoksi-step" aria-hidden="true">3</span>
+        <h3 class="mt-3 text-lg font-black lowercase">it's painted for you</h3>
+        <p class="mt-1">Your banner is painted by hand, with a standard turnaround of {TURNAROUND_DAYS} days.</p>
+      </li>
+    </ol>
 
+    <div class="mt-10 flex flex-col items-center gap-4 text-center">
+      <a href={FORM_URL} target="_blank" rel="noopener noreferrer" class="hoksi-button">
+        request a banner <span aria-hidden="true">↗</span>
+        <span class="sr-only">(opens the Google Form in a new tab)</span>
+      </a>
+      <p class="max-w-md text-sm">
+        Under 13? Please ask a parent or guardian to send the request for you. The order form is
+        a Google Form, and what you send is used only to reply about your banner.
+        <a href={resolve("/privacy")} class="font-semibold underline underline-offset-2">Privacy</a>
+      </p>
+    </div>
+  </div>
+</section>
 <style>
   /* cream panels barely stand out from the light-blue page, so they get a brown edge */
   .hoksi-card {
@@ -392,47 +374,6 @@
     background-color: #3c1f08;
     font-weight: 900;
     color: #fff6e3;
-  }
-
-  /* ---------- Stacked sections ----------
-     Each section is a full-width sheet at least a screen tall that sticks under the header,
-     so the next one slides up over it like paper laid on a pile. Nothing animates: it's plain
-     sticky positioning. --header is how much of the screen the fixed header covers (none on
-     phones, where it scrolls away); --overflow is set by the script for sheets taller than the
-     screen. The last sheet doesn't stick, so the footer follows it normally. */
-  .hoksi-page {
-    --header: 0px;
-  }
-
-  @media (min-width: 768px) {
-    .hoksi-page {
-      --header: 156px;
-    }
-  }
-
-  /* main's overflow-x: hidden makes it a scroll container, so the sheets would stick inside it
-     instead of the page; clip hides the overflow the same way without that */
-  :global(main:has(> .hoksi-page)) {
-    overflow-x: clip;
-  }
-
-  .hoksi-sheet {
-    /* positioned like the sticky ones, so the last sheet still paints over the pile */
-    position: relative;
-    display: grid;
-    align-content: center;
-    min-height: calc(100svh - var(--header));
-    background-color: #d7e6ff;
-  }
-
-  .hoksi-sheet:not(:last-child) {
-    position: sticky;
-    top: calc(var(--header) - var(--overflow, 0px));
-  }
-
-  /* a soft shadow along each sheet's top edge, cast onto the sheet it covers */
-  .hoksi-sheet + .hoksi-sheet {
-    box-shadow: 0 -12px 28px rgba(60, 31, 8, 0.12);
   }
 
   /* ---------- Carousel ---------- */

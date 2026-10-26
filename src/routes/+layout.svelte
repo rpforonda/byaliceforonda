@@ -42,6 +42,37 @@
     }
   }
 
+  // Stacked sections (app.css): a section taller than the screen would have its bottom covered
+  // before anyone saw it, so it gets --overflow, how much taller it is, and sticks that much
+  // higher. Measured again when a section or the window resizes, and when the page changes.
+  let mainRef = $state(null);
+
+  $effect(() => {
+    if (!mainRef) return;
+    const sections = () => mainRef.querySelectorAll(":scope > section");
+    const fit = () => {
+      const header = parseFloat(getComputedStyle(mainRef).getPropertyValue("--header")) || 0;
+      for (const section of sections()) {
+        const overflow = Math.max(0, section.offsetHeight - (window.innerHeight - header));
+        section.style.setProperty("--overflow", `${overflow}px`);
+      }
+    };
+    const resizes = new ResizeObserver(fit);
+    const observe = () => {
+      resizes.disconnect();
+      for (const section of sections()) resizes.observe(section);
+    };
+    const pageChanges = new MutationObserver(observe);
+    pageChanges.observe(mainRef, { childList: true });
+    window.addEventListener("resize", fit);
+    observe();
+    return () => {
+      resizes.disconnect();
+      pageChanges.disconnect();
+      window.removeEventListener("resize", fit);
+    };
+  });
+
   // View Transitions API for page navigation
   onNavigate((navigation) => {
     if (navigation.shallow && navigation.type === 'goto') return;
@@ -148,7 +179,9 @@
     </div>
   </header>
 
-  <main id="main-content" class="flex-1 overflow-x-hidden pt-0 pb-0 md:pt-36 lg:pt-40">
+  <!-- overflow-x: clip, not hidden: hidden would make <main> a scroll container, and the stacked
+       sections (app.css) would stick inside it instead of the page -->
+  <main bind:this={mainRef} id="main-content" class="flex-1 overflow-x-clip pt-0 pb-0 md:pt-36 lg:pt-40">
     {@render children?.()}
   </main>
 

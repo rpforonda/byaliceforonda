@@ -108,6 +108,20 @@ Nav exposes **home / about / book / freebies / hoksi haus**. The game page, `/fr
 reached from the card on `/freebies` and links back to it. `/privacy` is linked from the footer.
 `/shop` exists but is an unlinked placeholder.
 
+**Stacked sections:** on any page with more than one top-level `<section>` (home, about, book,
+hoksi haus), each section is a full-width sheet.
+- Each sheet is at least a screen tall and sticks under the header (`position: sticky`) while
+  the next one slides up over it. Nothing animates. The rules live at the end of `app.css`.
+- A small script in `+layout.svelte` measures any section taller than the screen and makes it
+  stick higher by the difference, so it scrolls fully into view first.
+- The last section doesn't stick, so the footer follows it normally. Single-section pages
+  (freebies, the game, privacy, shop) are left as they are.
+- `<main>` uses `overflow-x: clip`, because `hidden` would make the sections stick inside
+  `<main>` instead of the page.
+- To take part, a section must sit directly in `<main>`, span the full width (put `page-shell`
+  on a child, not the section), and keep its own `style` attribute free, since the script sets
+  `--overflow` there.
+
 ## Content & integrations
 
 - **Characters:** Carla, Crosby, and Tank — featured on the home page.
@@ -142,12 +156,6 @@ reached from the card on `/freebies` and links back to it. `/privacy` is linked 
       jump a screenful without animating.
   - Tapping a photo opens it full size in a popover, with no JavaScript. The full-size image is
     lazy, so it only downloads when opened.
-  - The page's sections are stacked sheets. Each is at least a screen tall and sticks under
-    the header (`position: sticky`) while the next slides up over it, with no animation. A
-    small script measures any sheet taller than the screen and makes it stick higher by the
-    difference, so it scrolls fully into view first. The page switches `<main>` to
-    `overflow-x: clip`, because `hidden` would make sticky stick inside `<main>` instead of the
-    page.
   - Strip location data from photos before adding them (phone photos carry GPS). For example,
     `magick in.heic -auto-orient -resize '1600x1600>' +profile '!icc,*' out.jpg` keeps only the
     color profile.

@@ -196,7 +196,7 @@ Motion is deliberate and soft, always gated for accessibility.
   slow `cubic-bezier(0.165, 0.84, 0.44, 1)` (600–800ms) for a gentle feel. The wordmark link
   opts out of the hover scale.
 - **Carousel drift (`/hoksi-haus`):** the "recent work" photos drift left at 30 px/s and loop forever. They pause on mouse hover, keyboard focus, touch (resuming 3 s later), an open photo and the pause button, and start paused for visitors who ask for reduced motion.
-- **Stacked sheets (`/hoksi-haus`):** each section is a full-width sheet that sticks under the header while the next one slides up over it, with a soft shadow along the incoming sheet's top edge. It's plain `position: sticky` with no animation, so it works on every browser, including iPhone and iPad.
+- **Stacked sheets (home, about, book, hoksi haus):** on pages with more than one top-level section, each section is a full-width sheet that sticks under the header while the next one slides up over it, with a soft shadow along the incoming sheet's top edge. It's plain `position: sticky` with no animation, so it works in every browser, including iPhone and iPad. Single-section pages are unchanged.
 
 **All of the above respects `prefers-reduced-motion: reduce`**, which collapses animation and
 transition durations to ~0 and disables smooth scroll.

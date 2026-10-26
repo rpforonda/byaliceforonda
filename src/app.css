@@ -151,3 +151,46 @@
     width: min(100% - 4rem, 68.75rem);
   }
 }
+
+/* ---------- Stacked sections ----------
+   On pages with more than one top-level section, each section is a full-width sheet at least a
+   screen tall that sticks under the header while the next one slides up over it, like paper laid
+   on a pile. Nothing animates: it's plain sticky positioning, so it works in every browser.
+   --header is how much of the screen the fixed header covers (none on phones, where it scrolls
+   away). +layout.svelte sets --overflow on sections taller than the screen, so they stick that
+   much higher and scroll fully into view first. The last section doesn't stick, so the footer
+   follows it normally, and pages with a single section are left as they are.
+   These rules are unlayered so they win over utilities like `relative` and `min-h-screen` on the
+   sections; the background is in the base layer, so a section's own bg-* class wins over it. */
+main {
+  --header: 0px;
+}
+
+@media (min-width: 768px) {
+  main {
+    --header: 156px;
+  }
+}
+
+main > section:not(:only-of-type) {
+  /* positioned like the sticky ones, so the last section still paints over the pile */
+  position: relative;
+  min-height: calc(100svh - var(--header));
+  align-content: center;
+}
+
+main > section:not(:only-of-type):not(:last-of-type) {
+  position: sticky;
+  top: calc(var(--header) - var(--overflow, 0px));
+}
+
+/* a soft shadow along each sheet's top edge, cast onto the sheet it covers */
+main > section:not(:only-of-type) ~ section {
+  box-shadow: 0 -12px 28px rgba(53, 47, 71, 0.14);
+}
+
+@layer base {
+  main > section:not(:only-of-type) {
+    background-color: #d7e6ff;
+  }
+}
